@@ -5,7 +5,7 @@ import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
-import { Avatar, Button, Checkbox, Skeleton, CircularProgress } from '@mui/material'
+import { Button, Checkbox, Skeleton, CircularProgress } from '@mui/material'
 import Image from 'next/image'
 import moment from 'moment'
 import Modal from '@/Components/Modal'
@@ -69,14 +69,14 @@ const Home = () => {
 
   const columns: TypeSafeColDef<BookingFields>[] = [
     { id: 0, field: '_id', headerName: 'Id' },
-    { id: 1, field: 'photos', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
-    { id: 2, field: 'bookingDate', headerName: 'Date', valueGetter: (value) => moment(value).format('Do, MMMM, YYYY') },
-    { id: 3, field: 'bookingType', headerName: 'Type', },
-    { id: 4, field: 'status', headerName: 'Status', renderCell: (params) => <Status params={params} /> },
-    { id: 5, field: 'assignedRooms', headerName: 'Assigned Rooms', renderCell: (params) => params?.row?.assignedRooms?.length },
-    { id: 6, field: 'paymentMode', headerName: 'Payment Mode' },
-    { id: 7, field: 'roomType', headerName: 'Room Type', renderCell: (params) => params?.row?.roomType },
-    { id: 8, field: 'viewRooms', headerName: 'View', renderCell: (params) => <ViewRooms params={params} /> },
+    // { id: 1, field: 'photos', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
+    { id: 1, field: 'bookingDate', headerName: 'Date', valueGetter: (value) => moment(value).format('Do, MMMM, YYYY') },
+    { id: 2, field: 'bookingType', headerName: 'Type', },
+    { id: 3, field: 'status', headerName: 'Status', renderCell: (params) => <Status params={params} /> },
+    { id: 4, field: 'assignedRooms', headerName: 'Assigned Rooms', renderCell: (params) => params?.row?.assignedRooms?.length },
+    { id: 5, field: 'paymentMode', headerName: 'Payment Mode' },
+    { id: 6, field: 'roomType', headerName: 'Room Type', renderCell: (params) => params?.row?.roomType },
+    { id: 7, field: 'viewRooms', headerName: 'View', renderCell: (params) => <ViewRooms params={params} /> },
     { id: 8, field: 'actions', headerName: 'Actions', minWidth: 400, renderCell: (params) => <Actions params={params} setBookingData={setData} /> },
   ]
 
@@ -137,16 +137,16 @@ const Status = ({ params }: { params: GridRenderCellParams }) => {
   )
 }
 
-const Photos = ({ params }: { params: GridRenderCellParams }) => {
-  return (
-    <div className='overflow-hidden flex items-center justify-center h-full'>
-      <Avatar alt=''>
-        {params?.row?.photos?.length > 0 &&
-          <Image src={params?.row?.photos?.[0]} className='object-cover' alt={params?.row?.fullname} fill />}
-      </Avatar>
-    </div>
-  )
-}
+// const Photos = ({ params }: { params: GridRenderCellParams }) => {
+//   return (
+//     <div className='overflow-hidden flex items-center justify-center h-full'>
+//       <Avatar alt=''>
+//         {params?.row?.photos?.length > 0 &&
+//           <Image src={params?.row?.photos?.[0]} className='object-cover' alt={params?.row?.fullname} fill />}
+//       </Avatar>
+//     </div>
+//   )
+// }
 
 const ViewRooms = ({ params }: { params: GridRenderCellParams }) => {
   const [open, setOpen] = useState(false)

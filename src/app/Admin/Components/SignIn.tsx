@@ -5,23 +5,24 @@ import Input from '@/Components/Input'
 import Form from 'next/form'
 import { useFormStatus } from 'react-dom'
 import { loginUser } from '@/app/actions'
+import { CircularProgress } from '@mui/material'
 
 const initialState = {
     message: ''
 }
 
 const SignIn = () => {
-    const [state, formAction] = useActionState(loginUser, initialState)
+    const [state, formAction, isPending] = useActionState(loginUser, initialState)
     const { pending } = useFormStatus()
     console.log(state)
 
     return (
         <div className="w-full min-h-screen flex flex-col items-center justify-center text-center gap-8 px-5">
             <Form action={formAction}
-                className='flex flex-col gap-12 w-full'>
+                className='flex flex-col gap-12 w-[50rem] max-w-full'>
                 <Input
                     label='Email'
-                    disabled={pending}
+                    disabled={isPending}
                     name='email'
                     id='email'
                     placeholder="Email"
@@ -29,13 +30,13 @@ const SignIn = () => {
                 />
                 <Input
                     label='Password'
-                    disabled={pending}
+                    disabled={isPending}
                     name='password'
                     id='password'
                     placeholder="Password"
                     required
                 />
-                <button type="submit" className='bg-red-500 w-full py-5 rounded-lg text-white'>{pending ? <>loading</> : 'Sign In'}</button>
+                <button type="submit" className='bg-red-500 w-full py-5 rounded-lg text-white'>{isPending ? <><CircularProgress size={15} color="inherit"/></> : 'Sign In'}</button>
             </Form>
         </div>
     )

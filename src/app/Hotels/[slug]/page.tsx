@@ -1,4 +1,5 @@
 import BookRoom from '@/Components/BookRoom';
+import Footer from '@/Components/Footer';
 import Header from '@/Components/Header'
 import { HotelTypes } from '@/Types/Hotels';
 import { Container } from '@mui/material';
@@ -76,6 +77,7 @@ const Hotel = async ({ params }: Props) => {
 
                     {item?.rooms?.length > 0 && <Rooms hotelData={item} item={item?.rooms} />}
                 </Container>
+                <Footer />
             </div>
         )
     }
@@ -108,7 +110,7 @@ const Rooms = ({ hotelData, item }: { hotelData: HotelTypes, item: HotelTypes['r
                                 <div className='flex flex-col flex-1 gap-2'>
                                     <p className='text-4xl font-bold'>Rs.{room?.price}</p>
                                     <p className='text-xl mb-10'>+ Rs.{room?.fee} taxes & fees</p>
-                                    <BookRoom hotelData={hotelData} roomData={room}/>
+                                    <BookRoom hotelData={hotelData} roomData={room} />
                                 </div>
                             </div>
 

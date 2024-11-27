@@ -8,7 +8,9 @@ import Image from 'next/image'
 import moment from 'moment'
 import { Context } from '@/Context/context'
 import { User } from '@/Types/Profile'
-import { Avatar, Paper } from '@mui/material'
+import { Avatar, Button, Paper } from '@mui/material'
+import Modal from '@/Components/Modal'
+import AddUser from '../Components/AddUser'
 
 const Users = () => {
     const { user } = useContext(Context)
@@ -21,12 +23,13 @@ const Users = () => {
     const [searchParams, setSearchParams] = useState<{ [key: string]: string }>({})
     const [searchParamsLoading, setSearchParamsLoading] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [showForm, setShowForm] = useState(false)
 
     useEffect(() => {
         setSearchParamsLoading(true)
         switch (user.userRole) {
             case 'CADMIN':
-                setSearchParams(prev => ({ ...prev, 'companyId': user._id }))
+                setSearchParams(prev => ({ ...prev, 'companyId': user._id as string }))
                 setSearchParamsLoading(false)
                 break;
 
@@ -76,29 +79,41 @@ const Users = () => {
     })
 
     return (
-        <Paper>
-            <DataGrid
-                sx={{
-                    minHeight: 200,
-                    height: '100%'
-                }}
-                columns={columns}
-                rows={data}
-                loading={loading}
-                getRowId={row => row?._id}
-                isRowSelectable={() => false}
-                pagination
-                rowCount={count}
-                sortingMode='client'
-                filterMode='client'
-                paginationMode="server"
-                paginationModel={{
-                    page: Number(filter.page),
-                    pageSize: Number(filter.pageSize)
-                }}
-                onPaginationModelChange={setFilter}
-            />
-        </Paper>
+        <div className='flex flex-col gap-10'>
+            {(user?.userRole == 'SADMIN' || user?.userRole == 'CADMIN' || user?.userRole == 'HR') && <div>
+                <Button onClick={() => setShowForm(true)} className='bg-red-500 text-white'>
+                    Add User
+                </Button>
+            </div>}
+
+            <Paper>
+                <DataGrid
+                    sx={{
+                        minHeight: 200,
+                        height: '100%'
+                    }}
+                    columns={columns}
+                    rows={data}
+                    loading={loading}
+                    getRowId={row => row?._id}
+                    isRowSelectable={() => false}
+                    pagination
+                    rowCount={count}
+                    sortingMode='client'
+                    filterMode='client'
+                    paginationMode="server"
+                    paginationModel={{
+                        page: Number(filter.page),
+                        pageSize: Number(filter.pageSize)
+                    }}
+                    onPaginationModelChange={setFilter}
+                />
+            </Paper>
+
+            <Modal open={showForm} setOpen={setShowForm} className='overflow-y-auto w-[50rem] max-w-full'>
+                <AddUser userData={user} setShowModal={setShowForm} />
+            </Modal>
+        </div>
     )
 }
 

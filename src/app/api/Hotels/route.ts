@@ -32,7 +32,8 @@ export async function GET(req: NextRequest) {
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = ObjectId.createFromHexString(values)
-        } else if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize') {
+        } else 
+        if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = values
         }
     }

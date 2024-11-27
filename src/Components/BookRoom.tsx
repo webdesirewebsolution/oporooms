@@ -47,37 +47,33 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
             fee: Number(roomData?.fee),
         }
 
-        await axios.get(`/api/Admin/user?_id=${user._id}`).then(async (r) => {
-            if (r.status == 200) {
-                const user = r.data
 
-                const formData: Bookings = {
-                    userId: user?._id,
-                    bookingId: hotelData?._id as string,
-                    hotelId: hotelData?._id as string,
-                    bookingUid: "OPO555",
-                    bookingType: 'Hotel',
-                    status: user?.userRole == 'EMPLOYEE' ? 'pending' : 'approved',
-                    bookingStatus: user?.userRole == 'EMPLOYEE' ? 'pending' : '',
-                    bookingDate: new Date(),
-                    createdAt: new Date(),
-                    details: hotelData,
-                    userDetails: user,
-                    hotelOwnerId: hotelData?.hotelOwnerId as string,
-                    assignedRooms: [],
-                    roomDetails: { ...searchData, roomData: roomData },
-                    roomType: roomData?.type,
-                    paymentMode: paymentMode,
-                    transactionDetails
-                }
+        const formData: Bookings = {
+            userId: user?._id,
+            bookingId: hotelData?._id as string,
+            hotelId: hotelData?._id as string,
+            bookingUid: "OPO555",
+            bookingType: 'Hotel',
+            status: user?.userRole == 'EMPLOYEE' ? 'pending' : 'approved',
+            bookingStatus: user?.userRole == 'EMPLOYEE' ? 'pending' : '',
+            bookingDate: new Date(),
+            createdAt: new Date(),
+            details: hotelData,
+            userDetails: user,
+            hotelOwnerId: hotelData?.hotelOwnerId as string,
+            assignedRooms: [],
+            roomDetails: { ...searchData, roomData: roomData },
+            roomType: roomData?.type,
+            paymentMode: paymentMode,
+            transactionDetails
+        }
 
-                await axios.post(`/api/bookings`, formData).then(r => {
-                    if (r.status == 200) {
-                        route.push('/Bookings')
-                    }
-                }).finally(() => setLoading(false))
-            }
+        await axios.post(`/api/bookings`, formData).then(r => {
+            console.log("redirecting")
+                route.push('/Bookings')
+                // console.log(route)
         }).finally(() => setLoading(false))
+
     }
 
     const makePayment = async () => {

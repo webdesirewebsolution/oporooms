@@ -1,28 +1,20 @@
 "use server";
-import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 const myColl = client.collection("Bookings");
+// import dbConnect from "@/Lib/mongoose";
+import { ObjectId } from "mongodb";
+// import mongoose, { Types } from "mongoose";
+// import Model from '@/Schema/Schema'
 
 export async function POST(req: NextRequest) {
+    // await dbConnect()
     const body = await req.json();
     const { ...rest } = body;
 
     try {
-
-        const result = await myColl.insertOne({
-            userId: ObjectId.createFromHexString(rest?.userId) as ObjectId,
-            companyId: ObjectId.createFromHexString(rest?.companyId) as ObjectId,
-            hotelOwnerId: ObjectId.createFromHexString(rest?.hotelOwnerId) as ObjectId,
-            hotelId: ObjectId.createFromHexString(rest?.hotelId) as ObjectId,
-            details: {
-                _id: ObjectId.createFromHexString(rest?.details?._id),
-                ...rest?.details
-            },
-            ...rest,
-        });
-
-        return NextResponse.json({ msg: result.insertedId });
+        const result = await myColl.insertOne(rest);
+        return NextResponse.json({ msg: '' }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ status: 400, error });
     }
@@ -37,12 +29,14 @@ export async function GET(req: NextRequest) {
     const searchKeys: { [key: string]: unknown } = {}
 
     for (const [keys, values] of searchParamsKeys) {
-        if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize') {
+        if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize' && keys != 'userId' && keys != 'companyId' && keys !== 'hotelOwnerId') {
             searchKeys[keys] = ObjectId.createFromHexString(values)
         } else if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = values
         }
     }
+
+    console.log({ searchKeys })
 
     try {
         const list = await myColl.find(searchKeys).limit(Number(pageSize)).skip(Number(page)).toArray()

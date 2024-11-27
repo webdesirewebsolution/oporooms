@@ -4,7 +4,6 @@ import { HotelTypes } from '@/Types/Hotels';
 import { Container } from '@mui/material';
 import axios from 'axios'
 import { Params } from 'next/dist/server/request/params';
-import { SearchParams } from 'next/dist/server/request/search-params';
 import Image from 'next/image';
 import React from 'react'
 import { FaStar } from 'react-icons/fa6';
@@ -12,7 +11,6 @@ import { IoLocationSharp } from "react-icons/io5";
 
 type Props = {
     params: Promise<Params>,
-    searchParams?: SearchParams
 }
 
 const Hotel = async ({ params }: Props) => {

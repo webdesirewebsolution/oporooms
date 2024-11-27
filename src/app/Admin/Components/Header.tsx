@@ -2,14 +2,16 @@ import React from 'react'
 import { getUser } from '@/app/actions'
 import Menu from './Menu'
 import { Button } from '@mui/material'
-import { signOut } from '@/auth'
+import { auth, signOut } from '@/auth'
+import { Session } from 'next-auth'
 
 type Props = {
     children: React.ReactNode
 }
 
 const Header = async ({ children }: Props) => {
-    const user = await getUser()
+    const session = await auth()
+    const user = await getUser(session as Session)
 
     return (
         <>

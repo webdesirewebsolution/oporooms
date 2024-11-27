@@ -3,7 +3,6 @@
 import { getUser } from "@/app/actions";
 import { ContextType } from "@/Types/context";
 import { User } from "@/Types/Profile";
-import axios from "axios";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { createContext, ReactNode, useEffect, useState } from "react";
@@ -31,12 +30,6 @@ const ContextProvider = ({ children }: Props) => {
     useEffect(() => {
         (async () => {
             if (status == 'authenticated') {
-                console.log(session)
-                // await axios.get(`/api/User?_id=${session?.user?._id}`).then(r => {
-                //     if (r.status == 200) {
-                //         setUser(r.data)
-                //     }
-                // })
                 await getUser(session as Session).then((r) => setUser(r))
             }
         }

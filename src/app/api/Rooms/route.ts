@@ -1,5 +1,5 @@
 "use server";
-import { Document, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 const myColl = client.collection("Rooms");

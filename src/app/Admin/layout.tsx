@@ -3,7 +3,6 @@ import "./global.css";
 import { auth } from "@/auth";
 import SignIn from "./Components/SignIn";
 import Header from "./Components/Header";
-import ContextProvider from "@/Context/context";
 
 export const metadata: Metadata = {
   title: "Oporooms Admin",

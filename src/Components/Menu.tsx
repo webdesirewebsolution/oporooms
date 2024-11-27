@@ -4,9 +4,7 @@ import useWindowDimensions from '@/Hooks/useWindow'
 import Link from 'next/link'
 import React from 'react'
 
-type Props = {}
-
-const Menu = (props: Props) => {
+const Menu = () => {
     const { width } = useWindowDimensions()
 
     const pages = [
@@ -31,7 +29,6 @@ const Menu = (props: Props) => {
             link: '/',
         },
     ]
-
 
     return (
         <div>

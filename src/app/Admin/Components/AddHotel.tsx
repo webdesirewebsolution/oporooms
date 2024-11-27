@@ -5,7 +5,7 @@ import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { AddressTypes, HotelTypes } from '@/Types/Hotels'
 import { User } from '@/Types/Profile'
-import { RoomsTypes, RoomVarietyTypes } from '@/Types/Rooms'
+import { RoomVarietyTypes } from '@/Types/Rooms'
 import { Button, CircularProgress, IconButton } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
@@ -81,13 +81,13 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
 
             let rooms = value?.rooms
 
-            for (let f of value.rooms) {
+            for (const f of value.rooms) {
                 if (f?.photos !== undefined && f?.photos instanceof FileList) {
-                    let pics = Array.from(f?.photos)
-                    let newPics: string[] = []
+                    const pics = Array.from(f?.photos)
+                    const newPics: string[] = []
 
                     if (pics?.length > 0) {
-                        for (let file of pics) {
+                        for (const file of pics) {
                             await cloudinaryImageUploadMethod(file).then(r => {
                                 newPics.push(r?.secure_url)
                             })

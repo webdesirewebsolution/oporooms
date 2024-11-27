@@ -1,6 +1,6 @@
 'use server'
 
-import { auth, signIn } from "@/auth";
+import { signIn } from "@/auth";
 import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { User } from "../Types/Profile";

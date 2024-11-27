@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-const Services = (props: Props) => {
+const Services = () => {
 
     return (
         <div className='flex flex-col gap-14 items-center w-full'>

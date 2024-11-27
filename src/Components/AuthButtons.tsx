@@ -1,18 +1,15 @@
 'use client'
 
 import { Button, Skeleton } from '@mui/material'
-import React, { FormEvent, useActionState, useContext, useState } from 'react'
+import React, { FormEvent, useContext, useState } from 'react'
 import Modal from '@/Components/Modal'
-import Form from 'next/form'
 import Input from './Input'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { Context } from '@/Context/context'
 import axios from 'axios'
 
-type Props = {}
-
-const AuthButtons = (props: Props) => {
-    const { status, data } = useSession()
+const AuthButtons = () => {
+    const { status } = useSession()
     const { user } = useContext(Context)
     const [modal, setModal] = useState<'SignIn' | 'Register' | ''>('')
 
@@ -77,6 +74,7 @@ const initialState = {
 const SignIn = () => {
     const [value, setValue] = useState(initialState)
     const [message, setMessage] = useState('')
+    console.log(message)
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()

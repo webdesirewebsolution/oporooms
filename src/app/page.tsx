@@ -1,101 +1,93 @@
-import Image from "next/image";
+import Footer from '@/Components/Footer'
+import Header from '@/Components/Header'
+import SearchBox from '@/Components/SearchBox'
+import Services from '@/Components/Services'
+import { Button, Container } from '@mui/material'
+import Image from 'next/image'
+import React from 'react'
 
-export default function Home() {
+const Home = () => {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main>
+      <Header />
+      <Banner />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <Container className='relative -top-52'>
+        <SearchBox />
+        <div className='mt-20 w-full'>
+          <Services />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        <div className='mt-28 w-full'>
+          <DreamVacation />
+        </div>
+        <div className='mt-28 w-full'>
+          <Rooms />
+        </div>
+        <div className='flex flex-col gap-5 mt-20 text-center items-center'>
+          <p className='text-4xl font-semibold'>Explore the world with OPO ROOMS</p>
+          <p className='text-lg text-blue-500'>Discover new places and experiences</p>
+        </div>
+      </Container>
+
+      <Footer />
+    </main>
+  )
 }
+
+const Banner = () => {
+  return (
+    <div>
+      <div className='relative w-screen aspect-video max-h-[578px] py-32 lg:px-36'>
+        <Image src='/Images/banner.jpg' alt='' fill objectFit='cover' />
+        <Container className='absolute flex flex-col gap-5'>
+          <h1 className='text-white text-7xl w-[44rem]'>Make your travel whishlist, we’ll do the rest</h1>
+          <h2 className='text-white w-[51rem]'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</h2>
+        </Container>
+      </div>
+    </div>
+  )
+}
+
+const DreamVacation = () => {
+  return (
+    <div className='flex flex-col gap-5'>
+      <p className='text-3xl text-red-500 font-bold'>Enjoy your dream vacation</p>
+      <p className='text-slate-700 text-lg w-[45rem] max-w-full'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</p>
+
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
+        {Array(4).fill(2)?.map((item, i) => (
+          <div key={i} className='w-full flex flex-col gap-3'>
+            <Image src='/Images/banner.jpg' alt='' objectFit='cover' width={100} height={100} className=' rounded-lg w-full' />
+            <p className='text-3xl font-medium'>Goa</p>
+            <p className='text-lg'>23456 properties</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const Rooms = () => {
+  return (
+    <div className='flex flex-col gap-14 items-center w-full'>
+      <p className='uppercase text-center'>Our Rooms</p>
+      <div className='text-5xl font-bold'>Explore Our <span className='text-red-500 text-5xl font-bold'>ROOMS</span></div>
+
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'>
+        {Array(3).fill(2)?.map((item, i) => (
+          <div key={i} className='w-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden'>
+            <Image src='/Images/banner.jpg' alt='' objectFit='cover' width={100} height={100} className=' w-full' />
+            <div className='p-5 flex flex-col gap-4'>
+              <p className='text-4xl font-semibold'>Hotel Imperial</p>
+              <p className='text-[1.2rem] w-96 text-slate-700'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s</p>
+              <p className='font-semibold'>Rs. 1550 / Per Night</p>
+              <Button className='bg-red-500 text-white py-5' size='large'>Book Now</Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default Home

@@ -10,6 +10,7 @@ import { Avatar, Button, Paper } from '@mui/material'
 import { RoomActions, RoomsTypes } from '@/Types/Rooms'
 import Modal from '@/Components/Modal'
 import AddRoom from '../Components/AddRoom'
+import { FaCheck } from 'react-icons/fa6'
 
 const Rooms = () => {
     const { user } = useContext(Context)
@@ -49,10 +50,19 @@ const Rooms = () => {
 
     const columns: TypeSafeColDef<RoomActions>[] = [
         { id: 0, field: '_id', headerName: 'Id' },
-        { id: 0, field: 'number', headerName: 'Room Number' },
-        { id: 1, field: 'photos', headerName: 'Photos', renderCell: (params) => <Photos params={params} /> },
-        { id: 2, field: 'type', headerName: 'Room Type', },
-        { id: 7, field: 'actions', headerName: 'Actions', minWidth: 180, renderCell: (params) => <Actions params={params} setData={setData} /> },
+        { id: 1, field: 'number', headerName: 'Room Number' },
+        {
+            id: 1, field: 'BookingsData', headerName: 'Room Assigned', width: 130, renderCell: (params) => {
+                return (
+                    <div className='flex h-full items-center justify-center'>
+                        {params?.row?.BookingsData?.length ? (<FaCheck color='green'/>) : (<></>)}
+                    </div>
+                )
+            }
+        },
+        { id: 3, field: 'photos', headerName: 'Photos', renderCell: (params) => <Photos params={params} /> },
+        { id: 4, field: 'type', headerName: 'Room Type', },
+        { id: 5, field: 'actions', headerName: 'Actions', minWidth: 180, renderCell: (params) => <Actions params={params} setData={setData} /> },
     ]
 
     columns.forEach((item) => {
@@ -114,7 +124,7 @@ const Actions = ({ params, setData }: { params: GridRenderCellParams, setData: R
     return (
         <>
             <Button onClick={() => setShowEdit(true)}>Edit Room</Button>
-            <Button className='text-red-500' onClick={() => setShowModal(true)}>Delete Room</Button>
+            <Button disabled={params?.row?.BookingsData?.length > 0} className={params?.row?.BookingsData?.length > 0 ? 'text-slate-300' : 'text-red-500'} onClick={() => setShowModal(true)}>Delete Room</Button>
 
             <Modal open={showModal} setOpen={() => setShowModal(false)}>
                 <div className='flex flex-col gap-5 text-center'>

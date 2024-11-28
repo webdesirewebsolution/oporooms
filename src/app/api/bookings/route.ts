@@ -25,14 +25,12 @@ export async function GET(req: NextRequest) {
     const searchKeys: { [key: string]: unknown } = {}
 
     for (const [keys, values] of searchParamsKeys) {
-        if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize' && keys != 'userId' && keys != 'companyId' && keys !== 'hotelOwnerId') {
+        if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize' && keys != 'userId' && keys != 'companyId' && keys !== 'hotelOwnerId' && keys !== 'userDetails.companyId') {
             searchKeys[keys] = ObjectId.createFromHexString(values)
         } else if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = values
         }
     }
-
-    console.log(page, pageSize)
 
     try {
         const list = await myColl.find(searchKeys).skip(Number(page)).limit(Number(pageSize)).toArray()

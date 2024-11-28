@@ -34,7 +34,7 @@ const Home = () => {
 
         switch (user.userRole) {
           case 'CADMIN':
-            searchParams['companyId'] = user._id as string;
+            searchParams['userDetails.companyId'] = user._id as string;
             break;
 
           case 'HR':
@@ -181,6 +181,8 @@ const Actions = ({ params, setBookingData }: { params: GridRenderCellParams, set
   const [openAssign, setOpenAssign] = useState(false)
   const [openStatus, setOpenStatus] = useState(false)
   const [openBookingStatus, setOpenBookingStatus] = useState(false)
+
+  console.log(user.userRole)
 
   return (
     <div className='flex items-center justify-center h-full gap-5'>

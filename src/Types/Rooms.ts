@@ -1,3 +1,4 @@
+import { Bookings } from "./Booking"
 import { HotelTypes } from "./Hotels"
 
 // single room details of any hotel
@@ -23,5 +24,6 @@ export interface RoomVarietyTypes {
 }
 
 export interface RoomActions extends RoomsTypes {
-    actions: string
+    actions: string,
+    BookingsData: Bookings[]
 }

@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 const myColl = client.collection("Rooms");
+const myBookings = client.collection("Bookings");
 
 export async function POST(req: NextRequest) {
     const { hotelOwnerId, hotelId, ...rest } = await req.json();
@@ -32,17 +33,18 @@ export async function GET(req: NextRequest) {
     const searchParamsKeys = req.nextUrl.searchParams.entries()
     const page: number = searchParams('page')
     const pageSize: number = searchParams('pageSize')
-    const checkExist: boolean = Boolean(searchParams('checkExist'))
 
     const searchKeys: { [key: string]: unknown } = {}
 
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = ObjectId.createFromHexString(values)
-        } else if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize' && keys !== 'checkExist') {
-            searchKeys[keys] = values
-        }
+        } else
+            if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize' && keys !== 'checkExist') {
+                searchKeys[keys] = values
+            }
     }
+
 
     try {
         const list = await myColl.aggregate([
@@ -50,49 +52,27 @@ export async function GET(req: NextRequest) {
                 $match: searchKeys
             },
             {
-                $lookup: {
-                    from: "Hotels",
-                    localField: "hotelId",
-                    foreignField: "_id",
-                    as: "hotelData"
-                }
-            },
-            { "$addFields": { "hotel_Id": { "$toString": "$hotelId" } } },
-            {
-                $lookup: {
-                    from: "Bookings",
-                    localField: "hotel_Id",
-                    foreignField: "details._id",
-                    as: "bookingDetails"
-                }
-            },
-            // {
-            //     $unwind: "$bookingDetails"
-            // },
-            {
-                $addFields: {
-                    hotelData: "$hotelData",
-                    roomFound: {
-                        $in: [
-                            "$_id",
-                            "$bookingDetails.assignedRooms._id"
-                        ]
+                '$addFields': {
+                    'id': {
+                        '$toString': '$_id'
                     }
                 }
-            },
-            {
-                $match: checkExist ? {
-                    roomFound: false
-                } : {}
-            },
-            {
-
-                $unset: ["bookingDetails",  "hotel_Id"]
+            }, {
+                '$lookup': {
+                    'from': 'Bookings',
+                    'localField': 'id',
+                    'foreignField': 'assignedRooms._id',
+                    'as': 'BookingsData'
+                }
+            }, {
+                '$lookup': {
+                    'from': 'Hotels',
+                    'localField': 'hotelId',
+                    'foreignField': '_id',
+                    'as': 'HotelData'
+                }
             }
         ]).limit(Number(pageSize)).skip(Number(page)).toArray()
-
-        console.log(list)
-
 
         const count = await myColl.countDocuments(searchKeys)
         return NextResponse.json({ list, count }, { status: 200 });
@@ -142,10 +122,11 @@ export async function DELETE(req: NextRequest) {
     const id = body?.split("?")[1]?.split("=")[1];
 
     try {
-        const data = await myColl.deleteOne({ _id: ObjectId.createFromHexString(id) });
+       
+            await myColl.deleteOne({ _id: ObjectId.createFromHexString(id) });
         return NextResponse.json({
             status: 200,
-            msg: data
+            msg: 'Success'
         });
     } catch (error) {
         return NextResponse.json({

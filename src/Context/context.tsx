@@ -12,7 +12,7 @@ const initialData: ContextType = {
     user: {
         _id: '',
         username: '',
-        userRole: 'SADMIN',
+        userRole: '',
         email: '',
         photo: ''
     },

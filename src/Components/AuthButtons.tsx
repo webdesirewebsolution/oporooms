@@ -32,7 +32,7 @@ const AuthButtons = () => {
                 </Button>
             </div>
         )
-    } else if (status == 'authenticated') {
+    } else if (status == 'authenticated' && user.userRole !== '') {
         return (
             <div className='flex gap-5 items-center'>
                 <p className='text-lg'>Your are logged in as Admin</p>
@@ -54,7 +54,7 @@ const AuthButtons = () => {
                 <Modal open={modal !== ''} setOpen={() => setModal('')} className='w-[50rem] max-w-full'>
                     <div>
                         {modal == 'SignIn' && <SignIn />}
-                        {modal == 'Register' && <AddUser setShowModal={() => setModal('')}/>}
+                        {modal == 'Register' && <AddUser setShowModal={() => setModal('')} />}
                     </div>
                 </Modal>
             </>

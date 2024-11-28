@@ -23,7 +23,7 @@ const Menu = ({ user }: Props) => {
     const [open, setOpen] = useState(false)
     const drawerWidth = 260
 
-    const userRoles = ['SADMIN', 'CADMIN', 'HR', 'HOTELOWNER']
+    const userRoles = ['SADMIN', 'CADMIN', 'HR', 'HotelOwner']
 
     const menuItems = [
         {
@@ -39,7 +39,7 @@ const Menu = ({ user }: Props) => {
             link: '/Admin/Users',
             as: '/Admin/Users',
             type: 'link',
-            userRoles,
+            userRoles: ['SADMIN', 'CADMIN', 'HR'],
             icon: FaUsers,
         },
         {
@@ -47,7 +47,7 @@ const Menu = ({ user }: Props) => {
             link: '/Admin/Hotels',
             as: '/Admin/Hotels',
             type: 'link',
-            userRoles: ['SADMIN', 'HOTELOWNER'],
+            userRoles: ['SADMIN', 'HotelOwner'],
             icon: FaUsers,
         },
         {
@@ -55,7 +55,7 @@ const Menu = ({ user }: Props) => {
             link: '/Admin/Rooms',
             as: '/Admin/Rooms',
             type: 'link',
-            userRoles: ['SADMIN', 'HOTELOWNER'],
+            userRoles: ['SADMIN', 'HotelOwner'],
             icon: FaUsers,
         },
         {

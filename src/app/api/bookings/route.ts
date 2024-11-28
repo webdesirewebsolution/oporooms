@@ -32,9 +32,10 @@ export async function GET(req: NextRequest) {
         }
     }
 
+    console.log(page, pageSize)
 
     try {
-        const list = await myColl.find(searchKeys).limit(Number(pageSize)).skip(Number(page)).toArray()
+        const list = await myColl.find(searchKeys).skip(Number(page)).limit(Number(pageSize)).toArray()
         const count = await myColl.countDocuments(searchKeys)
         return NextResponse.json({ list, count }, { status: 200 });
 

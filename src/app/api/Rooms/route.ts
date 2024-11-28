@@ -57,17 +57,18 @@ export async function GET(req: NextRequest) {
                     as: "hotelData"
                 }
             },
+            { "$addFields": { "hotel_Id": { "$toString": "$hotelId" } } },
             {
                 $lookup: {
                     from: "Bookings",
-                    localField: "hotelId",
+                    localField: "hotel_Id",
                     foreignField: "details._id",
                     as: "bookingDetails"
                 }
             },
-            {
-                $unwind: "$bookingDetails"
-            },
+            // {
+            //     $unwind: "$bookingDetails"
+            // },
             {
                 $addFields: {
                     hotelData: "$hotelData",
@@ -82,9 +83,15 @@ export async function GET(req: NextRequest) {
             {
                 $match: checkExist ? {
                     roomFound: false
-                }: {}
+                } : {}
+            },
+            {
+
+                $unset: ["bookingDetails",  "hotel_Id"]
             }
         ]).limit(Number(pageSize)).skip(Number(page)).toArray()
+
+        console.log(list)
 
 
         const count = await myColl.countDocuments(searchKeys)

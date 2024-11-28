@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import moment from 'moment'
 import { RoomVarietyTypes } from '@/Types/Rooms'
 import { Bookings } from '@/Types/Booking'
+import { useSession } from 'next-auth/react'
 
 type Props = {
     hotelData: HotelTypes,
@@ -15,6 +16,7 @@ type Props = {
 }
 
 const BookRoom = ({ hotelData, roomData }: Props) => {
+    const { status } = useSession()
     const { setBookingData } = useContext(Context)
     const route = useRouter()
     const searchParams = useSearchParams()
@@ -56,6 +58,12 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
 
         setBookingData(formData)
         route.push('/Checkout')
+    }
+
+    if (status == 'unauthenticated' || status == 'loading' || user.userRole == '') {
+        return (
+            <></>
+        )
     }
 
     return (

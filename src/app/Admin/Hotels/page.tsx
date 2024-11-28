@@ -23,39 +23,33 @@ const Hotels = () => {
         page: 0,
         pageSize: 10
     })
-    const [searchParams, setSearchParams] = useState<{ [key: string]: string }>({})
-    const [searchParamsLoading, setSearchParamsLoading] = useState(false)
     const [loading, setLoading] = useState(true)
     const [showHotelForm, setShowHotelForm] = useState(false)
 
     useEffect(() => {
-        setSearchParamsLoading(true)
-        switch (user.userRole) {
-            case 'HotelOwner':
-                setSearchParams(prev => ({ ...prev, 'hotelOwnerId': user._id as string }))
-                setSearchParamsLoading(false)
-                break;
-
-            default:
-                setSearchParamsLoading(false)
-                break;
-        }
-    }, [user])
-
-    useEffect(() => {
         (async () => {
             setLoading(true)
-            if (user?._id && !searchParamsLoading) {
-                await axios.get(`/api/Hotels?page=${filter.page}&pageSize=${filter?.pageSize}&${Object.keys(searchParams)?.[0]}=${Object.values(searchParams)?.[0]}`).then(r => {
+            if (user?.userRole !== '') {
+
+                const searchParams: { [key: string]: string } = {}
+                switch (user.userRole) {
+                    case 'HotelOwner':
+                        searchParams['hotelOwnerId'] = user?._id as string
+                        break;
+                    default:
+                        break;
+                }
+                const params = new URLSearchParams(searchParams).toString();
+
+                await axios.get(`/api/Hotels?page=${filter.page}&pageSize=${filter?.pageSize}&${params}`).then(r => {
                     if (r.status == 200) {
-                        console.log(r.data?.list)
                         setData(r.data?.list)
                         setCount(r.data?.count)
                     }
                 }).finally(() => setLoading(false))
             }
         })()
-    }, [filter, user, searchParams, searchParamsLoading])
+    }, [filter, user])
 
 
     const columns: TypeSafeColDef<HotelActions>[] = [

@@ -34,16 +34,16 @@ const Home = () => {
 
         switch (user.userRole) {
           case 'CADMIN':
-            searchParams['companyId'] = user._id as string
+            searchParams['companyId'] = user._id as string;
             break;
 
           case 'HR':
-            searchParams['companyId'] = user.companyId as string
+            searchParams['companyId'] = user.companyId as string;
             break;
 
           case 'HotelOwner':
-            searchParams['hotelOwnerId'] = user?._id as string,
-            searchParams['bookingStatus'] = 'approved'
+            searchParams['hotelOwnerId'] = user?._id as string;
+            searchParams['bookingStatus'] = 'approved';
             break;
         }
 

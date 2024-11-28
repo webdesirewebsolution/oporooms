@@ -8,9 +8,7 @@ import { useRouter } from 'next/navigation';
 import React, { useContext } from 'react'
 import { IoCard, IoShield } from "react-icons/io5";
 
-type Props = {}
-
-const CheckoutComponent = (props: Props) => {
+const CheckoutComponent = () => {
     return (
         <div className='flex gap-10 my-10'>
             <FillingDetails />
@@ -43,7 +41,7 @@ const FillingDetails = () => {
 
                 <div className='p-10 flex flex-col gap-5'>
                     {modes?.map((item) => (
-                        <div className='flex items-center'>
+                        <div className='flex items-center' key={item}>
                             <Checkbox size='large' disabled={bookingSubmitLoading} checked={bookingData?.paymentMode == item} value={item} onClick={() => setBookingData(prev => ({ ...prev, paymentMode: item }))} />
                             <p className='text-xl'>{item}</p>
                         </div>
@@ -66,7 +64,7 @@ export const CompleteBooking = () => {
 
     const handleBooking = async () => {
         setBookingSubmitLoading(true)
-        await axios.post(`/api/bookings`, bookingData).then(r => {
+        await axios.post(`/api/bookings`, bookingData).then(() => {
             console.log("redirecting")
             route.push('/Bookings')
         }).finally(() => setBookingSubmitLoading(false))

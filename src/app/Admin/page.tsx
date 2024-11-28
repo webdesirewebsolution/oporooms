@@ -182,8 +182,6 @@ const Actions = ({ params, setBookingData }: { params: GridRenderCellParams, set
   const [openStatus, setOpenStatus] = useState(false)
   const [openBookingStatus, setOpenBookingStatus] = useState(false)
 
-  console.log(user.userRole)
-
   return (
     <div className='flex items-center justify-center h-full gap-5'>
       {(user?.userRole == 'HotelOwner' || user?.userRole == 'SADMIN') && params?.row?.bookingStatus == 'approved' &&

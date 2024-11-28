@@ -43,7 +43,9 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
           <ContextProvider>
-            {children}
+            <main className="min-h-screen flex flex-col">
+              {children}
+            </main>
           </ContextProvider>
         </SessionProvider>
       </body>

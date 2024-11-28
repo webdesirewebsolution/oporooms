@@ -122,7 +122,7 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
                 />
             </div>
 
-            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : 'Add Room'}</Button>
+            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit Room' : 'Add Room')}</Button>
         </form>
     )
 }

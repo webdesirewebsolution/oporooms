@@ -193,7 +193,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                     required />
             </div>
 
-            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : 'Add User'}</Button>
+            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit User' : 'Add User')}</Button>
         </form>
     )
 }

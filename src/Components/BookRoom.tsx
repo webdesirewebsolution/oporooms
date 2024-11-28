@@ -42,8 +42,8 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
             hotelId: hotelData?._id as string,
             bookingUid: "OPO555",
             bookingType: 'Hotel',
-            status: user?.userRole == 'EMPLOYEE' ? 'pending' : 'approved',
-            bookingStatus: user?.userRole == 'EMPLOYEE' ? 'pending' : '',
+            status: 'pending',
+            bookingStatus: user?.userRole == 'EMPLOYEE' ? 'pending' : 'approved',
             bookingDate: new Date(),
             createdAt: new Date(),
             details: hotelData,
@@ -53,7 +53,8 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
             roomDetails: { ...searchData, roomData: roomData },
             roomType: roomData?.type,
             paymentMode: 'Online Pay',
-            transactionDetails
+            transactionDetails,
+            paymentStatus: 'pending'
         }
 
         setBookingData(formData)

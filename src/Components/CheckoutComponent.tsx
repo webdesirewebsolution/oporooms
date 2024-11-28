@@ -19,8 +19,18 @@ const CheckoutComponent = () => {
 }
 
 const FillingDetails = () => {
-    const { bookingData, setBookingData, bookingSubmitLoading } = useContext(Context)
-    const modes: Bookings['paymentMode'][] = ['Pay at hotel', 'Pay by company', 'Online Pay']
+    const { user, bookingData, setBookingData, bookingSubmitLoading } = useContext(Context)
+    const modes: Bookings['paymentMode'][] = []
+
+    switch (user.userRole) {
+        case 'USER':
+            modes.push('Pay at hotel', 'Online Pay')
+            break;
+
+        default:
+            modes.push('Pay at hotel', 'Pay by company', 'Online Pay')
+            break;
+    }
 
     return (
         <div className='flex flex-col flex-1 gap-10'>
@@ -74,7 +84,8 @@ export const CompleteBooking = () => {
 
     return (
         <>
-            <Button className='bg-red-500 text-white w-fit py-5 px-10' size='large' onClick={() => handleBooking()}>
+            <Button disabled={bookingSubmitLoading || bookingData?.paymentMode == 'Online Pay'} 
+            className={`${(bookingSubmitLoading || bookingData?.paymentMode == 'Online Pay') ? 'bg-red-300' : 'bg-red-500'} text-white w-fit py-5 px-10`} size='large' onClick={() => handleBooking()}>
                 {bookingSubmitLoading ? <CircularProgress size={15} color='inherit' /> : "Complete Booking"}
             </Button>
             <Modal open={showModal}>

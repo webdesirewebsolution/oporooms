@@ -10,6 +10,7 @@ import { Button, CircularProgress, IconButton } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
 import { MdDelete } from 'react-icons/md'
 import Select from 'react-select'
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -36,7 +37,7 @@ const initialData: HotelFormTypes = {
     photos: [],
     name: '',
     address: {
-        lat: '', lng: '', placeId: '', City: '', Locality: ''
+        lat: 0, lng: 0, placeId: '', City: 'Goa, India', Locality: ''
     },
     rooms: [{
         id: 0,
@@ -176,7 +177,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
         "Game Room",
         "Library"]
 
-    console.log(value)
+    console.log(value.address)
 
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
@@ -198,11 +199,50 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
 
             <Input disabled={loading} label='Hotel Name' placeholder='Enter Hotel Name' value={value.name} setValue={txt => setValue(prev => ({ ...prev, name: txt }))} required />
 
-            <div className='flex gap-5 flex-wrap items-end'>
-                <Input label='Latitude' placeholder='Latitude' className='flex-1' disabled={loading} value={value.address.lat} setValue={(txt) => setValue(prev => ({ ...prev, address: { ...prev.address, lat: txt } }))} />
+            <GooglePlacesAutocomplete
+                selectProps={{
+                    placeholder: 'Select Address',
+                    // defaultValue: { label: value.address.City as string, value: value.address.City as string },
+                    // value: { label: value.address.City as string, value: value.address.City as string },
+                    onChange: (e) => {
+                        console.log(e)
 
-                <Input label='Latitude' placeholder='Longitude' className='flex-1' disabled={loading} value={value.address.lng} setValue={(txt) => setValue(prev => ({ ...prev, address: { ...prev.address, lng: txt } }))} />
-            </div>
+                        if (typeof window !== 'undefined') {
+                            const geocoder = new google.maps.Geocoder()
+
+                            geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    const location = results?.[0]?.geometry?.location?.toJSON()
+                                    console.log(results?.[0])
+
+                                    setValue(prev => ({
+                                        ...prev,
+                                        address: {
+                                            ...prev.address,
+                                            lat: location?.lat as number,
+                                            lng: location?.lng as number,
+                                            City: e?.value?.description,
+                                            placeId: e?.value?.place_id
+                                        }
+                                    }))
+                                }
+                            })
+                        }
+
+                    },
+                    classNames: {
+                        control: () => 'py-[0.7rem] mt-1 bg-gray-50 border-gray-100'
+                    },
+                    menuPlacement: 'top'
+                }}
+
+                apiOptions={{
+                    id: 'GoogleMaps',
+                    apiKey: 'AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U'
+                }}
+                apiKey="AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U"
+
+            />
 
             <Select className='z-50'
                 isMulti
@@ -233,7 +273,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                     )}
             > + Add More Room Types</Button>
 
-            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : 'Add Hotel'}</Button>
+            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit Hotel' : 'Add Hotel')}</Button>
         </form>
     )
 }

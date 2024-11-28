@@ -8,7 +8,7 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <main>
+    <>
       <Header />
       <Banner />
 
@@ -30,7 +30,7 @@ const Home = () => {
       </Container>
 
       <Footer />
-    </main>
+    </>
   )
 }
 

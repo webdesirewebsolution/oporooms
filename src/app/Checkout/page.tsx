@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const Checkout = () => {
     return (
-        <div>
+        <>
             <Header />
             <Container className='py-10'>
                 <h1 className='font-semibold text-3xl'>Secure your reservation</h1>
@@ -38,7 +38,7 @@ const Checkout = () => {
                 </div>
             </Container>
             <Footer />
-        </div>
+        </>
     )
 }
 

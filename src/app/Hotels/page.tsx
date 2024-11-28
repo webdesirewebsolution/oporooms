@@ -4,15 +4,17 @@ import SearchHotel from '@/Components/SearchHotel'
 import React from 'react'
 import Footer from '@/Components/Footer';
 
-const HotelList = ({ }) => {
+const HotelList = () => {
     return (
-        <div className='bg-[rgb(244,244,244,1)]'>
+        <>
             <Header />
-            <SearchHotel />
+            <div className='bg-[rgb(244,244,244,1)]'>
+                <SearchHotel />
 
-            <HotelListClient />
+                <HotelListClient />
+            </div>
             <Footer />
-        </div>
+        </>
     )
 }
 

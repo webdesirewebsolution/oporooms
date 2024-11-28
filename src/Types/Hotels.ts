@@ -1,8 +1,8 @@
 import { RoomVarietyTypes } from "./Rooms";
 
 export interface AddressTypes {
-    lat: string,
-    lng: string,
+    lat: number,
+    lng: number,
     placeId?: string,
     City?: string,
     Locality?: string,

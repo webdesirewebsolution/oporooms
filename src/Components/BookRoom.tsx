@@ -19,6 +19,7 @@ type Props = {
 }
 
 const BookRoom = ({ hotelData, roomData }: Props) => {
+    const { setBookingData } = useContext(Context)
     const route = useRouter()
     const searchParams = useSearchParams()
     const { user } = useContext(Context)
@@ -26,30 +27,22 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
     const [loading, setLoading] = useState(false)
     const [paymentMode, setPaymentMode] = useState<Bookings['paymentMode']>('Online Pay')
 
-
     const handleSubmit = async () => {
-        setLoading(true)
-
         const searchData: { [key: string]: string } = {}
 
         for (const i of searchParams.entries()) {
             searchData[i[0]] = i[1]
         }
 
-        const rooms = searchParams.get('rooms')
-        const checkIn = searchParams.get('checkIn')
-        const checkOut = searchParams.get('checkOut')
-
-        const totalNights = moment(Number(checkOut)).diff(moment(Number(checkIn)), 'days') + 1
+        const totalNights = moment(Number(searchData?.checkOut)).diff(moment(Number(searchData?.checkIn)), 'days') + 1
 
         const transactionDetails = {
-            cost: Number(roomData?.price) * totalNights * Number(rooms),
+            cost: Number(roomData?.price) * totalNights * Number(searchData?.rooms),
             fee: Number(roomData?.fee),
         }
 
-
         const formData: Bookings = {
-            userId: user?._id,
+            userId: user?._id as string,
             bookingId: hotelData?._id as string,
             hotelId: hotelData?._id as string,
             bookingUid: "OPO555",
@@ -68,11 +61,14 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
             transactionDetails
         }
 
-        await axios.post(`/api/bookings`, formData).then(r => {
-            console.log("redirecting")
-                route.push('/Bookings')
-                // console.log(route)
-        }).finally(() => setLoading(false))
+        setBookingData(formData)
+        route.push('/Checkout')
+
+        // await axios.post(`/api/bookings`, formData).then(r => {
+        //     console.log("redirecting")
+        //     route.push('/Bookings')
+        //     // console.log(route)
+        // }).finally(() => setLoading(false))
 
     }
 
@@ -117,11 +113,10 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
 
     }
 
-
     return (
         <div>
             <Button className='bg-red-500 text-white py-5 px-20' size='large' onClick={() => {
-                setOpenModal(true)
+                handleSubmit()
             }}>Book Now</Button>
 
             <Modal open={openModal} setOpen={setOpenModal}>

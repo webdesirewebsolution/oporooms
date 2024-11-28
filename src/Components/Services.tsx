@@ -4,7 +4,11 @@ const Services = () => {
 
     return (
         <div className='flex flex-col gap-14 items-center w-full'>
-            <p className='uppercase text-center'>Our Services</p>
+            <div className='flex items-center gap-4'>
+                <div className='w-20 border border-black' />
+                <p className='uppercase text-center font-semibold'>Our Services</p>
+                <div className='w-20 border border-black' />
+            </div>
             <div className='text-5xl font-bold'>Explore Our <span className='text-red-500 text-5xl font-bold'>Services</span></div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10 w-full'>

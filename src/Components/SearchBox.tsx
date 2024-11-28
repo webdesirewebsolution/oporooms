@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Input from './Input'
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import Link from 'next/link'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
 import moment, { Moment } from 'moment'
@@ -82,7 +82,6 @@ const HotelSearchBox = ({ }) => {
     return (
         <div className='flex flex-col w-full gap-5 items-end'>
             <div className='flex gap-5 items-center w-full'>
-                {/* <Input placeholder='Goa, India' /> */}
                 <div className='w-full'>
                     <GooglePlacesAutocomplete
                         selectProps={{
@@ -142,8 +141,9 @@ const HotelSearchBox = ({ }) => {
                     adults: value.guests.adults,
                     childrens: value.guests.children
                 }
-            }}>
-                <Button className='bg-red-500 text-white' size='large'>Find Hotels</Button>
+            }} passHref legacyBehavior>
+                <Button className='bg-red-500 text-white' size='large'>
+                    Find Hotels</Button>
             </Link>
 
             <Modal open={selectRoom} setOpen={setSelectRoom} className='w-96'>

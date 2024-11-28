@@ -15,7 +15,7 @@ import Select from 'react-select'
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 type Props = {
-    userData: User,
+    userData?: User,
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
     isEdit?: boolean,
 }
@@ -85,28 +85,13 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                     let companyId = null
                     let hrId = null
 
-                    switch (userData.userRole) {
-                        case 'CADMIN':
-                            companyId = userData._id
-                            break;
-
-                        case 'HR':
-                            companyId = userData.companyId
-                            hrId = userData._id
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    console.log(companyId)
-
                     const formData: User = {
                         ...value,
                         photo: image,
+                        userRole: 'USER',
                         companyId,
                         hrId,
-                        createdBy: userData.userRole
+                        createdBy: undefined
                     }
 
                     await axios.post(`/api/User`, formData).then(r => {
@@ -124,23 +109,6 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
     }
 
     const url = value?.photo instanceof File ? URL.createObjectURL(value?.photo) : value?.photo
-    const userRole: User['userRole'][] = []
-
-    switch (userData.userRole) {
-        case 'CADMIN':
-            userRole.push('EMPLOYEE', 'HR')
-            break;
-
-        case 'HR':
-            userRole.push('EMPLOYEE')
-            break;
-    
-        default:
-            userRole.push('CADMIN', 'EMPLOYEE', 'HR', 'HotelOwner')
-            break;
-    }
-
-    console.log(userRole)
 
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
@@ -175,17 +143,6 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
             <Input disabled={loading} label='Address' placeholder='Enter Address' value={value.address} setValue={e => setValue(prev => ({ ...prev, address: e }))} required />
 
             <div className='flex flex-col gap-2'>
-                <p className='text-xl'>Select User Type</p>
-                <Select
-                    isDisabled={loading}
-                    defaultValue={{ label: 'Select User Type', value: 'Select User Type' }}
-                    options={userRole?.map((item) => ({ label: item, value: item }))}
-                    value={{ label: value.userRole, value: value.userRole }}
-                    onChange={(e) => e && setValue(prev => ({ ...prev, userRole: e?.value as User['userRole'] }))}
-                    required />
-            </div>
-
-            <div className='flex flex-col gap-2'>
                 <p className='text-xl'>Select Gender</p>
                 <Select
                     isDisabled={loading}
@@ -196,7 +153,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                     required />
             </div>
 
-            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : 'Add User'}</Button>
+            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : 'Register'}</Button>
         </form>
     )
 }

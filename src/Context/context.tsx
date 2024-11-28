@@ -1,6 +1,7 @@
 'use client'
 
 import { getUser } from "@/app/actions";
+import { Bookings } from "@/Types/Booking";
 import { ContextType } from "@/Types/context";
 import { User } from "@/Types/Profile";
 import { Session } from "next-auth";
@@ -14,7 +15,11 @@ const initialData: ContextType = {
         userRole: 'SADMIN',
         email: '',
         photo: ''
-    }
+    },
+    bookingData: {} as Bookings,
+    setBookingData: () => { },
+    bookingSubmitLoading: false,
+    setBookingSubmitLoading: () => { }
 }
 
 export const Context = createContext<ContextType>(initialData)
@@ -26,6 +31,8 @@ type Props = {
 const ContextProvider = ({ children }: Props) => {
     const { status, data: session } = useSession()
     const [user, setUser] = useState<User>(initialData.user)
+    const [bookingData, setBookingData] = useState<Bookings>({} as Bookings)
+    const [bookingSubmitLoading, setBookingSubmitLoading] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -38,7 +45,7 @@ const ContextProvider = ({ children }: Props) => {
     }, [session, status])
 
     return (
-        <Context.Provider value={{ user }}>
+        <Context.Provider value={{ user, bookingData, setBookingData, bookingSubmitLoading, setBookingSubmitLoading }}>
             {children}
         </Context.Provider>
     )

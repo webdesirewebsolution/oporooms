@@ -7,13 +7,13 @@ import Input from './Input'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { Context } from '@/Context/context'
 import axios from 'axios'
+import AddUser from './AddUser'
 
 const AuthButtons = () => {
     const { status } = useSession()
     const { user } = useContext(Context)
     const [modal, setModal] = useState<'SignIn' | 'Register' | ''>('')
 
-    console.log(status)
 
     if (status == 'loading') {
         return (
@@ -33,12 +33,14 @@ const AuthButtons = () => {
             </div>
         )
     } else if (status == 'authenticated') {
-        <div className='flex gap-5 items-center'>
-            <p className='text-lg'>Your are logged in as Admin</p>
-            <Button className='bg-red-500 text-white font-bold' onClick={async () => await signOut()}>
-                Sign Out
-            </Button>
-        </div>
+        return (
+            <div className='flex gap-5 items-center'>
+                <p className='text-lg'>Your are logged in as Admin</p>
+                <Button className='bg-red-500 text-white font-bold' onClick={async () => await signOut()}>
+                    Sign Out
+                </Button>
+            </div>
+        )
     } else if (status == 'unauthenticated') {
         return (
             <>
@@ -52,6 +54,7 @@ const AuthButtons = () => {
                 <Modal open={modal !== ''} setOpen={() => setModal('')} className='w-[50rem] max-w-full'>
                     <div>
                         {modal == 'SignIn' && <SignIn />}
+                        {modal == 'Register' && <AddUser setShowModal={() => setModal('')}/>}
                     </div>
                 </Modal>
             </>

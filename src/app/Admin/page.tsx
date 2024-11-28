@@ -43,10 +43,7 @@ const Home = () => {
 
           case 'HotelOwner':
             searchParams['hotelOwnerId'] = user?._id as string,
-              searchParams['bookingStatus'] = 'approved'
-            break;
-
-          default:
+            searchParams['bookingStatus'] = 'approved'
             break;
         }
 

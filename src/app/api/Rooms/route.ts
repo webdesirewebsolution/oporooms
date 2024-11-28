@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 const myColl = client.collection("Rooms");
-const myBookings = client.collection("Bookings");
 
 export async function POST(req: NextRequest) {
     const { hotelOwnerId, hotelId, ...rest } = await req.json();

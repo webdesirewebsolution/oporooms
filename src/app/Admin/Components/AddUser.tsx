@@ -3,16 +3,13 @@
 import Input from '@/Components/Input'
 import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
-import { HotelTypes } from '@/Types/Hotels'
 import { User } from '@/Types/Profile'
-import { RoomsTypes } from '@/Types/Rooms'
 import { Button, CircularProgress } from '@mui/material'
 import axios from 'axios'
-import moment, { Moment } from 'moment'
+import moment from 'moment'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import Select from 'react-select'
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 type Props = {
     userData: User,

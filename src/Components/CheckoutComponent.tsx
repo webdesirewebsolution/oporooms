@@ -4,9 +4,8 @@ import { Context } from '@/Context/context';
 import { Bookings } from '@/Types/Booking';
 import { Button, Checkbox, CircularProgress } from '@mui/material';
 import axios from 'axios';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { IoCard, IoShield } from "react-icons/io5";
 
 type Props = {}

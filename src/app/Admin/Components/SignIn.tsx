@@ -13,7 +13,6 @@ const initialState = {
 
 const SignIn = () => {
     const [state, formAction, isPending] = useActionState(loginUser, initialState)
-    const { pending } = useFormStatus()
     console.log(state)
 
     return (

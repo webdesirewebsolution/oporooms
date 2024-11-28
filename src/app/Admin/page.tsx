@@ -32,7 +32,7 @@ const Home = () => {
 
     switch (user.userRole) {
       case 'CADMIN':
-        setSearchParams(prev => ({ ...prev, 'companyId': user._id }))
+        setSearchParams(prev => ({ ...prev, 'companyId': user._id as string }))
         setSearchParamsLoading(false)
         break;
 
@@ -42,7 +42,7 @@ const Home = () => {
         break;
 
       case 'HotelOwner':
-        setSearchParams(prev => ({ ...prev, hotelOwnerId: user?._id, bookingStatus: 'approved' }))
+        setSearchParams(prev => ({ ...prev, hotelOwnerId: user?._id as string, bookingStatus: 'approved' }))
         setSearchParamsLoading(false)
         break;
 

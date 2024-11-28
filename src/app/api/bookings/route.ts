@@ -2,19 +2,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 const myColl = client.collection("Bookings");
-// import dbConnect from "@/Lib/mongoose";
 import { ObjectId } from "mongodb";
-// import mongoose, { Types } from "mongoose";
-// import Model from '@/Schema/Schema'
 
 export async function POST(req: NextRequest) {
-    // await dbConnect()
     const body = await req.json();
     const { ...rest } = body;
 
     try {
         const result = await myColl.insertOne(rest);
-        return NextResponse.json({ msg: '' }, { status: 200 });
+        return NextResponse.json({ msg: result }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ status: 400, error });
     }
@@ -36,7 +32,6 @@ export async function GET(req: NextRequest) {
         }
     }
 
-    console.log({ searchKeys })
 
     try {
         const list = await myColl.find(searchKeys).limit(Number(pageSize)).skip(Number(page)).toArray()

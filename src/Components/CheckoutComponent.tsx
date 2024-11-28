@@ -5,8 +5,10 @@ import { Bookings } from '@/Types/Booking';
 import { Button, Checkbox, CircularProgress } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { IoCard, IoShield } from "react-icons/io5";
+import Modal from './Modal';
+import Link from 'next/link';
 
 const CheckoutComponent = () => {
     return (
@@ -42,7 +44,7 @@ const FillingDetails = () => {
                 <div className='p-10 flex flex-col gap-5'>
                     {modes?.map((item) => (
                         <div className='flex items-center' key={item}>
-                            <Checkbox size='large' disabled={bookingSubmitLoading || item=='Online Pay'} checked={bookingData?.paymentMode == item} value={item} onClick={() => setBookingData(prev => ({ ...prev, paymentMode: item }))} />
+                            <Checkbox size='large' disabled={bookingSubmitLoading || item == 'Online Pay'} checked={bookingData?.paymentMode == item} value={item} onClick={() => setBookingData(prev => ({ ...prev, paymentMode: item }))} />
                             <p className='text-xl'>{item}</p>
                         </div>
                     ))}
@@ -59,22 +61,38 @@ const Details = () => {
 }
 
 export const CompleteBooking = () => {
-    const route = useRouter()
+    const [showModal, setShowModal] = useState(false)
     const { bookingData, bookingSubmitLoading, setBookingSubmitLoading } = useContext(Context)
 
     const handleBooking = async () => {
         if (bookingData.paymentMode != 'Online Pay') {
             setBookingSubmitLoading(true)
             await axios.post(`/api/bookings`, bookingData).then(() => {
-                // route.push('/Bookings')
+                setShowModal(true)
             }).finally(() => setBookingSubmitLoading(false))
         }
     }
 
     return (
-        <Button className='bg-red-500 text-white w-fit py-5 px-10' size='large' onClick={() => handleBooking()}>
-            {bookingSubmitLoading ? <CircularProgress size={15} color='inherit' /> : "Complete Booking"}
-        </Button>
+        <>
+            <Button className='bg-red-500 text-white w-fit py-5 px-10' size='large' onClick={() => handleBooking()}>
+                {bookingSubmitLoading ? <CircularProgress size={15} color='inherit' /> : "Complete Booking"}
+            </Button>
+            <Modal open={showModal}>
+                <div>
+                    <p className='text-2xl font-semibold'>Thank you for booking</p>
+                    <div className='flex flex-col items-center gap-3 mt-7'>
+                        <Link href='/' className='text-blue-500'>
+                            Go to Home
+                        </Link>
+
+                        <Link href='/Bookings' className='text-blue-500'>
+                            View your bookings
+                        </Link>
+                    </div>
+                </div>
+            </Modal>
+        </>
     )
 }
 

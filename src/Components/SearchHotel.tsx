@@ -37,8 +37,8 @@ const SearchHotel = ({ }) => {
     const [selectRoom, setSelectRoom] = useState(false)
 
     return (
-        <div className='py-20'>
-            <Container className='flex gap-5 items-center w-full shadow-xl py-8 bg-white'>
+        <div className='py-20 px-10 md:px-0'>
+            <Container className='flex flex-col md:flex-row gap-5 items-center w-full shadow-xl py-8 bg-white'>
                 <div className='w-full'>
                     <GooglePlacesAutocomplete
                         selectProps={{

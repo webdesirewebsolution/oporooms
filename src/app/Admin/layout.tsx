@@ -19,8 +19,10 @@ export default async function AdminLayout({
   if (!session?.user) return <SignIn />
 
   return (
-    <Header>
-      {children}
-    </Header>
+    <main className="bg-white">
+      <Header>
+        {children}
+      </Header>
+    </main>
   );
 }

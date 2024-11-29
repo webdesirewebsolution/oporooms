@@ -44,7 +44,7 @@ const Users = () => {
 
                 const params = new URLSearchParams(searchParams).toString();
 
-                await axios.get(`/api/Users?page=${filter.page}&pageSize=${filter?.pageSize}&${params}`).then(r => {
+                await axios.get(`/api/Users?page=${filter.page * 10 }&pageSize=${filter?.pageSize}&${params}`).then(r => {
                     if (r.status == 200) {
                         setData(r.data?.list)
                         setCount(r.data?.count)

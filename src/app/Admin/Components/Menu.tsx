@@ -73,6 +73,22 @@ const Menu = ({ user }: Props) => {
             userRoles,
             icon: FaUser
         },
+        {
+            title: 'Privacy Policy',
+            link: '/Admin/PrivacyPolicy',
+            as: '/Admin/PrivacyPolicy',
+            type: 'link',
+            userRoles : ['SADMIN'],
+            icon: FaUser
+        },
+        {
+            title: 'Terms & Conditions',
+            link: '/Admin/TermsConditions',
+            as: '/Admin/TermsConditions',
+            type: 'link',
+            userRoles : ['SADMIN'],
+            icon: FaUser
+        },
     ]
 
     const DrawerList = (

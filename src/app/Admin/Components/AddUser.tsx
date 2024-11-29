@@ -133,7 +133,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
             break;
     
         default:
-            userRole.push('CADMIN', 'EMPLOYEE', 'HR', 'HotelOwner')
+            userRole.push('CADMIN', 'HotelOwner', /* 'EMPLOYEE', 'HR',  */)
             break;
     }
 

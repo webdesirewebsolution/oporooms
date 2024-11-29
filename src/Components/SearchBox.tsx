@@ -7,6 +7,9 @@ import Link from 'next/link'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
 import moment, { Moment } from 'moment'
 import Modal from './Modal'
+import { FaHotel, FaTrainSubway } from 'react-icons/fa6'
+import { MdOutlineFlightTakeoff } from 'react-icons/md'
+import { BiSolidBusSchool } from "react-icons/bi";
 
 type tabsTypes = {
     icon: string,
@@ -18,19 +21,19 @@ const SearchBox = ({ }) => {
 
     const tabs = [
         {
-            icon: '',
+            icon: FaHotel,
             title: 'Hotels',
         },
         {
-            icon: '',
+            icon: MdOutlineFlightTakeoff,
             title: 'Flights',
         },
         {
-            icon: '',
+            icon: FaTrainSubway,
             title: 'Train',
         },
         {
-            icon: '',
+            icon: BiSolidBusSchool,
             title: 'Bus',
         },
     ]
@@ -39,9 +42,12 @@ const SearchBox = ({ }) => {
         <div className='bg-white shadow rounded-xl p-10 w-full flex flex-col gap-5'>
             <div className='flex'>
                 {tabs?.map((tab) => (
-                    <div key={tab.title} className='border-r-2 px-10 cursor-pointer' onClick={() => setActiveTab(tab.title as tabsTypes['title'])}>
-                        <div className={`${activeTab == tab.title ? 'border-[rgba(17,34,17,1)]' : 'border-white'} border-b-2 text-[rgba(17,34,17,1)] font-bold`}>
-                            {tab.title}
+                    <div key={tab.title} className={`border-r-2 px-5 cursor-pointer w-full md:w-fit`} onClick={() => setActiveTab(tab.title as tabsTypes['title'])}>
+                        <div className={`${activeTab == tab.title ? 'border-[rgba(17,34,17,1)]' : 'border-white'} border-b-2 flex items-center gap-2 pb-2 px-5 justify-center`}>
+                            {tab.icon && <tab.icon />}
+                            <p className='hidden md:block text-[rgba(17,34,17,1)] font-bold'>
+                                {tab.title}
+                            </p>
                         </div>
                     </div>
                 ))}
@@ -81,7 +87,7 @@ const HotelSearchBox = ({ }) => {
 
     return (
         <div className='flex flex-col w-full gap-5 items-end'>
-            <div className='flex gap-5 items-center w-full'>
+            <div className='flex flex-col md:flex-row gap-5 items-center w-full'>
                 <div className='w-full'>
                     <GooglePlacesAutocomplete
                         selectProps={{

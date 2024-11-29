@@ -6,6 +6,7 @@ import 'swiper/css/pagination';
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import ContextProvider from "@/Context/context";
+import { Session } from "next-auth";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,9 +41,11 @@ export default async function RootLayout({
 
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning={true}
+        suppressContentEditableWarning={true}
       >
         <SessionProvider session={session}>
-          <ContextProvider>
+          <ContextProvider session={session as Session}>
             <main className="min-h-screen flex flex-col">
               {children}
             </main>

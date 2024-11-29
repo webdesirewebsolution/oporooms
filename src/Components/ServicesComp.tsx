@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Services = () => {
+const ServicesComp = () => {
 
     return (
         <div className='flex flex-col gap-14 items-center w-full'>
@@ -24,4 +24,4 @@ const Services = () => {
     )
 }
 
-export default Services
+export default ServicesComp

@@ -1,5 +1,6 @@
 import { Container } from '@mui/material'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 const Footer = () => {
@@ -38,8 +39,12 @@ const Footer = () => {
                     <div className='flex flex-col gap-5'>
                         <p className='font-semibold'>Terms and Policies</p>
                         <ul>
-                            <li>Privacy Policy</li>
-                            <li>Terms of use</li>
+                            <li>
+                                <Link href='PrivacyPolicy'>Privacy Policy</Link>
+                            </li>
+                            <li>
+                                <Link href='TermsConditions'>Terms of use</Link>
+                            </li>
                             <li>Accessbility</li>
                             <li>Reward system policy</li>
                         </ul>

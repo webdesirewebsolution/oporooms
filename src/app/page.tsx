@@ -1,7 +1,7 @@
 import Footer from '@/Components/Footer'
 import Header from '@/Components/Header'
 import SearchBox from '@/Components/SearchBox'
-import Services from '@/Components/Services'
+import ServicesComp from '@/Components/ServicesComp'
 import { Button, Container } from '@mui/material'
 import Image from 'next/image'
 import React from 'react'
@@ -12,10 +12,10 @@ const Home = () => {
       <Header />
       <Banner />
 
-      <Container className='relative -top-52 -mb-40'>
+      <Container className='relative -top-60 md:-top-52 -mb-40'>
         <SearchBox />
         <div className='mt-20 w-full'>
-          <Services />
+          <ServicesComp />
         </div>
         <div className='mt-28 w-full'>
           <DreamVacation />
@@ -37,11 +37,11 @@ const Home = () => {
 const Banner = () => {
   return (
     <div>
-      <div className='relative w-screen aspect-video max-h-[578px] py-32 lg:px-36'>
+      <div className='relative w-screen aspect-square md:aspect-video max-h-[578px] py-20 md:py-32 lg:px-36'>
         <Image src='/Images/banner.jpg' alt='' fill objectFit='cover' />
-        <Container className='absolute flex flex-col gap-5'>
-          <h1 className='text-white text-7xl w-[44rem]'>Make your travel whishlist, we’ll do the rest</h1>
-          <h2 className='text-white w-[51rem]'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</h2>
+        <Container className='absolute flex flex-col gap-5 items-center md:items-start'>
+          <h1 className='text-white text-wrap text-2xl font-[700] md:font-bold text-center md:text-left md:text-7xl md:w-[44rem]'>Make your travel whishlist, we’ll do the rest</h1>
+          <h2 className='text-white text-wrap w-[24rem] md:w-[51rem] text-lg md:text-xl text-center md:text-left'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</h2>
         </Container>
       </div>
     </div>

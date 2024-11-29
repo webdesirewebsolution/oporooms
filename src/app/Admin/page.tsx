@@ -29,6 +29,8 @@ const Home = () => {
     (async () => {
       setLoading(true)
 
+      console.log({ user })
+
       if (user.userRole !== '') {
         const searchParams: { [key: string]: string } = {}
 
@@ -38,11 +40,11 @@ const Home = () => {
             break;
 
           case 'HR':
-            searchParams['companyId'] = user.companyId as string;
+            searchParams['userDetails.companyId'] = user.companyId as string;
             break;
 
           case 'HotelOwner':
-            searchParams['hotelOwnerId'] = user?._id as string;
+            searchParams['details.hotelOwnerId'] = user?._id as string;
             searchParams['bookingStatus'] = 'approved';
             break;
         }

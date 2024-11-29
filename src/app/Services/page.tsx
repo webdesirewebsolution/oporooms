@@ -3,9 +3,7 @@ import Header from '@/Components/Header'
 import ServicesComp from '@/Components/ServicesComp'
 import React from 'react'
 
-type Props = {}
-
-const Services = (props: Props) => {
+const Services = () => {
   return (
     <>
     <Header />

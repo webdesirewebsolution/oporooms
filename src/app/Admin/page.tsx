@@ -44,7 +44,7 @@ const Home = () => {
             break;
 
           case 'HotelOwner':
-            searchParams['details.hotelOwnerId'] = user?._id as string;
+            searchParams['hotelOwnerId'] = user?._id as string;
             searchParams['bookingStatus'] = 'approved';
             break;
         }

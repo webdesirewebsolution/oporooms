@@ -1,12 +1,10 @@
 'use client'
 
 import { getUser } from "@/app/actions";
-import { auth } from "@/auth";
 import { Bookings } from "@/Types/Booking";
 import { ContextType } from "@/Types/context";
 import { User } from "@/Types/Profile";
 import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 const initialData: ContextType = {

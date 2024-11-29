@@ -24,7 +24,7 @@ const Header = async ({ children }: Props) => {
 
                 <div className='flex gap-8 items-center'>
                     <p className='border-2 border-slate-300 px-3 py-2 rounded-xl text-lg text-slate-600'>
-                        Role: {user?.userRole}
+                        {user?.userRole}
                     </p>
 
                     <Button className='bg-red-500 text-white text-lg' onClick={async () => {

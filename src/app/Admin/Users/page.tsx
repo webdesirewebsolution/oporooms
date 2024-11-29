@@ -7,7 +7,7 @@ import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import Image from 'next/image'
 import moment from 'moment'
 import { Context } from '@/Context/context'
-import { User } from '@/Types/Profile'
+import { User, UserAction } from '@/Types/Profile'
 import { Avatar, Button, Paper } from '@mui/material'
 import Modal from '@/Components/Modal'
 import AddUser from '../Components/AddUser'
@@ -44,7 +44,7 @@ const Users = () => {
 
                 const params = new URLSearchParams(searchParams).toString();
 
-                await axios.get(`/api/Users?page=${filter.page * 10 }&pageSize=${filter?.pageSize}&${params}`).then(r => {
+                await axios.get(`/api/Users?page=${filter.page * 10}&pageSize=${filter?.pageSize}&${params}`).then(r => {
                     if (r.status == 200) {
                         setData(r.data?.list)
                         setCount(r.data?.count)
@@ -55,17 +55,18 @@ const Users = () => {
     }, [filter, user])
 
 
-    const columns: TypeSafeColDef<User>[] = [
+    const columns: TypeSafeColDef<UserAction>[] = [
         { id: 0, field: '_id', headerName: 'Id' },
-        { id: 0, field: 'userRole', headerName: 'User Role' },
-        { id: 1, field: 'photo', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
-        { id: 2, field: 'fullname', headerName: 'Name', },
+        { id: 1, field: 'userRole', headerName: 'User Role' },
+        { id: 2, field: 'photo', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
+        { id: 3, field: 'fullname', headerName: 'Name', },
         { id: 4, field: 'email', headerName: 'Email' },
-        { id: 4, field: 'gender', headerName: 'Gender' },
-        { id: 4, field: 'username', headerName: 'Username' },
-        { id: 4, field: 'contact1', headerName: 'Contact1' },
-        { id: 4, field: 'contact2', headerName: 'Contact2' },
-        { id: 3, field: 'dob', headerName: 'Date', valueGetter: (value) => moment(value).format('Do, MMMM, YYYY') },
+        { id: 5, field: 'gender', headerName: 'Gender' },
+        { id: 6, field: 'username', headerName: 'Username' },
+        { id: 7, field: 'contact1', headerName: 'Contact1' },
+        { id: 8, field: 'contact2', headerName: 'Contact2' },
+        { id: 9, field: 'dob', headerName: 'Date', valueGetter: (value) => moment(value).format('Do, MMMM, YYYY') },
+        { id: 10, field: 'actions', headerName: 'Action', renderCell: (params) => <Action params={params} /> },
     ]
 
     columns.forEach((item) => {
@@ -119,6 +120,21 @@ const Photos = ({ params }: { params: GridRenderCellParams }) => {
                 {params?.row?.photo &&
                     <Image src={params?.row?.photo} className='object-cover' alt={params?.row?.fullname} fill />}
             </Avatar>
+        </div>
+    )
+}
+
+const Action = ({ params }: { params: GridRenderCellParams }) => {
+    const [showEdit, setShowEdit] = useState(false)
+    return (
+        <div>
+            <Button onClick={() => setShowEdit(true)}>
+                Edit User
+            </Button>
+
+            <Modal open={showEdit} setOpen={setShowEdit}>
+                <AddUser userData={params?.row} setShowModal={setShowEdit} isEdit={true} />
+            </Modal>
         </div>
     )
 }

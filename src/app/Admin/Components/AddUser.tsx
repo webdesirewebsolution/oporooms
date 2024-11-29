@@ -123,7 +123,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
     const url = value?.photo instanceof File ? URL.createObjectURL(value?.photo) : value?.photo
     const userRole: User['userRole'][] = []
 
-    switch (userData.userRole) {
+    switch (userData?.userRole) {
         case 'CADMIN':
             userRole.push('EMPLOYEE', 'HR')
             break;
@@ -131,13 +131,11 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
         case 'HR':
             userRole.push('EMPLOYEE')
             break;
-    
+
         default:
             userRole.push('CADMIN', 'HotelOwner', /* 'EMPLOYEE', 'HR',  */)
             break;
     }
-
-    console.log(userRole)
 
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
@@ -150,7 +148,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
             }
             } />
 
-            {value.photo instanceof File &&
+            {url &&
                 <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
 
             <Input disabled={loading} label='Full Name' placeholder='Enter Full Number' value={value.fullname} setValue={e => setValue(prev => ({ ...prev, fullname: e }))} required />
@@ -159,7 +157,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
 
             <Input disabled={loading} label='Username' placeholder='Enter Username' value={value.username} setValue={e => setValue(prev => ({ ...prev, username: e }))} required />
 
-            <Input disabled={loading} label='Password' placeholder='Enter Password' value={value.password} setValue={e => setValue(prev => ({ ...prev, password: e }))} type='password' required />
+            {!isEdit && <Input disabled={loading} label='Password' placeholder='Enter Password' value={value.password} setValue={e => setValue(prev => ({ ...prev, password: e }))} type='password' required />}
 
             <Input disabled={loading} type='number' maxLength={13} minLength={10} label='CountryCode' placeholder='Enter Country Code' value={value.countryCode} setValue={e => setValue(prev => ({ ...prev, countryCode: e }))} required />
 
@@ -171,7 +169,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
 
             <Input disabled={loading} label='Address' placeholder='Enter Address' value={value.address} setValue={e => setValue(prev => ({ ...prev, address: e }))} required />
 
-            <div className='flex flex-col gap-2'>
+            {!isEdit && <div className='flex flex-col gap-2'>
                 <p className='text-xl'>Select User Type</p>
                 <Select
                     isDisabled={loading}
@@ -180,7 +178,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                     value={{ label: value.userRole, value: value.userRole }}
                     onChange={(e) => e && setValue(prev => ({ ...prev, userRole: e?.value as User['userRole'] }))}
                     required />
-            </div>
+            </div>}
 
             <div className='flex flex-col gap-2'>
                 <p className='text-xl'>Select Gender</p>

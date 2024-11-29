@@ -64,6 +64,7 @@ const Home = () => {
 
   const columns: TypeSafeColDef<BookingFields>[] = [
     { id: 0, field: '_id', headerName: 'Id' },
+    { id: 0, field: 'bookingUid', headerName: 'Booking UID' },
     // { id: 1, field: 'photos', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
     { id: 1, field: 'bookingDate', headerName: 'Date', valueGetter: (value) => moment(value).format('Do, MMMM, YYYY') },
     { id: 2, field: 'bookingType', headerName: 'Type', },

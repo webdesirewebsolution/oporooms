@@ -19,3 +19,7 @@ export interface User {
     hrId?: string | null,
     password?: string
 }
+
+export interface UserAction extends User {
+    actions: string
+}

@@ -30,6 +30,7 @@ const SignIn = () => {
                     label='Password'
                     disabled={isPending}
                     name='password'
+                    type='password'
                     id='password'
                     placeholder="Password"
                     required

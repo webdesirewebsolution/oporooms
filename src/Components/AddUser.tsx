@@ -1,6 +1,5 @@
 'use client'
 
-import Input from '@/Components/Input'
 import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { User } from '@/Types/Profile'

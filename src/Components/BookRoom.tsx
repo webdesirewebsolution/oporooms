@@ -69,7 +69,7 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
 
     return (
         <div>
-            <Button className='bg-red-500 text-white py-5 px-20' size='large' onClick={() => {
+            <Button className='bg-[rgba(26,182,79,1)] text-white py-5 px-20' size='large' onClick={() => {
                 handleSubmit()
             }}>Book Now</Button>
         </div>

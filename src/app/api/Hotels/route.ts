@@ -32,10 +32,10 @@ export async function GET(req: NextRequest) {
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = ObjectId.createFromHexString(values)
-        } else 
-        if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize') {
-            searchKeys[keys] = values
-        }
+        } else
+            if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize') {
+                searchKeys[keys] = new RegExp(values, 'i')
+            }
     }
 
     try {
@@ -44,6 +44,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ list, count }, { status: 200 });
 
     } catch (error) {
+        console.log(error)
         return NextResponse.json({ error }, { status: 400, statusText: 'Something error' });
     }
 }

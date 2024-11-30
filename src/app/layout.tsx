@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import ContextProvider from "@/Context/context";
 import { Session } from "next-auth";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,11 +34,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <script id="GoogleMaps" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U&libraries=places&loading=async&callback=initMap" async defer>
-      </script>
 
-      {/* <Script id="GoogleMaps" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U&libraries=places&loading=async&callback=initMap" async defer>
-      </Script> */}
+      <Script defer async id='GoogleMaps' strategy='lazyOnload'
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U&loading=async&libraries=places&callback=initMap">
+      </Script>
 
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

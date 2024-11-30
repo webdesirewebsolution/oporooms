@@ -30,6 +30,7 @@
     "lucide-react": "^0.462.0",
     "moment": "^2.30.1",
     "mongodb": "^6.11.0",
+    "mui-tel-input": "^7.0.0",
     "next": "15.0.3",
     "next-auth": "^5.0.0-beta.25",
     "nodemailer": "^6.9.16",

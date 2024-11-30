@@ -4,12 +4,12 @@ import Input from '@/Components/Input'
 import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { User } from '@/Types/Profile'
-import { Button, CircularProgress } from '@mui/material'
+import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import axios from 'axios'
 import moment from 'moment'
+import { MuiTelInput } from 'mui-tel-input'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import Select from 'react-select'
 
 type Props = {
     userData: User,
@@ -138,61 +138,103 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+        <>
 
-            {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
+            <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
 
-            <Upload disabled={loading} multiple={false} label='Upload File' setValue={files => {
-                console.log({ files })
-                setValue(prev => ({ ...prev, photo: files?.[0] }))
-            }
-            } />
+                {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
 
-            {url &&
-                <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
+                <Upload disabled={loading} multiple={false} label='Upload File' setValue={files => {
+                    setValue(prev => ({ ...prev, photo: files?.[0] }))
+                }} />
 
-            <Input disabled={loading} label='Full Name' placeholder='Enter Full Number' value={value.fullname} setValue={e => setValue(prev => ({ ...prev, fullname: e }))} required />
+                {value.photo instanceof File &&
+                    <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
 
-            <Input type='email' disabled={loading} label='Email' placeholder='Enter Email' value={value.email} setValue={e => setValue(prev => ({ ...prev, email: e }))} required />
+                <TextField id="outlined-basic" label="Full Name" variant="outlined"
+                    value={value.fullname}
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, fullname: e.target.value }))}
+                    required
+                />
 
-            <Input disabled={loading} label='Username' placeholder='Enter Username' value={value.username} setValue={e => setValue(prev => ({ ...prev, username: e }))} required />
+                <TextField id="outlined-basic" label="Email" variant="outlined"
+                    value={value.email}
+                    type='email'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, email: e.target.value }))}
+                    required
+                />
 
-            {!isEdit && <Input disabled={loading} label='Password' placeholder='Enter Password' value={value.password} setValue={e => setValue(prev => ({ ...prev, password: e }))} type='password' required />}
+                {!isEdit && <TextField id="outlined-basic" label="Password" variant="outlined"
+                    value={value.password}
+                    type='password'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                />}
 
-            <Input disabled={loading} type='number' maxLength={13} minLength={10} label='CountryCode' placeholder='Enter Country Code' value={value.countryCode} setValue={e => setValue(prev => ({ ...prev, countryCode: e }))} required />
+                <MuiTelInput
+                    label='Primary Contact'
+                    defaultCountry='IN'
+                    className='*:text-xl'
+                    value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} />
 
-            <Input disabled={loading} type='number' maxLength={13} minLength={10} label='Primary Contact' placeholder='Enter Primary Contact' value={value.contact1} setValue={e => setValue(prev => ({ ...prev, contact1: e }))} required />
+                <TextField id="outlined-basic" label="DOB" variant="outlined"
+                    value={moment(value.dob).format('YYYY-MM-DD')}
+                    type='date'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, dob: moment(e.target.value) }))}
+                    required
+                />
 
-            <Input disabled={loading} type='number' maxLength={13} minLength={10} label='Alternative Contact' placeholder='Enter Alternative Contact' value={value.contact2} setValue={e => setValue(prev => ({ ...prev, contact2: e }))} />
+                <TextField id="outlined-basic" label="Address" variant="outlined"
+                    value={value.address}
+                    multiline
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, address: e.target.value }))}
+                    required
+                />
 
-            <Input disabled={loading} type='date' label='Dob' placeholder='Enter Date of birth' value={moment(value.dob).format('YYYY-MM-DD')} setValue={e => setValue(prev => ({ ...prev, dob: moment(e) }))} required />
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label" className='text-2xl'>Select Gender</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        disabled={loading}
+                        className='*:text-xl'
+                        label='Select Gender'
+                        value={value.gender}
+                        onChange={(e) => e && setValue(prev => ({ ...prev, gender: e.target.value as User['gender'] }))}
+                        required >
+                        <MenuItem value='Male' className='text-xl'>Male</MenuItem>
+                        <MenuItem value='Female' className='text-xl'>Female</MenuItem>
+                        <MenuItem value='Others' className='text-xl'>Others</MenuItem>
+                    </Select>
+                </FormControl>
 
-            <Input disabled={loading} label='Address' placeholder='Enter Address' value={value.address} setValue={e => setValue(prev => ({ ...prev, address: e }))} required />
+                {!isEdit && <FormControl fullWidth>
+                    <InputLabel id="user-role-label" className='text-2xl'>Select User Role</InputLabel>
+                    <Select
+                        labelId="user-role-label"
+                        id="user-role-input"
+                        disabled={loading}
+                        className='*:text-xl'
+                        label='Select User Role'
+                        value={value.userRole}
+                        onChange={(e) => e && setValue(prev => ({ ...prev, userRole: e.target.value as User['userRole'] }))}
+                        required >
+                        {userRole?.map((item) => (
+                            <MenuItem key={item} value={item} className='text-xl'>{item}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>}
 
-            {!isEdit && <div className='flex flex-col gap-2'>
-                <p className='text-xl'>Select User Type</p>
-                <Select
-                    isDisabled={loading}
-                    defaultValue={{ label: 'Select User Type', value: 'Select User Type' }}
-                    options={userRole?.map((item) => ({ label: item, value: item }))}
-                    value={{ label: value.userRole, value: value.userRole }}
-                    onChange={(e) => e && setValue(prev => ({ ...prev, userRole: e?.value as User['userRole'] }))}
-                    required />
-            </div>}
+                <Button type='submit' className='bg-blue-500 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit User' : 'Add User')}</Button>
 
-            <div className='flex flex-col gap-2'>
-                <p className='text-xl'>Select Gender</p>
-                <Select
-                    isDisabled={loading}
-                    defaultValue={{ label: 'Select Gender', value: 'Select Gender' }}
-                    options={['Male', 'Female', 'Others']?.map((item) => ({ label: item, value: item }))}
-                    value={{ label: value.gender, value: value.gender }}
-                    onChange={(e) => e && setValue(prev => ({ ...prev, gender: e?.value as User['gender'] }))}
-                    required />
-            </div>
+            </form>
 
-            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit User' : 'Add User')}</Button>
-        </form>
+        </>
     )
 }
 

@@ -2,7 +2,7 @@ import { Moment } from "moment";
 
 export interface User {
     _id?: string,
-    username: string,
+    username?: string,
     userRole: 'SADMIN' | 'CADMIN' | 'HR' | 'EMPLOYEE' | 'HotelOwner' | 'USER' | '',
     email: string,
     photo?: File | string,

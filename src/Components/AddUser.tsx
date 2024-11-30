@@ -112,7 +112,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                 setValue(prev => ({ ...prev, photo: files?.[0] }))
             }} />
 
-            {value.photo instanceof File &&
+            {url &&
                 <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
 
             <TextField id="outlined-basic" label="Full Name" variant="outlined"

@@ -1,17 +1,15 @@
 'use client'
 
 import { Button, Skeleton } from '@mui/material'
-import React, { FormEvent, useContext, useState } from 'react'
+import React, { FormEvent, useState } from 'react'
 import Modal from '@/Components/Modal'
 import Input from './Input'
-import { signIn, signOut, useSession } from 'next-auth/react'
-import { Context } from '@/Context/context'
+import { signIn, useSession } from 'next-auth/react'
 import axios from 'axios'
 import AddUser from './AddUser'
 
 const AuthButtons = () => {
     const { status } = useSession()
-    const { user } = useContext(Context)
     const [modal, setModal] = useState<'SignIn' | 'Register' | ''>('')
 
 
@@ -23,25 +21,7 @@ const AuthButtons = () => {
             </div>
         )
     }
-
-    if (status == 'authenticated' && (user.userRole == 'USER' || user.userRole == 'EMPLOYEE')) {
-        return (
-            <div>
-                <Button className='bg-red-500 text-white font-bold' onClick={async () => await signOut()}>
-                    Sign Out
-                </Button>
-            </div>
-        )
-    } else if (status == 'authenticated' && user.userRole !== '') {
-        return (
-            <div className='flex gap-5 items-center'>
-                <p className='text-lg'>Your are logged in as Admin</p>
-                <Button className='bg-red-500 text-white font-bold' onClick={async () => await signOut()}>
-                    Sign Out
-                </Button>
-            </div>
-        )
-    } else if (status == 'unauthenticated') {
+    else if (status == 'unauthenticated') {
         return (
             <>
                 <div className='flex gap-5'>

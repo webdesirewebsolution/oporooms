@@ -4,7 +4,9 @@ import Header from '@/Components/Header'
 import { HotelTypes } from '@/Types/Hotels';
 import { Container } from '@mui/material';
 import axios from 'axios'
+import moment from 'moment';
 import { Params } from 'next/dist/server/request/params';
+import { SearchParams } from 'next/dist/server/request/search-params';
 import Image from 'next/image';
 import React from 'react'
 import { FaStar } from 'react-icons/fa6';
@@ -12,11 +14,21 @@ import { IoLocationSharp } from "react-icons/io5";
 
 type Props = {
     params: Promise<Params>,
+    searchParams: Promise<SearchParams>
 }
 
-const Hotel = async ({ params }: Props) => {
+const Hotel = async ({ params, searchParams }: Props) => {
     const slug = await params
+    const query = await searchParams
     const data = slug?.slug ? await axios.get(`${process.env.SERVERURL}/api/Hotels?_id=${slug?.slug}`) : { status: 0, data: [] }
+
+    const rooms = query?.rooms ? Number(query?.rooms) : 0
+    const adults = query?.adults ? Number(query?.adults) : 0
+    const childrens = query?.childrens ? Number(query?.childrens) : 0
+    const checkIn = query?.checkIn && Number(query.checkIn)
+    const checkOut = query?.checkOut && Number(query.checkOut)
+    const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 0
+
 
     if (data.status == 200) {
         const item: HotelTypes = data?.data?.list?.[0]
@@ -45,17 +57,19 @@ const Hotel = async ({ params }: Props) => {
                     </div>
 
                     <Container className='flex flex-col py-10 gap-5'>
-                        <h1 className='text-3xl lg:text-6xl font-semibold'>{item?.name}</h1>
-                        <div className='flex gap-2 items-center'>
-                            {Array(5).fill(2)?.map((star, i) => (
-                                <FaStar key={i} color="orange" />
-                            ))}
-                            <p className='text-slate-700 text-xl mt-1'>4.5 (1200 Reviews)</p>
-                        </div>
-                        <div className='text-slate-800 flex gap-1 items-center'><IoLocationSharp /> {item?.address?.City || 'Goa, India'}</div>
 
-                        <div className='flex flex-col lg:flex-row gap-10 justify-between w-full my-10'>
+                        <div className='flex flex-col lg:flex-row gap-10 justify-between w-full'>
                             <div className='flex flex-col lg:ml-5 lg:flex-[.6] gap-5'>
+                                <h1 className='text-3xl lg:text-6xl font-semibold'>{item?.name}</h1>
+                                <div className='flex gap-2 items-center'>
+                                    {Array(5).fill(2)?.map((star, i) => (
+                                        <FaStar key={i} color="orange" />
+                                    ))}
+                                    <p className='text-slate-700 text-xl mt-1'>4.5 (1200 Reviews)</p>
+                                </div>
+                                <div className='text-slate-800 flex gap-1 items-center'>
+                                    <IoLocationSharp /> {item?.address?.City}
+                                </div>
                                 <h2 className='font-semibold'>Overview</h2>
                                 <p>Radisson Collection is a unique collection of iconic properties. While the character of each hotel feels authentic to its locality, all offer the ultimate template for contemporary living; united by bespoke design and exceptional experiences across dining, fitness, wellness and sustainability.
 
@@ -64,15 +78,36 @@ const Hotel = async ({ params }: Props) => {
                             </div>
 
                             <div className='flex flex-col flex-[.3] gap-5'>
-                                <h2 className='font-semibold'>Top Facilities</h2>
-                                <ul className='grid grid-cols-2 gap-5'>
-                                    {item?.amenities?.map((am) => (
-                                        <li key={am} className='text-slate-700'>
-                                            {am}
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className='shadow bg-white p-10 flex flex-col gap-4'>
+                                    <p className='font-semibold'>Your booking details</p>
+                                    <div className='flex'>
+                                        <div className='pr-10 border-r-2'>
+                                            <p className='text-lg'>Check-in</p>
+                                            <p className='text-xl font-semibold'>
+                                                {checkIn && moment(checkIn)?.format('ddd, Do MMM YYYY')}
+                                            </p>
+                                        </div>
+                                        <div className='pl-10'>
+                                            <p className='text-lg'>Check-out</p>
+                                            <p className='text-xl font-semibold'>
+                                                {checkOut && moment(checkOut)?.format('ddd, Do MMM YYYY')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p className='text-lg'>
+                                        {totalDays} day{totalDays > 1 && 's'}, {rooms} room{rooms > 1 && 's'}, {adults} adult{adults > 1 && 's'} {childrens > 0 && `, ${childrens} children${childrens > 1 && 's'}`}
+                                    </p>
+                                </div>
                             </div>
+                        </div>
+
+                        <h2 className='text-4xl font-semibold'>Amenities</h2>
+                        <div className='flex flex-wrap gap-10'>
+                            {item?.amenities?.map((am) => (
+                                <div key={am} className='bg-white px-10 py-4 text-lg rounded-lg'>
+                                    {am}
+                                </div>
+                            ))}
                         </div>
 
 
@@ -87,39 +122,41 @@ const Hotel = async ({ params }: Props) => {
 
 const Rooms = ({ hotelData, item }: { hotelData: HotelTypes, item: HotelTypes['rooms'] }) => {
     return (
-        <div className='flex flex-col gap-10 scroll-mt-10' id='rooms'>
-            {item?.map((room) => {
-                return (
-                    <div key={room.type} className='border flex flex-col md:flex-row shadow-lg bg-white'>
-                        <div className='flex flex-col gap-5 p-10'>
-                            <div className='w-full lg:w-[35rem] aspect-video max-w-full relative rounded-xl'>
+        <div className='mt-10'>
+            <h2 className='text-4xl font-semibold mb-5'>Rooms</h2>
+            <div className='flex flex-col gap-10' id='rooms'>
+                {item?.map((room) => {
+                    return (
+                        <div key={room.type} className='border flex flex-col md:flex-row shadow-lg bg-white overflow-hidden rounded-lg'>
+                            <div className='w-full md:w-[35rem] aspect-video max-w-full relative rounded-xl'>
                                 <Image src={room?.photos?.[0]} alt='' fill objectFit='cover' />
                             </div>
-                            <p className='text-2xl font-semibold'>{room.type}</p>
-                            <ul className='grid grid-cols-2 list-disc list-inside gap-x-10'>
-                                {room?.amenities?.map((amenity) => (
-                                    <li key={amenity} className='text-xl text-slate-600'>{amenity}</li>
-                                ))}
-                            </ul>
-                        </div>
 
-                        <div className='flex flex-col flex-1 border-t sm:border-l sm:border-t-0'>
 
-                            <div className='flex flex-col sm:flex-row p-10 flex-1 justify-between'>
-                                <div className='flex flex-col flex-1'>
-                                    <p className='font-bold text-3xl'>Room Only</p>
+                            <div className='flex flex-col lg:flex-row p-10 flex-1 justify-between'>
+                                <div className='flex flex-col flex-1 gap-3'>
+                                    <p className='font-bold text-3xl'>{room?.type}</p>
+                                    <p className='text-lg'>Radisson Collection is a unique collection of iconic properties. While the character of each hotel feels authentic to its locality, all offer the ultimate template for contemporary living; united by bespoke design and exceptional experiences across dining, fitness, wellness and sustainability.</p>
+                                    <ul className='flex gap-x-3'>
+                                        {room?.amenities?.slice(0, 3)?.map((amenity) => (
+                                            <li key={amenity} className='text-[1rem] text-slate-600 shadow bg-white px-4 py-1'>{amenity}</li>
+                                        ))}
+                                    </ul>
                                 </div>
-                                <div className='flex flex-col flex-1 gap-2'>
-                                    <p className='text-4xl font-bold'>Rs.{room?.price}</p>
-                                    <p className='text-xl mb-10'>+ Rs.{room?.fee} taxes & fees</p>
-                                    <BookRoom hotelData={hotelData} roomData={room} />
+                                <div className='flex flex-col-reverse lg:flex-col flex-1 gap-5 md:gap-0 lg:items-end justify-between mt-10 lg:mt-0'>
+                                    <div>
+                                        <BookRoom hotelData={hotelData} roomData={room} />
+                                    </div>
+                                    <div className='flex flex-col lg:items-end'>
+                                        <p className='text-4xl font-bold text-green-400'>&#8377;{room?.price}</p>
+                                        <p className='text-xl'>+ &#8377;{room?.fee} taxes & fees</p>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
-                    </div>
-                )
-            })}
+                    )
+                })}
+            </div>
         </div>
     )
 }

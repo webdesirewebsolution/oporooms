@@ -72,7 +72,7 @@ type SearchProps = {
 const initialData: SearchProps = {
     city: 'Goa, India',
     checkIn: moment(new Date()),
-    checkOut: moment(new Date()),
+    checkOut: moment(new Date()).add(1, 'days'),
     rooms: 1,
     guests: {
         adults: 2,
@@ -101,10 +101,10 @@ const HotelSearchBox = ({ }) => {
                                 control: () => 'py-[0.7rem] mt-1'
                             }
                         }}
-                        apiOptions={{
-                            id: 'GoogleMaps',
-                            apiKey: 'AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U'
-                        }}
+                        // apiOptions={{
+                        //     id: 'GoogleMaps',
+                        //     apiKey: 'AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U'
+                        // }}
                         apiKey="AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U"
 
                     />
@@ -116,7 +116,7 @@ const HotelSearchBox = ({ }) => {
                     className='bg-transparent'
                     value={moment(value.checkIn).format('YYYY-MM-DD')}
                     onChange={(e) => {
-                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value) }))
+                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value).add(1, 'days') }))
                     }}
                 />
 
@@ -124,7 +124,7 @@ const HotelSearchBox = ({ }) => {
                     placeholder="CHECK-OUT"
                     type='date'
                     className='bg-transparent'
-                    min={moment(value.checkIn).format('YYYY-MM-DD')}
+                    min={moment(value.checkIn).add(1, 'days').format('YYYY-MM-DD')}
                     value={moment(value.checkOut).format('YYYY-MM-DD')}
                     onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
                 />

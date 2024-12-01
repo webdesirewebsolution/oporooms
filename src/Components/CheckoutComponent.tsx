@@ -64,8 +64,11 @@ const FillingDetails = () => {
 }
 
 const Details = () => {
+    const { bookingData } = useContext(Context)
     return (
-        <div></div>
+        <div>
+            
+        </div>
     )
 }
 

@@ -27,7 +27,7 @@ const SearchHotel = ({ }) => {
     const [value, setValue] = useState<SearchProps>({
         city: 'Goa, India',
         checkIn: moment(new Date(Number(searchParams.get('checkIn')))),
-        checkOut: moment(new Date(Number(searchParams.get('checkOut')))),
+        checkOut: moment(new Date(Number(searchParams.get('checkOut')))).add(1, 'days'),
         rooms: Number(searchParams.get('rooms')) || 1,
         guests: {
             adults: Number(searchParams.get('adults')) || 2,
@@ -67,7 +67,7 @@ const SearchHotel = ({ }) => {
                     className='bg-gray-50 border-gray-100 rounded-lg'
                     value={moment(value.checkIn).format('YYYY-MM-DD')}
                     onChange={(e) => {
-                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value) }))
+                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value).add(1, 'days') }))
                     }}
                 />
 
@@ -75,7 +75,7 @@ const SearchHotel = ({ }) => {
                     placeholder="CHECK-OUT"
                     type='date'
                     className='bg-gray-50 border-gray-100 rounded-lg'
-                    min={moment(value.checkIn).format('YYYY-MM-DD')}
+                    min={moment(value.checkIn).add(1, 'days').format('YYYY-MM-DD')}
                     value={moment(value.checkOut).format('YYYY-MM-DD')}
                     onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
                 />

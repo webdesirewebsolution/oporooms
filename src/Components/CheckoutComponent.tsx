@@ -5,7 +5,7 @@ import { Bookings } from '@/Types/Booking';
 import { Button, Checkbox, CircularProgress } from '@mui/material';
 import axios from 'axios';
 import React, { useContext, useState } from 'react'
-import { IoCard, IoLocationSharp, IoShield } from "react-icons/io5";
+import { IoCard, IoLocationSharp } from "react-icons/io5";
 import Modal from './Modal';
 import Link from 'next/link';
 import Image from 'next/image';

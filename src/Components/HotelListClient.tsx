@@ -2,7 +2,7 @@
 'use client'
 
 import { HotelTypes } from '@/Types/Hotels'
-import { Button, CircularProgress, Container, Skeleton, TextField } from '@mui/material'
+import { Button, CircularProgress, Container, Skeleton } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
@@ -40,23 +40,22 @@ const HotelListClient = () => {
 
   useEffect(() => {
     (async () => {
-      isLoadMore ? null : setLoading(true)
-      let params = new URLSearchParams()
+      if(isLoadMore) setLoading(true)
+      const params = new URLSearchParams()
       params.set('page', String(filter.page * 10))
       params.set('pageSize', String(filter.pageSize))
 
-      typeof filter.hotelName !== 'undefined' && params.set('name', filter.hotelName)
-      filter.hotelName == '' && params.delete('name')
+      if (filter.hotelName !== undefined) params.set('name', filter.hotelName)
+      else if (filter.hotelName == '') params.delete('name')
 
       await axios.get(`/api/Hotels?${params.toString()}`).then(r => {
         if (r.status == 200) {
-          console.log(r.data?.list)
-          isLoadMore ? setData(prev => [...prev, ...r.data?.list]) : setData(r.data?.list)
+          if (isLoadMore) { setData(prev => [...prev, ...r.data?.list]) } else setData(r.data?.list)
           setCount(r.data?.count)
         }
       }).finally(() => { setLoading(false); setIsLoadMore(false) })
     })().finally(() => { setLoading(false); setIsLoadMore(false) })
-  }, [filter])
+  }, [filter, isLoadMore])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

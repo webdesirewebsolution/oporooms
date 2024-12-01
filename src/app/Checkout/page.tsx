@@ -1,4 +1,4 @@
-import CheckoutComponent, { CompleteBooking, Details, FillingDetails } from '@/Components/CheckoutComponent'
+import { CompleteBooking, Details, FillingDetails } from '@/Components/CheckoutComponent'
 import Footer from '@/Components/Footer'
 import Header from '@/Components/Header'
 import { Container } from '@mui/material'

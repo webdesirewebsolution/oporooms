@@ -3,11 +3,9 @@
 import { Button, CircularProgress, Skeleton, TextField } from '@mui/material'
 import React, { FormEvent, useState } from 'react'
 import Modal from '@/Components/Modal'
-import Input from './Input'
 import { signIn, useSession } from 'next-auth/react'
 import axios from 'axios'
 import AddUser from './AddUser'
-import debounce from 'lodash.debounce'
 
 const AuthButtons = () => {
     const { status } = useSession()
@@ -78,7 +76,7 @@ const SignIn = () => {
                 } else {
                     setMessage('Email or password are incorrect')
                 }
-            }).catch(err => {
+            }).catch(() => {
                 setMessage('Email or password are incorrect')
             }).finally(() => setIsLoading(false))
         } else {

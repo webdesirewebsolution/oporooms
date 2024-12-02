@@ -1,5 +1,5 @@
 "use server";
-var nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 type Params = {
     email: string,
@@ -8,7 +8,7 @@ type Params = {
 }
 
 const handleMail = async ({ email, html, sub }: Params) => {
-    var transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
             user: process.env.NODEMAILER_EMAIL,
@@ -16,7 +16,7 @@ const handleMail = async ({ email, html, sub }: Params) => {
         },
     });
 
-    var mailOptions = {
+    const mailOptions = {
         from: "d21350180@gmail.com",
         to: email,
         subject: sub || "Mail",
@@ -24,7 +24,7 @@ const handleMail = async ({ email, html, sub }: Params) => {
     };
 
     await new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (err: string, response: string) => {
+        transporter.sendMail(mailOptions, (err, response) => {
             if (err) {
                 reject(err);
             } else {

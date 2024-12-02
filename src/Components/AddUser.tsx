@@ -9,6 +9,10 @@ import moment from 'moment'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { MuiTelInput } from 'mui-tel-input'
+import { useRouter } from 'next/navigation'
+import handleMail from '@/app/api/mail'
+import generateCode from '@/Functions/generateCode'
+import OtpInput from 'react-otp-input';
 
 type Props = {
     userData?: User,
@@ -36,9 +40,13 @@ const initialData: User = {
 }
 
 const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
+    const router = useRouter()
     const [value, setValue] = useState(initialData)
     const [loading, setLoading] = useState(false)
     const [msg, setMsg] = useState('')
+    const [isOtpSent, setIsOtpSent] = useState(false)
+    const [otpSent, setOtpSent] = useState('')
+    const [code, setCode] = useState('')
 
     useEffect(() => {
         if (isEdit) {
@@ -49,7 +57,11 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (value?.email !== '') {
+        if (otpSent != code) {
+            setMsg('Otp is incorrect')
+        }
+
+        else if (value?.email !== '') {
             setLoading(true)
 
             let image: string = ''
@@ -62,22 +74,19 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                 image = value.photo as string
             }
 
-            try {
-                if (isEdit) {
-
-                    const formData: User = {
-                        ...value,
-                        photo: image,
-
+            if (isEdit) {
+                const formData: User = {
+                    ...value,
+                    photo: image,
+                }
+                await axios.put(`/api/User`, formData).then(r => {
+                    if (r.status == 200) {
+                        router.refresh()
+                        setShowModal(false)
                     }
-
-                    await axios.put(`/api/User`, formData).then(r => {
-                        if (r.status == 200) {
-                            setShowModal(false)
-                        }
-                    }).finally(() => setLoading(false))
-                } else {
-
+                }).finally(() => setLoading(false))
+            } else {
+                try {
                     const formData: User = {
                         ...value,
                         photo: image,
@@ -93,93 +102,128 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                         }
                     }).finally(() => setLoading(false))
                 }
-            } catch {
-                setLoading(false)
-                setMsg('User Already Exist')
+                catch {
+                    setLoading(false)
+                    setMsg('User Already Exist')
+                }
             }
 
         }
     }
 
+    const handleOtp = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (userData && value.email !== '' && value.email !== userData?.email) {
+            setLoading(true)
+            const randomCode = generateCode()
+            await handleMail({
+                html: `Otp: ${randomCode}`,
+                sub: 'Otp for changing email',
+                email: value.email
+            }).then(() => {
+                setOtpSent(randomCode)
+                setIsOtpSent(true)
+            }).finally(() => setLoading(false))
+        } else {
+            await handleSubmit(e)
+        }
+
+    }
+
     const url = value?.photo instanceof File ? URL.createObjectURL(value?.photo) : value?.photo
 
     return (
-        <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
+        <>{isOtpSent ?
+            <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
+                {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
+                <OtpInput
+                    value={code}
+                    onChange={setCode}
+                    numInputs={5}
+                    renderSeparator={<span></span>}
+                    containerStyle='flex gap-2'
+                    placeholder='*****'
+                    renderInput={(props) => <input {...props} className='border-2 h-16 w-14 border-slate-600' />}
+                />
 
-            {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
+                <Button type='submit' className='bg-blue-500 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit' : 'Register')}</Button>
+            </form> :
+            <form onSubmit={handleOtp} className='flex flex-col gap-10'>
 
-            <Upload disabled={loading} multiple={false} label='Upload File' setValue={files => {
-                setValue(prev => ({ ...prev, photo: files?.[0] }))
-            }} />
+                {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
 
-            {url &&
-                <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
+                {isEdit && <Upload disabled={loading} multiple={false} label='Upload File' setValue={files => {
+                    setValue(prev => ({ ...prev, photo: files?.[0] }))
+                }} />}
 
-            <TextField id="outlined-basic" label="Full Name" variant="outlined"
-                value={value.fullname}
-                className='*:text-xl'
-                onChange={e => setValue(prev => ({ ...prev, fullname: e.target.value }))}
-                required
-            />
+                {url &&
+                    <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
 
-            <TextField id="outlined-basic" label="Email" variant="outlined"
-                value={value.email}
-                type='email'
-                className='*:text-xl'
-                onChange={e => setValue(prev => ({ ...prev, email: e.target.value }))}
-                required
-            />
-
-            <TextField id="outlined-basic" label="Password" variant="outlined"
-                value={value.password}
-                type='password'
-                className='*:text-xl'
-                onChange={e => setValue(prev => ({ ...prev, password: e.target.value }))}
-                required
-            />
-
-            <MuiTelInput
-                label='Primary Contact'
-                defaultCountry='IN'
-                className='*:text-xl'
-                value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} />
-
-            <TextField id="outlined-basic" label="DOB" variant="outlined"
-                value={moment(value.dob).format('YYYY-MM-DD')}
-                type='date'
-                className='*:text-xl'
-                onChange={e => setValue(prev => ({ ...prev, dob: moment(e.target.value) }))}
-                required
-            />
-
-            <TextField id="outlined-basic" label="Address" variant="outlined"
-                value={value.address}
-                multiline
-                className='*:text-xl'
-                onChange={e => setValue(prev => ({ ...prev, address: e.target.value }))}
-                required
-            />
-
-            <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label" className='text-2xl'>Select Gender</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    disabled={loading}
+                <TextField id="outlined-basic" label="Full Name" variant="outlined"
+                    value={value.fullname}
                     className='*:text-xl'
-                    label='Select Gender'
-                    // options={['Male', 'Female', 'Others']?.map((item) => ({ label: item, value: item }))}
-                    value={value.gender}
-                    onChange={(e) => e && setValue(prev => ({ ...prev, gender: e.target.value as User['gender'] }))}
-                    required >
-                    <MenuItem value='Male' className='text-xl'>Male</MenuItem>
-                    <MenuItem value='Female' className='text-xl'>Female</MenuItem>
-                    <MenuItem value='Others' className='text-xl'>Others</MenuItem>
-                </Select>
-            </FormControl>
+                    onChange={e => setValue(prev => ({ ...prev, fullname: e.target.value }))}
+                    required
+                />
 
-            <Button type='submit' className='bg-blue-500 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : 'Register'}</Button>
-        </form>
+                <TextField id="outlined-basic" label="Email" variant="outlined"
+                    value={value.email}
+                    type='email'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, email: e.target.value }))}
+                    required
+                />
+
+                {!isEdit && <TextField id="outlined-basic" label="Password" variant="outlined"
+                    value={value.password}
+                    type='password'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                />}
+
+                <MuiTelInput
+                    label='Primary Contact'
+                    defaultCountry='IN'
+                    className='*:text-xl'
+                    value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} />
+
+                {isEdit && <TextField id="outlined-basic" label="DOB" variant="outlined"
+                    value={moment(value.dob).format('YYYY-MM-DD')}
+                    type='date'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, dob: moment(e.target.value) }))}
+                    required
+                />}
+
+                {isEdit && <TextField id="outlined-basic" label="Address" variant="outlined"
+                    value={value.address}
+                    multiline
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, address: e.target.value }))}
+                    required
+                />}
+
+                {isEdit && <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label" className='text-2xl'>Select Gender</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        disabled={loading}
+                        className='*:text-xl'
+                        label='Select Gender'
+                        value={value.gender}
+                        onChange={(e) => e && setValue(prev => ({ ...prev, gender: e.target.value as User['gender'] }))}
+                        required >
+                        <MenuItem value='Male' className='text-xl'>Male</MenuItem>
+                        <MenuItem value='Female' className='text-xl'>Female</MenuItem>
+                        <MenuItem value='Others' className='text-xl'>Others</MenuItem>
+                    </Select>
+                </FormControl>}
+
+                <Button type='submit' className='bg-blue-500 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit' : 'Register')}</Button>
+            </form>}
+        </>
     )
 }
 

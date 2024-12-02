@@ -37,6 +37,9 @@ const HeaderOption = ({ user }: Props) => {
                         <p className='text-lg text-slate-700'>{user.email}</p>
                     </div>
                 </div>
+                <Link href="/Profile" passHref>
+                    <Button className='w-full py-5'>Profile</Button>
+                </Link>
                 <Link href="/Bookings" passHref>
                     <Button className='w-full py-5'>My Bookings</Button>
                 </Link>

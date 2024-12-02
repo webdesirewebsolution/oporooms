@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
 
         } else if (findResult) {
             const isMatch = await bcrypt.compare(password, findPassword?.password)
+
             if (isMatch) {
                 /* Create JWT Payload */
                 const payload = {

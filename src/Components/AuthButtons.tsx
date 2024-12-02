@@ -1,12 +1,13 @@
 'use client'
 
-import { Button, Skeleton } from '@mui/material'
+import { Button, CircularProgress, Skeleton, TextField } from '@mui/material'
 import React, { FormEvent, useState } from 'react'
 import Modal from '@/Components/Modal'
 import Input from './Input'
 import { signIn, useSession } from 'next-auth/react'
 import axios from 'axios'
 import AddUser from './AddUser'
+import debounce from 'lodash.debounce'
 
 const AuthButtons = () => {
     const { status } = useSession()
@@ -57,13 +58,15 @@ const initialState = {
 const SignIn = () => {
     const [value, setValue] = useState(initialState)
     const [message, setMessage] = useState('')
-    console.log(message)
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
 
         if (value.email !== "" && value.password !== "") {
+            setIsLoading(true)
             await axios.get(`/api/login?email=${value.email}&password=${value.password}`).then(async (r) => {
+                console.log(r.data)
                 if (r.status == 200) {
                     await signIn('credentials', {
                         redirect: true,
@@ -73,9 +76,11 @@ const SignIn = () => {
 
                     setMessage('Logged In Successfully')
                 } else {
-                    setMessage('Network Error')
+                    setMessage('Email or password are incorrect')
                 }
-            })
+            }).catch(err => {
+                setMessage('Email or password are incorrect')
+            }).finally(() => setIsLoading(false))
         } else {
             setMessage('Please provide email and password')
         }
@@ -84,11 +89,31 @@ const SignIn = () => {
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
             <p className='text-3xl'>Sign In</p>
+            {message !== '' && <p className='text-red-500 text-lg'>{message}</p>}
             <div className='flex flex-col gap-5'>
-                <Input value={value.email} setValue={txt => setValue(prev => ({ ...prev, email: txt }))} label='Email' name='email' placeholder='Enter your email' />
-                <Input value={value.password} setValue={txt => setValue(prev => ({ ...prev, password: txt }))} label='Passsword' name='password' placeholder='Enter your password' type='password' />
+                <div className='w-full flex flex-col'>
+                    <TextField id="outlined-basic" label="Email" variant="outlined"
+                        value={value.email}
+                        type='email'
+                        className='*:text-xl'
+                        onChange={e => setValue(prev => ({ ...prev, email: e.target.value }))}
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+
+                <TextField id="outlined-basic" label="Password" variant="outlined"
+                    value={value.password}
+                    type='password'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                    disabled={isLoading}
+
+                />
             </div>
-            <Button className='bg-blue-500 text-white py-5 text-xl' size='large' type='submit'>Sign In</Button>
+
+            <Button disabled={isLoading} className={`${isLoading ? 'bg-blue-300' : 'bg-blue-500'} text-white py-5 text-xl`} size='large' type='submit'>{isLoading ? <CircularProgress size={15} color='inherit' /> : 'Sign In'}</Button>
         </form>
     )
 }

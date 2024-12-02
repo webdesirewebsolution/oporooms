@@ -52,3 +52,38 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error }, { status: 400, statusText: 'Something error' });
     }
 }
+
+export async function PUT(req: NextRequest) {
+    const body = await req.json();
+    const { _id, ...rest } =
+        body;
+
+    const data: { [key: string]: unknown } = {}
+
+    Object.entries(rest).forEach(item => {
+        if (ObjectId.isValid(item?.[1] as ObjectId) && String(item[1])?.length == 24 && typeof item[1] == 'string') {
+            data[item?.[0]] = ObjectId.createFromHexString(item?.[1] as string)
+        } else {
+            data[item?.[0]] = item?.[1]
+        }
+    })
+
+    try {
+        await myColl.updateOne(
+            { _id: ObjectId.createFromHexString(_id) },
+            {
+                $set: {
+                    ...data
+                },
+            }
+        );
+
+        return NextResponse.json({
+            msg: 'Success',
+        }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({
+            error
+        }, { status: 400 });
+    }
+}

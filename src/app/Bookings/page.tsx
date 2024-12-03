@@ -76,8 +76,8 @@ const Bookings = async () => {
                             }
 
                             return (
-                                <div className='flex flex-col'>
-                                    <div key={item?._id} className='bg-white p-6 rounded-md flex flex-col lg:flex-row gap-10 justify-between shadow-lg'>
+                                <div className='flex flex-col' key={item?._id}>
+                                    <div className='bg-white p-6 rounded-md flex flex-col lg:flex-row gap-10 justify-between shadow-lg'>
                                         <div className='flex flex-col lg:flex-row gap-10'>
                                             <div className='w-full lg:w-[35rem] aspect-video max-w-full relative rounded-xl'>
                                                 <Image src={item?.roomDetails?.roomData?.photos?.[0]} alt='' fill objectFit='cover' />

@@ -4,6 +4,7 @@ import Menu from './Menu'
 import { Button } from '@mui/material'
 import { auth, signOut } from '@/auth'
 import { Session } from 'next-auth'
+import HeaderOption from './HeaderOption'
 
 type Props = {
     children: React.ReactNode
@@ -27,10 +28,7 @@ const Header = async ({ children }: Props) => {
                         {user?.userRole}
                     </p>
 
-                    <Button className='bg-red-500 text-white text-lg' onClick={async () => {
-                        'use server'
-                        await signOut()
-                    }}>SignOut</Button>
+                    <HeaderOption user={user}/>
                 </div>
             </div>
 

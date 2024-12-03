@@ -21,7 +21,6 @@ const RatingComp = ({ user, hotelId, hotelOwnerId }: Props) => {
         (async () => {
             await axios.get(`/api/Ratings?user._id=${user?._id}&hotelId=${hotelId}`).then(r => {
                 if (r.status == 200) {
-                    console.log(Number(r.data[0]?.value))
                     setValue(Number(r.data[0]?.value))
                 }
             })
@@ -47,7 +46,7 @@ const RatingComp = ({ user, hotelId, hotelOwnerId }: Props) => {
     return (
         <div>
             <Rating name="half-rating" defaultValue={0} precision={0.5} value={value} onChange={(event, newValue) => {
-                newValue && (setValue(newValue), handleRating(newValue))
+                if (newValue) (setValue(newValue), handleRating(newValue))
             }} size='large' />
         </div>
     )

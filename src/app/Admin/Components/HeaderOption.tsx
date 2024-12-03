@@ -27,10 +27,10 @@ const HeaderOption = ({ user }: Props) => {
                 </div>
             </Button>
 
-            <div className={`${show ? 'flex' : 'hidden'} absolute flex-col shadow bg-white z-50 top-28 rounded-lg overflow-hidden`}>
+            <div className={`${show ? 'flex' : 'hidden'} absolute flex-col shadow bg-white z-50 top-28 rounded-lg overflow-hidden right-0`}>
                 <div className='flex p-5 gap-3 border-b-2'>
                     <Avatar className='size-14'>
-                        {user.photo && <Image src={user.photo as string} alt='User' fill objectFit='cover' />}
+                        {user.photo && <Image src={user.photo as string} alt='User' fill objectFit='cover'/>}
                     </Avatar>
                     <div className='flex flex-col'>
                         <p className='text-xl font-semibold capitalize'>{user.fullname}</p>
@@ -39,9 +39,6 @@ const HeaderOption = ({ user }: Props) => {
                 </div>
                 <Link href="/Profile" passHref>
                     <Button className='w-full py-5'>Profile</Button>
-                </Link>
-                <Link href="/Bookings" passHref>
-                    <Button className='w-full py-5'>My Bookings</Button>
                 </Link>
                 <Button className='w-full py-5' onClick={() => signOut()}>Sign Out</Button>
             </div>

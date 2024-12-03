@@ -30,7 +30,7 @@ const Profile = async () => {
                     <div className='flex gap-24'>
                         <div className='flex flex-col md:flex-row gap-8'>
                             <Avatar className='size-52 max-w-full aspect-square'>
-                                {user?.photo && <Image src={user.photo as string} alt='User' fill />}
+                                {user?.photo && <Image src={user.photo as string} alt='User' fill objectFit='cover'/>}
                             </Avatar>
                             <div className='pt-7 flex flex-col gap-2'>
                                 <h1 className='text-4xl font-semibold capitalize'>{user.fullname}</h1>

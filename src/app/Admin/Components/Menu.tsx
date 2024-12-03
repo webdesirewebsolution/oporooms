@@ -6,12 +6,13 @@ import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListI
 import { IoMdMenu } from 'react-icons/io'
 import { signOut } from '@/auth'
 import { User } from '../../../Types/Profile'
-import { MdHome } from "react-icons/md";
-import { FaUser } from "react-icons/fa6";
+import { MdBedroomParent, MdHome, MdPrivacyTip } from "react-icons/md";
+import { FaHotel, FaUser } from "react-icons/fa6";
 import { GrCurrency } from "react-icons/gr";
 import { FaUsers } from "react-icons/fa";
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { RiPagesLine } from "react-icons/ri";
 
 type Props = {
     user: User
@@ -48,7 +49,7 @@ const Menu = ({ user }: Props) => {
             as: '/Admin/Hotels',
             type: 'link',
             userRoles: ['SADMIN', 'HotelOwner'],
-            icon: FaUsers,
+            icon: FaHotel,
         },
         {
             title: 'Rooms',
@@ -56,13 +57,14 @@ const Menu = ({ user }: Props) => {
             as: '/Admin/Rooms',
             type: 'link',
             userRoles: ['SADMIN', 'HotelOwner'],
-            icon: FaUsers,
+            icon: MdBedroomParent,
         },
         {
             title: 'Transactions',
             link: '/Admin/Transactions',
             as: '/Admin/Transactions',
             type: 'link',
+            userRoles,
             icon: GrCurrency
         },
         {
@@ -79,7 +81,7 @@ const Menu = ({ user }: Props) => {
             as: '/Admin/PrivacyPolicy',
             type: 'link',
             userRoles : ['SADMIN'],
-            icon: FaUser
+            icon: MdPrivacyTip
         },
         {
             title: 'Terms & Conditions',
@@ -87,7 +89,7 @@ const Menu = ({ user }: Props) => {
             as: '/Admin/TermsConditions',
             type: 'link',
             userRoles : ['SADMIN'],
-            icon: FaUser
+            icon: RiPagesLine
         },
     ]
 

@@ -169,7 +169,10 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                 }} />}
 
                 {url &&
-                    <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
+                    <div className='size-52 aspect-square rounded-lg overflow-hidden relative'>
+                        <Image src={url as string} alt='' fill objectFit='cover' />
+                    </div>
+                }
 
                 <TextField id="outlined-basic" label="Full Name" variant="outlined"
                     value={value.fullname}

@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Otp is not correct' }, { status: 400 });
         }
 
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Otp is not correct' }, { status: 400 });
     }
 }

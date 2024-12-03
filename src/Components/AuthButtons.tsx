@@ -54,7 +54,7 @@ const initialState = {
     password: ''
 }
 
-const SignIn = () => {
+export const SignIn = () => {
     const [value, setValue] = useState(initialState)
     const [message, setMessage] = useState('')
     const [isLoading, setIsLoading] = useState(false)

@@ -108,6 +108,7 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
 
             await axios.put(`/api/Otp`, { email: value.email, type: 'register' })
                 .then(() => {
+                    setMsg('')
                     setIsOtpSent(true)
                 }).catch((err: AxiosError) => {
                     const errorData = err.response?.data as { error: string }

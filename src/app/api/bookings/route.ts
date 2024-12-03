@@ -33,7 +33,38 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const list = await myColl.find(searchKeys).skip(Number(page)).limit(Number(pageSize)).toArray()
+        const list = await myColl.aggregate(
+            [
+                {
+                    '$match': searchKeys
+                },
+                {
+                    '$addFields': {
+                        'hotelObjectId': {
+                            '$toObjectId': '$hotelId'
+                        }
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'Ratings',
+                        'localField': 'hotelObjectId',
+                        'foreignField': 'hotelId',
+                        'as': 'Ratings'
+                    }
+                }, {
+                    '$addFields': {
+                        'totalRating': {
+                            '$sum': '$Ratings.value'
+                        }
+                    }
+                }, {
+                    '$project': {
+                        'hotelObjectId': 0,
+                        'Ratings': 0
+                    }
+                }
+            ]
+        ).skip(Number(page) || 0).limit(Number(pageSize) ||10).toArray()
         const count = await myColl.countDocuments(searchKeys)
         return NextResponse.json({ list, count }, { status: 200 });
 

@@ -65,6 +65,7 @@ export interface Bookings {
     paymentMode: "Pay at hotel" | "Pay by company" | "Online Pay",
     transactionDetails: Transactions,
     paymentStatus?: "pending" | "approved" | "declined" | '',
+    totalRating?: number
 }
 
 export interface BookingFields extends Bookings {

@@ -2,7 +2,7 @@
 
 import { Button, CircularProgress } from '@mui/material'
 import React, { useState } from 'react'
-import Modal from './Modal'
+import Modal from '../Modal'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 

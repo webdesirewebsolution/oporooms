@@ -4,14 +4,12 @@ import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { User } from '@/Types/Profile'
 import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import moment from 'moment'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { MuiTelInput } from 'mui-tel-input'
 import { useRouter } from 'next/navigation'
-import handleMail from '@/app/api/mail'
-import generateCode from '@/Functions/generateCode'
 import OtpInput from 'react-otp-input';
 
 type Props = {
@@ -45,7 +43,6 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
     const [loading, setLoading] = useState(false)
     const [msg, setMsg] = useState('')
     const [isOtpSent, setIsOtpSent] = useState(false)
-    const [otpSent, setOtpSent] = useState('')
     const [code, setCode] = useState('')
 
     useEffect(() => {
@@ -56,85 +53,99 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setLoading(true)
 
-        if (otpSent != code) {
-            setMsg('Otp is incorrect')
+        let image: string = ''
+
+        if ((value.photo as File) instanceof File) {
+            await cloudinaryImageUploadMethod(value.photo as File).then(r => {
+                image = r?.secure_url
+            })
+        } else {
+            image = value.photo as string
         }
 
-        else if (value?.email !== '') {
-            setLoading(true)
-
-            let image: string = ''
-
-            if ((value.photo as File) instanceof File) {
-                await cloudinaryImageUploadMethod(value.photo as File).then(r => {
-                    image = r?.secure_url
-                })
-            } else {
-                image = value.photo as string
+        if (isEdit) {
+            const formData: User = {
+                ...value,
+                photo: image,
             }
-
-            if (isEdit) {
+            await axios.put(`/api/User`, formData).then(r => {
+                if (r.status == 200) {
+                    router.refresh()
+                    setShowModal(false)
+                }
+            }).finally(() => setLoading(false))
+        } else {
+            try {
                 const formData: User = {
                     ...value,
                     photo: image,
+                    userRole: 'USER',
+                    companyId: null,
+                    hrId: null,
+                    createdBy: undefined
                 }
-                await axios.put(`/api/User`, formData).then(r => {
+
+                await axios.post(`/api/User`, formData).then(r => {
                     if (r.status == 200) {
-                        router.refresh()
                         setShowModal(false)
                     }
                 }).finally(() => setLoading(false))
-            } else {
-                try {
-                    const formData: User = {
-                        ...value,
-                        photo: image,
-                        userRole: 'USER',
-                        companyId: null,
-                        hrId: null,
-                        createdBy: undefined
-                    }
-
-                    await axios.post(`/api/User`, formData).then(r => {
-                        if (r.status == 200) {
-                            setShowModal(false)
-                        }
-                    }).finally(() => setLoading(false))
-                }
-                catch {
-                    setLoading(false)
-                    setMsg('User Already Exist')
-                }
             }
-
+            catch {
+                setLoading(false)
+                setMsg('User Already Exist')
+            }
         }
+
     }
 
     const handleOtp = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (userData && value.email !== '' && value.email !== userData?.email) {
+        if ((userData && value.email !== '' && value.email !== userData?.email) || !isEdit) {
             setLoading(true)
-            const randomCode = generateCode()
-            await handleMail({
-                html: `Otp: ${randomCode}`,
-                sub: 'Otp for changing email',
-                email: value.email
-            }).then(() => {
-                setOtpSent(randomCode)
-                setIsOtpSent(true)
-            }).finally(() => setLoading(false))
+
+            await axios.put(`/api/Otp`, { email: value.email, type: 'register' })
+                .then(() => {
+                    setIsOtpSent(true)
+                }).catch((err: AxiosError) => {
+                    const errorData = err.response?.data as { error: string }
+
+                    setMsg(errorData.error)
+                }).finally(() => setLoading(false))
+
         } else {
             await handleSubmit(e)
         }
+    }
 
+    const handleOtpCheck = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        if (code !== '') {
+            setLoading(true)
+            await axios.post(`/api/Otp`, {
+                code, email: value.email
+            }).then(r => {
+                if (r.status == 200) {
+                    setMsg('')
+
+                    handleSubmit(e)
+                }
+            }).catch((err: AxiosError) => {
+                const errorData = err.response?.data as { error: string }
+
+                setMsg(errorData.error)
+            }).finally(() => setLoading(false))
+        }
     }
 
     const url = value?.photo instanceof File ? URL.createObjectURL(value?.photo) : value?.photo
 
     return (
         <>{isOtpSent ?
-            <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
+            <form onSubmit={handleOtpCheck} className='flex flex-col gap-10'>
                 {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
                 <OtpInput
                     value={code}
@@ -174,13 +185,13 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                     required
                 />
 
-                {!isEdit && <TextField id="outlined-basic" label="Password" variant="outlined"
+                {/* {!isEdit && <TextField id="outlined-basic" label="Password" variant="outlined"
                     value={value.password}
                     type='password'
                     className='*:text-xl'
                     onChange={e => setValue(prev => ({ ...prev, password: e.target.value }))}
                     required
-                />}
+                />} */}
 
                 <MuiTelInput
                     label='Primary Contact'

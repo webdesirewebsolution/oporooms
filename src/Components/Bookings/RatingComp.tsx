@@ -46,7 +46,10 @@ const RatingComp = ({ user, hotelId, hotelOwnerId }: Props) => {
     return (
         <div>
             <Rating name="half-rating" defaultValue={0} precision={0.5} value={value} onChange={(event, newValue) => {
-                if (newValue) (setValue(newValue), handleRating(newValue))
+                if (newValue) {
+                    setValue(newValue);
+                    handleRating(newValue)
+                }
             }} size='large' />
         </div>
     )

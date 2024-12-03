@@ -1,8 +1,7 @@
 import React from 'react'
 import { getUser } from '@/app/actions'
 import Menu from './Menu'
-import { Button } from '@mui/material'
-import { auth, signOut } from '@/auth'
+import { auth } from '@/auth'
 import { Session } from 'next-auth'
 import HeaderOption from './HeaderOption'
 

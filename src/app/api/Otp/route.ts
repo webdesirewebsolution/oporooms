@@ -44,7 +44,6 @@ export async function PUT(req: NextRequest) {
 
     const findUser = await UserColl.findOne({ email })
 
-    console.log(findUser)
 
     if (type == 'register' && findUser) {
         return NextResponse.json({

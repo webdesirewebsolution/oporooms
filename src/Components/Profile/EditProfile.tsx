@@ -21,7 +21,7 @@ const EditProfile = ({ user }: Props) => {
 
             <Modal open={modal} setOpen={setModal}>
                 <AddUser userData={user} setShowModal={(e) => {
-                    setModal(e)
+                    setModal(e as boolean)
                 }} isEdit={true}/>
             </Modal>
         </div>

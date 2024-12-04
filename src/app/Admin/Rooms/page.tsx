@@ -11,6 +11,7 @@ import { RoomActions, RoomsTypes } from '@/Types/Rooms'
 import Modal from '@/Components/Modal'
 import AddRoom from '../Components/AddRoom'
 import { FaCheck } from 'react-icons/fa6'
+import { IoMdClose } from 'react-icons/io'
 
 const Rooms = () => {
     const { user } = useContext(Context)
@@ -25,19 +26,10 @@ const Rooms = () => {
     useEffect(() => {
         (async () => {
             setLoading(true)
-            if (user?.userRole !== '') {
+            if (user?.userRole !== '') {            
+                const params = new URLSearchParams();
 
-                const searchParams: { [key: string]: string } = {}
-                switch (user.userRole) {
-                    case 'HotelOwner':
-                        searchParams['hotelOwnerId'] = user?._id as string
-                        break;
-                    default:
-                        break;
-                }
-                const params = new URLSearchParams(searchParams).toString();
-
-                await axios.get(`/api/Rooms?page=${filter.page * 10}&pageSize=${filter?.pageSize}&${params}`).then(r => {
+                await axios.get(`/api/Rooms?page=${filter.page * 10}&pageSize=${filter?.pageSize}&${params.toString()}`).then(r => {
                     if (r.status == 200) {
                         setData(r.data?.list)
                         setCount(r.data?.count)
@@ -49,20 +41,19 @@ const Rooms = () => {
 
 
     const columns: TypeSafeColDef<RoomActions>[] = [
-        { id: 0, field: '_id', headerName: 'Id' },
-        { id: 1, field: 'number', headerName: 'Room Number' },
+        // { id: 0, field: '_id', headerName: 'Id' },
+        { id: 1, field: 'number', headerName: 'Number' },
         {
-            id: 1, field: 'BookingsData', headerName: 'Room Assigned', width: 130, renderCell: (params) => {
+            id: 2, field: 'BookingsData', headerName: 'Room Assigned', width: 130, renderCell: (params) => {
                 return (
                     <div className='flex h-full items-center justify-center'>
-                        {params?.row?.BookingsData?.length ? (<FaCheck color='green'/>) : (<></>)}
+                        {params?.row?.BookingsData?.length ? (<FaCheck color='green'/>) : (<><IoMdClose color='red'/></>)}
                     </div>
                 )
             }
         },
-        { id: 3, field: 'photos', headerName: 'Photos', renderCell: (params) => <Photos params={params} /> },
-        { id: 4, field: 'type', headerName: 'Room Type', },
-        { id: 5, field: 'actions', headerName: 'Actions', minWidth: 180, renderCell: (params) => <Actions params={params} setData={setData} /> },
+        { id: 3, field: 'type', headerName: 'Type', },
+        { id: 4, field: 'actions', headerName: 'Actions', minWidth: 180, renderCell: (params) => <Actions params={params} setData={setData} /> },
     ]
 
     columns.forEach((item) => {
@@ -122,9 +113,9 @@ const Actions = ({ params, setData }: { params: GridRenderCellParams, setData: R
     }
 
     return (
-        <>
-            <Button onClick={() => setShowEdit(true)}>Edit Room</Button>
-            <Button disabled={params?.row?.BookingsData?.length > 0} className={params?.row?.BookingsData?.length > 0 ? 'text-slate-300' : 'text-red-500'} onClick={() => setShowModal(true)}>Delete Room</Button>
+        <div className='flex h-full items-center justify-center gap-5'>
+            <Button onClick={() => setShowEdit(true)} className='bg-blue-500 text-white'>Edit Room</Button>
+            <Button disabled={params?.row?.BookingsData?.length > 0} className={params?.row?.BookingsData?.length > 0 ? 'bg-red-300 text-white' : 'bg-red-500 text-white'} onClick={() => setShowModal(true)}>Delete Room</Button>
 
             <Modal open={showModal} setOpen={() => setShowModal(false)}>
                 <div className='flex flex-col gap-5 text-center'>
@@ -137,9 +128,9 @@ const Actions = ({ params, setData }: { params: GridRenderCellParams, setData: R
             </Modal>
 
             <Modal open={showEdit} setOpen={() => setShowEdit(false)} className='overflow-y-visible'>
-                <AddRoom isEdit={true} roomData={params?.row} setShowModal={setShowEdit} hotelData={params?.row?.hotelData?.[0]} />
+                <AddRoom isEdit={true} roomData={params?.row} setShowModal={setShowEdit} hotelData={params?.row?.HotelData?.[0]} />
             </Modal>
-        </>
+        </div>
     )
 }
 

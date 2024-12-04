@@ -34,14 +34,17 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
 
     useEffect(() => {
         if (isEdit) {
-            // setValue(roomData as RoomsTypes)
+            console.log(roomData)
+            setValue([roomData as {
+                id: number, type: string, number: number
+            }])
         }
     }, [isEdit, roomData])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (value?.length > 0) {
+        if (value?.length > 0 && value?.[0].type !== '') {
             setLoading(true)
 
             try {
@@ -56,7 +59,7 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
                     }).finally(() => setLoading(false))
                 } else {
 
-                    const formData: RoomsTypes[] = value?.map((item) => ({
+                    const formData: RoomsTypes[] = value?.map(({ id, ...item }) => ({
                         ...item, hotelId: hotelData?._id,
                         hotelOwnerId: hotelData?.hotelOwnerId
                     }))
@@ -74,7 +77,6 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
         }
     }
 
-
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
             <p className='text-3xl mb-5 text-red-500 text-center'>Add Room</p>
@@ -82,19 +84,19 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
             {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
 
             <div className='flex flex-col gap-10'>
-                {value.map((item) => (
-                    <AddMoreRoom key={item.id} value={value} item={item} setValue={setValue} loading={loading} hotelData={hotelData} />
+                {value.map((item, i) => (
+                    <AddMoreRoom key={item.id} id={i} value={value} item={item} setValue={setValue} loading={loading} hotelData={hotelData} />
                 ))}
             </div>
 
 
-            <Button type='button' className='border border-red-500 text-red-500 py-5 bg' variant='outlined' size='large' onClick={() => {
+            {!isEdit && <Button type='button' className='border border-red-500 text-red-500 py-5 bg' variant='outlined' size='large' onClick={() => {
                 setValue(prev => [...prev, {
                     id: value.length,
                     number: 0,
                     type: 'Select Room Type',
                 }])
-            }}>Add More Rooms</Button>
+            }}>Add More Rooms</Button>}
 
             <Button type='submit' className='bg-red-400 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit Room' : 'Add Room')}</Button>
         </form>
@@ -121,17 +123,18 @@ type AddRoomProps = {
     }[]>>
 
     loading: boolean,
-    hotelData: HotelTypes
+    hotelData: HotelTypes,
+    id: number
 }
 
-const AddMoreRoom = ({ item, value, setValue, loading, hotelData }: AddRoomProps) => {
+const AddMoreRoom = ({ item, value, setValue, loading, hotelData, id }: AddRoomProps) => {
     const onChange = (key: keyof RoomsTypes, val: string | number) => {
         setValue(prev => prev?.map((d) => d.id == item.id ? ({ ...d, [key]: val }) : d))
     }
 
     return (
         <div className='flex flex-col gap-10 shadow p-10 relative'>
-            <p className='text-lg bg-red-400 w-fit px-5 text-white absolute -top-4 rounded-full'>Room - {item.id + 1}</p>
+            <p className='text-lg bg-red-400 w-fit px-5 text-white absolute -top-4 rounded-full'>Room - {id + 1}</p>
             <div className='flex gap-5'>
                 <Input min={0} disabled={loading} label='Room Number' placeholder='Enter Rooom Number' type='number' value={item.number} onChange={(e) => onChange('number', e.target.value)} />
 

@@ -4,6 +4,7 @@ import { HotelTypes } from "./Hotels"
 // single room details of any hotel
 export interface RoomsTypes {
     _id?: string,
+    id?: number,
     hotelOwnerId?: string,
     hotelId?: string,
     photos?: string[],

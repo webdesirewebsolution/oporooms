@@ -3,7 +3,9 @@ import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 import { RoomsTypes } from "@/Types/Rooms";
+import { auth } from "@/auth";
 const myColl = client.collection("Rooms");
+const UserColl = client.collection("Users");
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
@@ -26,6 +28,8 @@ export async function POST(req: NextRequest) {
 
 
 export async function GET(req: NextRequest) {
+    const session = await auth()
+
     const searchParams = <T>(p: string) => req.nextUrl.searchParams.get(p) as T
     const searchParamsKeys = req.nextUrl.searchParams.entries()
     const page: number = searchParams('page')
@@ -33,6 +37,20 @@ export async function GET(req: NextRequest) {
 
     const searchKeys: { [key: string]: unknown } = {}
 
+    if(!session?.user?._id){
+        return NextResponse.json('User not loggedin', { status: 400 });
+    }
+
+    const user = await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user._id as string) })
+
+    switch (user?.userRole) {
+        case 'HotelOwner':
+            searchKeys['hotelOwnerId'] = user._id
+            break;
+        default:
+            break;
+    }
+    
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = ObjectId.createFromHexString(values)
@@ -93,6 +111,12 @@ export async function PUT(req: NextRequest) {
             data[item?.[0]] = item?.[1]
         }
     })
+
+    const isRoomExist = await myColl.findOne({ number: rest.number, hotelId: ObjectId.createFromHexString(rest?.hotelId), type: rest.type })
+
+    if (isRoomExist) {
+        return NextResponse.json('Room already exist', { status: 400 });
+    }
 
     try {
         await myColl.updateOne(

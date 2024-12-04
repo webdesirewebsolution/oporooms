@@ -30,18 +30,8 @@ const Hotels = () => {
         (async () => {
             setLoading(true)
             if (user?.userRole !== '') {
-
-                const searchParams: { [key: string]: string } = {}
-                switch (user.userRole) {
-                    case 'HotelOwner':
-                        // searchParams['hotelOwnerId'] = user?._id as string
-                        break;
-                    default:
-                        break;
-                }
-                const params = new URLSearchParams(searchParams).toString();
-
-                await axios.get(`/api/Hotels?page=${filter.page * 10}&pageSize=${filter?.pageSize}&${params}`).then(r => {
+                const params = new URLSearchParams();
+                await axios.get(`/api/Hotels?page=${filter.page * 10}&pageSize=${filter?.pageSize}&${params.toString()}`).then(r => {
                     if (r.status == 200) {
                         setData(r.data?.list)
                         setCount(r.data?.count)
@@ -112,7 +102,7 @@ const Photos = ({ params }: { params: GridRenderCellParams }) => {
         <div className='overflow-hidden flex items-center justify-center h-full'>
             <Avatar alt='' className='rounded'>
                 {params?.row?.photos?.length > 0 &&
-                    <Image src={params?.row?.photos?.[0]} className='object-cover' alt={params?.row?.fullname} fill />}
+                    <Image src={params?.row?.photos?.[0]} className='object-cover' alt='Hotel' fill />}
             </Avatar>
         </div>
     )

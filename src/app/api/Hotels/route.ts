@@ -37,14 +37,18 @@ export async function GET(req: NextRequest) {
 
     const searchKeys: { [key: string]: unknown } = {}
 
-    if(!session?.user?._id){
+    if (!session?.user?._id) {
         return NextResponse.json('User not loggedin', { status: 400 });
     }
 
     const user = await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user._id as string) })
 
-    if (user?.userRole) {
-        searchKeys['hotelOwnerId'] = user._id
+    switch (user?.userRole) {
+        case 'HotelOwner':
+            searchKeys['hotelOwnerId'] = user._id
+            break;
+        default:
+            break;
     }
 
     for (const [keys, values] of searchParamsKeys) {
@@ -55,7 +59,7 @@ export async function GET(req: NextRequest) {
                 searchKeys[keys] = new RegExp(values, 'i')
             }
     }
-    
+
     try {
         const list = await myColl.find(searchKeys).limit(Number(pageSize)).skip(Number(page)).toArray()
         const count = await myColl.countDocuments(searchKeys)

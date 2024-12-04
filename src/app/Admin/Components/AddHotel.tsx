@@ -1,6 +1,5 @@
 'use client'
 
-import Input from '@/Components/Input'
 import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { AddressTypes, HotelTypes } from '@/Types/Hotels'
@@ -360,7 +359,8 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
 
     return (
         <div className='relative flex flex-col gap-10 border-slate-200 p-10 border-2 shadow rounded-lg'>
-            <p className='text-lg bg-red-400 w-fit px-5 text-white absolute -top-4 rounded-full'>Room Type - {item.id + 1}</p>
+            <p className='text-lg bg-red-400 w-fit px-5 text-white absolute -top-4 rounded-full'>Room Type -
+                {item?.id && (item?.id + 1)}</p>
             <div className='grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10 items-end'>
 
 

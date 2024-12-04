@@ -5,7 +5,6 @@ const myColl = client.collection("Otp");
 const UserColl = client.collection("Users");
 import { ObjectId } from "mongodb";
 import generateCode from "@/Functions/generateCode";
-import handleMail from "../mail";
 import axios from "axios";
 
 export async function POST(req: NextRequest) {

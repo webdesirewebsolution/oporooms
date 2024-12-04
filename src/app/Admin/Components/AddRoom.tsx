@@ -1,17 +1,13 @@
 'use client'
 
 import Input from '@/Components/Input'
-import Upload from '@/Components/Upload'
-import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { HotelTypes } from '@/Types/Hotels'
 import { RoomsTypes } from '@/Types/Rooms'
 import { Button, CircularProgress, IconButton } from '@mui/material'
 import axios from 'axios'
-import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { MdDelete } from 'react-icons/md'
 import Select from 'react-select'
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 type Props = {
     hotelData: HotelTypes,

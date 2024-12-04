@@ -2,14 +2,20 @@
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
+import { auth } from "@/auth";
 const myColl = client.collection("Hotels");
+const UserColl = client.collection("Users");
 
 export async function POST(req: NextRequest) {
     const { hotelOwnerId, ...rest } = await req.json();
 
     try {
+        const count = await myColl.countDocuments();
+        const hotelUId = `OPO${10000 + Number(count)}`
+
         await myColl.insertOne({
             hotelOwnerId: ObjectId.createFromHexString(hotelOwnerId),
+            hotelUId,
             ...rest
         });
 
@@ -22,12 +28,24 @@ export async function POST(req: NextRequest) {
 
 
 export async function GET(req: NextRequest) {
+    const session = await auth()
+
     const searchParams = <T>(p: string) => req.nextUrl.searchParams.get(p) as T
     const searchParamsKeys = req.nextUrl.searchParams.entries()
     const page: number = searchParams('page')
     const pageSize: number = searchParams('pageSize')
 
     const searchKeys: { [key: string]: unknown } = {}
+
+    if(!session?.user?._id){
+        return NextResponse.json('User not loggedin', { status: 400 });
+    }
+
+    const user = await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user._id as string) })
+
+    if (user?.userRole) {
+        searchKeys['hotelOwnerId'] = user._id
+    }
 
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize') {
@@ -37,7 +55,7 @@ export async function GET(req: NextRequest) {
                 searchKeys[keys] = new RegExp(values, 'i')
             }
     }
-
+    
     try {
         const list = await myColl.find(searchKeys).limit(Number(pageSize)).skip(Number(page)).toArray()
         const count = await myColl.countDocuments(searchKeys)

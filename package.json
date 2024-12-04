@@ -39,6 +39,8 @@
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-google-places-autocomplete": "^4.1.0",
     "react-icons": "^5.4.0",
+    "react-multi-select-component": "^4.3.4",
+    "react-multiselect-checkboxes": "^0.1.1",
     "react-otp-input": "^3.1.1",
     "react-select": "^5.8.3",
     "styled-components": "^6.1.13",

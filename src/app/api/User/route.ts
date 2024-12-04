@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const pass = await bcrypt.hash(password, 10)
 
     try {
-        const user = await myColl.findOne({ email: rest?.email })
+        const user = await myColl.findOne({ contact1: rest.contact1 })
 
         if (user) {
             return NextResponse.json({ msg: 'User already Exist' }, { status: 400 });
@@ -36,11 +36,13 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     const _id = req.nextUrl.searchParams.get("_id")
     const email = req.nextUrl.searchParams.get("email")
+    const contact1 = req.nextUrl.searchParams.get("contact1")
 
     try {
         let filter = {}
         if (_id) filter = { _id: ObjectId.createFromHexString(_id) }
         else if (email) filter = { email }
+        else if (contact1) filter = { contact1 }
 
         const user = await myColl.findOne(filter, {
             projection: { 'password': 0 }

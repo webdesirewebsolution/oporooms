@@ -34,7 +34,7 @@ const Hotels = () => {
                 const searchParams: { [key: string]: string } = {}
                 switch (user.userRole) {
                     case 'HotelOwner':
-                        searchParams['hotelOwnerId'] = user?._id as string
+                        // searchParams['hotelOwnerId'] = user?._id as string
                         break;
                     default:
                         break;
@@ -53,14 +53,14 @@ const Hotels = () => {
 
 
     const columns: TypeSafeColDef<HotelActions>[] = [
-        { id: 0, field: '_id', headerName: 'Id' },
+        { id: 0, field: 'hotelUId', headerName: 'Hotel Id' },
         { id: 1, field: 'photos', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
-        { id: 2, field: 'name', headerName: 'Name', },
+        { id: 2, field: 'name', headerName: 'Name', minWidth: 150, },
         { id: 3, field: 'address', headerName: 'Address', minWidth: 110, renderCell: (params) => <Address params={params} /> },
         { id: 4, field: 'rooms', headerName: 'Room Types', minWidth: 150, renderCell: (params) => <RoomTypes params={params} /> },
-        { id: 5, field: 'status', headerName: 'Status' },
+        { id: 5, field: 'status', headerName: 'Status', renderCell: (params) => <Status params={params} /> },
         { id: 6, field: 'amenities', headerName: 'View Amenities', renderCell: (params) => <Amenities params={params} /> },
-        { id: 7, field: 'hotelActions', headerName: 'Actions', minWidth: 180, renderCell: (params) => <Actions params={params} setData={setData} /> },
+        { id: 7, field: 'hotelActions', headerName: 'Actions', minWidth: 100, renderCell: (params) => <Actions params={params} setData={setData} /> },
         { id: 7, field: 'roomActions', headerName: 'Room Actions', minWidth: 150, renderCell: (params) => <RoomActions params={params} /> },
     ]
 
@@ -71,9 +71,12 @@ const Hotels = () => {
 
     return (
         <div className='flex flex-col gap-10'>
-            {user?.userRole == 'HotelOwner' && <div>
+            {user?.userRole == 'HotelOwner' && 
+            <div className='flex items-center justify-between'>
+                <h1 className='text-3xl font-semibold'>Add Hotel</h1>
                 <Button onClick={() => setShowHotelForm(true)} className='bg-red-500 text-white'>Add Hotel</Button>
-            </div>}
+            </div>
+            }
 
             <Paper>
                 <DataGrid
@@ -97,7 +100,7 @@ const Hotels = () => {
                 />
             </Paper>
 
-            <Modal open={showHotelForm} setOpen={setShowHotelForm} className='overflow-y-auto'>
+            <Modal open={showHotelForm} setOpen={setShowHotelForm} className='overflow-y-auto max-'>
                 <AddHotel hotelOwnerData={user} setShowModal={setShowHotelForm} />
             </Modal>
         </div>
@@ -107,7 +110,7 @@ const Hotels = () => {
 const Photos = ({ params }: { params: GridRenderCellParams }) => {
     return (
         <div className='overflow-hidden flex items-center justify-center h-full'>
-            <Avatar alt=''>
+            <Avatar alt='' className='rounded'>
                 {params?.row?.photos?.length > 0 &&
                     <Image src={params?.row?.photos?.[0]} className='object-cover' alt={params?.row?.fullname} fill />}
             </Avatar>
@@ -119,7 +122,7 @@ const Address = ({ params }: { params: GridRenderCellParams }) => {
     const [showAddr, setShowAddr] = useState(false)
     return (
         <>
-            <Button onClick={() => setShowAddr(true)}>View Address</Button>
+            <Button onClick={() => setShowAddr(true)} className='bg-red-400 text-white'>View Address</Button>
 
             <Modal open={showAddr} setOpen={() => setShowAddr(false)}>
                 <div className='flex flex-col gap-5 border shadow p-10 rounded-lg'>
@@ -139,11 +142,11 @@ const RoomTypes = ({ params }: { params: GridRenderCellParams }) => {
     const [showRoomTypes, setShowRoomTypes] = useState(false)
     return (
         <>
-            <Button onClick={() => setShowRoomTypes(true)}>Show Room Types</Button>
+            <Button onClick={() => setShowRoomTypes(true)} className='bg-red-400 text-white'>Show Room Types</Button>
 
             <Modal open={showRoomTypes} setOpen={() => setShowRoomTypes(false)}>
                 <div>
-                    <p className='text-3xl font-semibold'>Types of Rooms</p>
+                    <p className='text-3xl font-semibold text-center text-red-500'>Room Types</p>
                     <div className='flex flex-col gap-10 overflow-y-scroll p-10'>
                         {params?.row?.rooms?.map((item: RoomVarietyTypes) => (
                             <div key={item?.id} className='flex gap-5 border shadow p-5 rounded-lg'>
@@ -162,7 +165,7 @@ const RoomTypes = ({ params }: { params: GridRenderCellParams }) => {
                                 <div className='flex flex-col'>
                                     <p className='font-bold'>{item?.type}</p>
                                     <p className='text-2xl'>Rs.{item?.price}</p>
-                                    <p className='text-lg text-slate-600'>Taxes and Fee: Rs.{item?.fee}</p>
+                                    <p className='text-lg text-slate-600'>Taxes and Fee: 18%</p>
                                     <Swiper className='w-96 py-5 pr-5' slidesPerView='auto' spaceBetween={10}>
                                         {item?.amenities?.map((am) => (
                                             <SwiperSlide key={am} className='!w-fit'>
@@ -186,7 +189,7 @@ const Amenities = ({ params }: { params: GridRenderCellParams }) => {
     const [showModal, setShowModal] = useState(false)
     return (
         <>
-            <Button onClick={() => setShowModal(true)}>View Amenities</Button>
+            <Button onClick={() => setShowModal(true)} className='bg-red-400 text-white'>View Amenities</Button>
 
             <Modal open={showModal} setOpen={() => setShowModal(false)}>
                 <div className='flex flex-wrap gap-5 w-96 overflow-y-auto'>
@@ -202,6 +205,7 @@ const Amenities = ({ params }: { params: GridRenderCellParams }) => {
 }
 
 const Actions = ({ params, setData }: { params: GridRenderCellParams, setData: React.Dispatch<React.SetStateAction<HotelTypes[]>> }) => {
+    const { user } = useContext(Context)
     const [showModal, setShowModal] = useState(false)
     const [showEdit, setShowEdit] = useState(false)
 
@@ -216,8 +220,10 @@ const Actions = ({ params, setData }: { params: GridRenderCellParams, setData: R
 
     return (
         <>
-            <Button onClick={() => setShowEdit(true)}>Edit Hotel</Button>
-            <Button className='text-red-500' onClick={() => setShowModal(true)}>Delete Hotel</Button>
+            <div className='flex gap-5 h-full items-center justify-center'>
+                <Button onClick={() => setShowEdit(true)} className='bg-blue-400 text-white h-fit'>Edit Hotel</Button>
+                {user.userRole == 'SADMIN' && <Button onClick={() => setShowModal(true)} className='bg-red-400 text-white h-fit'>Delete Hotel</Button>}
+            </div>
 
             <Modal open={showModal} setOpen={() => setShowModal(false)}>
                 <div className='flex flex-col gap-5 text-center'>
@@ -243,12 +249,38 @@ const RoomActions = ({ params }: { params: GridRenderCellParams }) => {
 
     return (
         <>
-            <Button onClick={() => setShowModal(true)}>Add Rooms</Button>
+            <Button onClick={() => setShowModal(true)} className='bg-red-400 text-white'>Add Rooms</Button>
 
-            <Modal open={showModal} setOpen={() => setShowModal(false)} className='overflow-y-visible'>
+            <Modal open={showModal} setOpen={() => setShowModal(false)} className='overflow-y-scroll'>
                 <AddRoom hotelData={params?.row} setShowModal={setShowModal} />
             </Modal>
         </>
+    )
+}
+
+const Status = ({ params }: { params: GridRenderCellParams }) => {
+
+    const buttons = [{
+        label: 'Approve',
+        value: 'approved',
+        className: 'bg-green-500',
+    },
+    {
+        label: 'Pending',
+        value: 'pending',
+        className: 'bg-yellow-500',
+    },
+    {
+        label: 'Reject',
+        value: 'Rejected',
+        className: 'bg-red-500',
+    }]?.find(i => i.value == params?.row?.status)
+
+    return (
+        <div className='flex items-center justify-center h-full gap-3'>
+            <div className={`${buttons?.className} size-3 rounded-full`} />
+            {buttons?.label}
+        </div>
     )
 }
 

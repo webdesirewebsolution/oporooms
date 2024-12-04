@@ -2,24 +2,22 @@
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
+import { RoomsTypes } from "@/Types/Rooms";
 const myColl = client.collection("Rooms");
 
 export async function POST(req: NextRequest) {
-    const { hotelOwnerId, hotelId, ...rest } = await req.json();
+    const body = await req.json();
+
+    const newDoc = body?.map((item: RoomsTypes) => ({
+        ...item,
+        hotelOwnerId: ObjectId.createFromHexString(item.hotelOwnerId as string),
+        hotelId: ObjectId.createFromHexString(item.hotelId as string),
+    }))
 
     try {
-        const isRoomExist = await myColl.countDocuments({ hotelId: ObjectId.createFromHexString(hotelId), number: rest.number })
 
-        if (isRoomExist > 0) return NextResponse.json({ msg: 'Room Already Exist' }, { status: 400 });
-        else {
-            await myColl.insertOne({
-                hotelOwnerId: ObjectId.createFromHexString(hotelOwnerId),
-                hotelId: ObjectId.createFromHexString(hotelId),
-                ...rest
-            });
-
-            return NextResponse.json({ msg: 'Success' }, { status: 200 });
-        }
+        await myColl.insertMany(newDoc);
+        return NextResponse.json({ msg: 'Success' }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ error }, { status: 400 });
@@ -121,8 +119,8 @@ export async function DELETE(req: NextRequest) {
     const id = body?.split("?")[1]?.split("=")[1];
 
     try {
-       
-            await myColl.deleteOne({ _id: ObjectId.createFromHexString(id) });
+
+        await myColl.deleteOne({ _id: ObjectId.createFromHexString(id) });
         return NextResponse.json({
             status: 200,
             msg: 'Success'

@@ -6,12 +6,15 @@ const UserColl = client.collection("Users");
 import { ObjectId } from "mongodb";
 import generateCode from "@/Functions/generateCode";
 import handleMail from "../mail";
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
-    const { email, code } = await req.json();
+    const { contact1, code } = await req.json();
+
+    const newContact = contact1?.split(' ').join('').split('+')[1]
 
     try {
-        const otp = await myColl.findOne({ email })
+        const otp = await myColl.findOne({ contact1: newContact })
 
         if (otp?.randomCode == code) {
             return NextResponse.json({}, { status: 200 });
@@ -40,10 +43,10 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
     const body = await req.json();
-    const { email, type } = body;
+    const { contact1, type } = body;
+    const newContact = contact1?.split(' ').join('').split('+')[1]
 
-    const findUser = await UserColl.findOne({ email })
-
+    const findUser = await UserColl.findOne({ contact1: newContact })
 
     if (type == 'register' && findUser) {
         return NextResponse.json({
@@ -60,18 +63,17 @@ export async function PUT(req: NextRequest) {
     }
 
     const randomCode = generateCode()
-    await handleMail({
-        html: `Otp: ${randomCode}`,
-        sub: 'Otp for signin',
-        email: email
-    })
+
+    const data = await axios.get(`http://136.243.171.112/api/sendhttp.php?authkey=37336b756d617232383803&mobiles=${newContact}&message=Dear User, Your OTP for Login is ${randomCode}. Please do not share it. With Regards LOOMSTAY.&sender=LMSTAY&route=2&country=91&DLT_TE_ID=1707169925261685090`)
+
+    console.log(data.data)
 
     try {
         await myColl.updateOne(
-            { email },
+            { contact1: newContact },
             {
                 $set: {
-                    email,
+                    contact1: newContact,
                     randomCode
                 },
             }, {

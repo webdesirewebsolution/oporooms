@@ -26,7 +26,10 @@ export default {
       '.no-scrollbar': {
         '-ms-overflow-style': 'none',  /* IE and Edge */
         'scrollbar-width': 'none'  /* Firefox */
-      }
+      },
+      'designed-scrollbar::-webkit-scrollbar': {
+        display: 'none'
+      },
     })
   })
   ],

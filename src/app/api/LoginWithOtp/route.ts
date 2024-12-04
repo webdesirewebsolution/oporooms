@@ -8,20 +8,21 @@ const myOtpColl = client.collection("Otp");
 const KEY = process.env.JWT_KEY as string;
 
 export async function GET(req: NextRequest) {
-    const email = req.nextUrl.searchParams.get("email")
+    const contact1 = req.nextUrl.searchParams.get("contact1")
     const otp = req.nextUrl.searchParams.get("otp")
 
     try {
-        const findResult = await myColl.findOne({ email }, { projection: { password: 0 } })
+        const findResult = await myColl.findOne({ contact1: contact1 }, { projection: { password: 0 } })
+        const findOtp = await myOtpColl.findOne({ contact1: contact1 })
 
-        const findOtp = await myOtpColl.findOne({ email })
+        console.log(contact1, findOtp, otp)
 
         if (findOtp?.randomCode == otp) {
 
             /* Create JWT Payload */
             const payload = {
                 id: findResult?._id.toString(),
-                email: findResult?.email,
+                contact1: findResult?.newContact,
             };
 
             /* Sign token */

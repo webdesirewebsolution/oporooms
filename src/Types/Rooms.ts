@@ -6,7 +6,7 @@ export interface RoomsTypes {
     _id?: string,
     hotelOwnerId?: string,
     hotelId?: string,
-    photos: string[],
+    photos?: string[],
     number: number,
     type: string,
     hotelData?: HotelTypes
@@ -16,6 +16,7 @@ export interface RoomsTypes {
 export interface RoomVarietyTypes {
     id?: number,
     type: string,
+    regularPrice: string | number,
     price: string | number,
     timing?: string,
     photos: string[],

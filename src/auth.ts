@@ -8,15 +8,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // You can specify which fields should be submitted, by adding keys to the `credentials` object.
             // e.g. domain, username, password, 2FA token, etc.
             credentials: {
-                email: {},
+                contact1: {},
                 _id: {
                     label: "_id"
-                }
+                },
             },
             authorize: async (credentials): Promise<object> => {
 
+                console.log(credentials.contact1)
+
                 // logic to verify if the user exists
-                const user = await axios.get(`${process.env.SERVERURL}/api/User?email=${credentials.email}`)
+                const user = await axios.get(`${process.env.SERVERURL}/api/User?contact1=${credentials.contact1}`)
 
                 if (!user.data) {
                     // No user found, so this is their first attempt to login
@@ -36,13 +38,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 ...session,
                 user: {
                     ...session.user,
-                    _id: token.id as string
+                    _id: token.id as string,
+                    contact1: token.contact1 as string
                 }
             }
         },
         async jwt({ token, user }) {
             if (user) {
-                token.id = user._id
+                token.id = user._id,
+                token.contact1 = user.contact1
             }
             return token
         },

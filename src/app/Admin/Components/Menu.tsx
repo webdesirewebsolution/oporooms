@@ -28,7 +28,7 @@ const Menu = ({ user }: Props) => {
 
     const menuItems = [
         {
-            title: 'Home',
+            title: 'Bookings',
             link: '/Admin',
             as: '/Admin',
             type: 'link',
@@ -99,7 +99,7 @@ const Menu = ({ user }: Props) => {
                 {menuItems?.filter(i => i.userRoles?.includes(user?.userRole)).map((item) => (
                     <ListItem key={item.title} disablePadding>
                         {item.type == 'link' ?
-                            <Link href={item?.link} className={`w-full ${pathname == item.as ? 'bg-red-400' : 'bg-white'}`}>
+                            <Link href={item?.link} className={`w-full ${pathname == item.as ? 'bg-red-400 text-white' : 'bg-white'}`}>
                                 <ListItemButton className='text-xl py-5 flex items-center gap-5'>
                                     {item?.icon && <item.icon size={18} />}
                                     {item.title}
@@ -143,8 +143,8 @@ const Menu = ({ user }: Props) => {
                     width: drawerWidth,
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
-                        height: '90vh',
-                        marginTop: 8,
+                        height: '89vh',
+                        marginTop: 9,
                         borderWidth: 1,
                         marginLeft: 1,
                         boxShadow: '.1rem .1rem 1rem #ccc',

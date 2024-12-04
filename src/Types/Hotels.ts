@@ -10,6 +10,7 @@ export interface AddressTypes {
 
 export interface HotelTypes {
     _id?: string,
+    hotelUId?: string,
     hotelOwnerId?: string,
     photos: string[],
     name: string,

@@ -5,10 +5,11 @@ import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { HotelTypes } from '@/Types/Hotels'
 import { RoomsTypes } from '@/Types/Rooms'
-import { Button, CircularProgress } from '@mui/material'
+import { Button, CircularProgress, IconButton } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import { MdDelete } from 'react-icons/md'
 import Select from 'react-select'
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -20,12 +21,15 @@ type Props = {
 }
 
 const initialData: {
-    type: string, number: number, photos: FileList | string[]
-} = {
-    number: 0,
-    type: 'Select Room Type',
-    photos: []
-}
+    id: number, type: string, number: number
+
+}[] = [
+        {
+            id: 0,
+            number: 0,
+            type: 'Select Room Type',
+        }
+    ]
 
 const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
     const [value, setValue] = useState(initialData)
@@ -34,35 +38,20 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
 
     useEffect(() => {
         if (isEdit) {
-            setValue(roomData as RoomsTypes)
+            // setValue(roomData as RoomsTypes)
         }
     }, [isEdit, roomData])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (value?.type !== 'Select Room Type' && value?.number !== Number(0)) {
+        if (value?.length > 0) {
             setLoading(true)
-
-            let images: string[] = []
-
-            if (value.photos instanceof FileList) {
-                for (const file of value.photos) {
-                    await cloudinaryImageUploadMethod(file).then(r => {
-                        images.push(r?.secure_url)
-                    })
-                }
-            } else {
-                images = value.photos
-            }
 
             try {
                 if (isEdit) {
 
-                    const formData: RoomsTypes = {
-                        ...value,
-                        photos: images,
-                    }
+                    const formData: RoomsTypes[] = value
 
                     await axios.put(`/api/Rooms`, formData).then(r => {
                         if (r.status == 200) {
@@ -71,12 +60,10 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
                     }).finally(() => setLoading(false))
                 } else {
 
-                    const formData: RoomsTypes = {
-                        ...value,
-                        photos: images,
-                        hotelId: hotelData?._id,
+                    const formData: RoomsTypes[] = value?.map((item) => ({
+                        ...item, hotelId: hotelData?._id,
                         hotelOwnerId: hotelData?.hotelOwnerId
-                    }
+                    }))
 
                     await axios.post(`/api/Rooms`, formData).then(r => {
                         if (r.status == 200) {
@@ -91,39 +78,87 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
         }
     }
 
+
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+            <p className='text-3xl mb-5 text-red-500 text-center'>Add Room</p>
 
             {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
 
-            <Upload disabled={loading} label='Upload File' setValue={files => setValue(prev => ({ ...prev, photos: files }))} />
-
-            {value?.photos?.length > 0 && <Swiper slidesPerView='auto' spaceBetween={10} className='w-96'>
-                {Array.from(value?.photos as FileList | [])?.map((item: File, i) => {
-                    const url = item instanceof File ? URL.createObjectURL(item) : item
-                    return (
-                        <SwiperSlide key={i} className='!w-fit'>
-                            <Image src={url} alt='' width={100} height={100} className='aspect-video rounded-lg' />
-                        </SwiperSlide>
-                    )
-                })}
-            </Swiper>}
-
-            <Input min={0} disabled={loading} label='Room Number' placeholder='Enter Rooom Number' type='number' value={value.number} setValue={e => setValue(prev => ({ ...prev, number: Number(e) }))} />
-
-            <div className='flex flex-col gap-2'>
-                <p className='text-xl'>Select Room Type</p>
-                <Select
-                    isDisabled={loading}
-                    defaultValue={{ label: 'Select Room Type', value: 'Select Room Type' }}
-                    options={hotelData?.rooms?.map((item) => ({ label: item.type, value: item?.type }))}
-                    value={{ label: value.type, value: value.type }}
-                    onChange={(e) => e && setValue(prev => ({ ...prev, type: e?.value }))}
-                />
+            <div className='flex flex-col gap-10'>
+                {value.map((item) => (
+                    <AddMoreRoom key={item.id} value={value} item={item} setValue={setValue} loading={loading} hotelData={hotelData} />
+                ))}
             </div>
 
-            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit Room' : 'Add Room')}</Button>
+
+            <Button type='button' className='border border-red-500 text-red-500 py-5 bg' variant='outlined' size='large' onClick={() => {
+                setValue(prev => [...prev, {
+                    id: value.length,
+                    number: 0,
+                    type: 'Select Room Type',
+                }])
+            }}>Add More Rooms</Button>
+
+            <Button type='submit' className='bg-red-400 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit Room' : 'Add Room')}</Button>
         </form>
+    )
+}
+
+type AddRoomProps = {
+    item: {
+        id: number;
+        type: string;
+        number: number;
+    },
+
+    value: {
+        id: number;
+        type: string;
+        number: number;
+    }[],
+
+    setValue: React.Dispatch<React.SetStateAction<{
+        id: number;
+        type: string;
+        number: number;
+    }[]>>
+
+    loading: boolean,
+    hotelData: HotelTypes
+}
+
+const AddMoreRoom = ({ item, value, setValue, loading, hotelData }: AddRoomProps) => {
+    const onChange = (key: keyof RoomsTypes, val: string | number) => {
+        setValue(prev => prev?.map((d) => d.id == item.id ? ({ ...d, [key]: val }) : d))
+    }
+
+    return (
+        <div className='flex flex-col gap-10 shadow p-10 relative'>
+            <p className='text-lg bg-red-400 w-fit px-5 text-white absolute -top-4 rounded-full'>Room - {item.id + 1}</p>
+            <div className='flex gap-5'>
+                <Input min={0} disabled={loading} label='Room Number' placeholder='Enter Rooom Number' type='number' value={item.number} onChange={(e) => onChange('number', e.target.value)} />
+
+                <div className='flex flex-col gap-2'>
+                    <p className='text-xl'>Select Room Type</p>
+                    <Select
+                        isDisabled={loading}
+                        defaultValue={{ label: 'Select Room Type', value: 'Select Room Type' }}
+                        options={hotelData?.rooms?.map((item) => ({ label: item.type, value: item?.type }))}
+                        value={{ label: item.type, value: item.type }}
+                        onChange={(e) => e && onChange('type', e.value)}
+                    />
+                </div>
+            </div>
+            {value.length > 1 &&
+                <div>
+                    <IconButton disabled={loading} className='bg-red-500 absolute bottom-4 right-4' onClick={() => {
+                        setValue(prev => prev?.filter(it => it.id !== item.id))
+                    }}>
+                        <MdDelete size={15} color='#fff' />
+                    </IconButton>
+                </div>}
+        </div>
     )
 }
 

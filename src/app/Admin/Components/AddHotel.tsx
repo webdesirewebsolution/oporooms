@@ -6,14 +6,15 @@ import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { AddressTypes, HotelTypes } from '@/Types/Hotels'
 import { User } from '@/Types/Profile'
 import { RoomVarietyTypes } from '@/Types/Rooms'
-import { Button, CircularProgress, IconButton } from '@mui/material'
+import { Button, CircularProgress, IconButton, TextField } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
 import { MdDelete } from 'react-icons/md'
-import Select from 'react-select'
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { MultiSelect } from "react-multi-select-component";
+import { useRouter } from 'next/navigation'
 
 type Props = {
     hotelOwnerData: {
@@ -42,6 +43,7 @@ const initialData: HotelFormTypes = {
     rooms: [{
         id: 0,
         type: '',
+        regularPrice: '',
         price: '',
         photos: [],
         fee: '',
@@ -51,7 +53,9 @@ const initialData: HotelFormTypes = {
     amenities: []
 }
 
+
 const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) => {
+    const router = useRouter()
     const [value, setValue] = useState(initialData)
     const [loading, setLoading] = useState(false)
     const [msg, setMsg] = useState('')
@@ -103,12 +107,14 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                     const formData: HotelTypes = {
                         ...value as HotelTypes,
                         photos: images,
+                        status: 'pending',
                         rooms
                     }
 
                     await axios.put(`/api/Hotels`, formData).then(r => {
                         if (r.status == 200) {
                             setShowModal(false)
+                            router.refresh()
                         }
                     }).finally(() => setLoading(false))
                 } else {
@@ -123,6 +129,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                     await axios.post(`/api/Hotels`, formData).then(r => {
                         if (r.status == 200) {
                             setShowModal(false)
+                            router.refresh()
                         }
                     }).finally(() => setLoading(false))
                 }
@@ -177,33 +184,24 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
         "Game Room",
         "Library"]
 
-    console.log(value.address)
-
     return (
-        <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
 
             {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
 
-            <Upload disabled={loading} label='Upload File' setValue={files => setValue(prev => ({ ...prev, photos: files }))} />
-
-            {value?.photos?.length > 0 && <Swiper slidesPerView='auto' spaceBetween={10} className='w-96'>
-                {Array.from(value?.photos as FileList | [])?.map((item: File, i) => {
-                    const url = item instanceof File ? URL.createObjectURL(item) : item
-                    return (
-                        <SwiperSlide key={i} className='!w-fit'>
-                            <Image src={url} alt='' width={100} height={100} className='aspect-video rounded-lg' />
-                        </SwiperSlide>
-                    )
-                })}
-            </Swiper>}
-
-            <Input disabled={loading} label='Hotel Name' placeholder='Enter Hotel Name' value={value.name} setValue={txt => setValue(prev => ({ ...prev, name: txt }))} required />
+            <TextField id="outlined-basic" label="Hotel Name" variant="outlined"
+                disabled={loading}
+                value={value.name}
+                className='*:text-xl'
+                onChange={e => setValue(prev => ({ ...prev, name: e.target.value }))}
+                required
+            />
 
             <GooglePlacesAutocomplete
                 selectProps={{
                     placeholder: 'Select Address',
-                    // defaultValue: { label: value.address.City as string, value: value.address.City as string },
-                    // value: { label: value.address.City as string, value: value.address.City as string },
+                    defaultValue: { label: value.address.City as string, value: value.address.City as string },
+                    value: { label: value.address.City as string, value: value.address.City as string },
                     onChange: (e) => {
                         console.log(e)
 
@@ -233,7 +231,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                     classNames: {
                         control: () => 'py-[0.7rem] mt-1 bg-gray-50 border-gray-100'
                     },
-                    menuPlacement: 'top'
+                    // menuPlacement: 'top'
                 }}
 
                 apiOptions={{
@@ -244,27 +242,42 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
 
             />
 
-            <Select className='z-50'
-                isMulti
-                isSearchable
-                placeholder="Select Hotel Amenities"
-                menuPlacement='top'
+            <MultiSelect
+                className='w-full'
+                labelledBy="Select Hotel Amenities"
 
                 options={amenities?.map((item) => ({ label: item, value: item }))}
                 value={value.amenities?.map((item) => ({ label: item, value: item }))}
-                onChange={(e) => {
+                onChange={(e: { label: string, value: string }[]) => {
                     setValue(prev => ({ ...prev, amenities: e?.map(it => it.value) }))
                 }} />
 
+            <div className='shadow w-full border px-10 py-5 flex flex-col gap-5 rounded-lg'>
+                <Upload id='UploadHotelImage' disabled={loading} label='Upload Hotel Image' className='bg-red-400' setValue={files => setValue(prev => ({ ...prev, photos: files }))} />
+
+                {value?.photos?.length > 0 && <Swiper slidesPerView='auto' spaceBetween={10} className='w-full'>
+                    {Array.from(value?.photos as FileList | [])?.map((item: File, i) => {
+                        const url = item instanceof File ? URL.createObjectURL(item) : item
+                        return (
+                            <SwiperSlide key={i} className='!w-fit'>
+                                <Image src={url} alt='' width={100} height={100} className='aspect-video rounded-lg' />
+                            </SwiperSlide>
+                        )
+                    })}
+                </Swiper>}
+            </div>
+
             {value?.rooms?.map((item) => <RoomType key={item.id} item={item} setValue={setValue} loading={loading} />)}
 
-            <Button className='border-blue-400 w-fit' variant='outlined' size='large'
+
+            <Button className='border-red-400 w-fit text-red-500' variant='outlined' size='large'
                 onClick={() =>
                     setValue(prev => ({
                         ...prev,
                         rooms: [...prev.rooms, {
                             id: value?.rooms?.length, type: '',
                             price: '',
+                            regularPrice: '',
                             photos: [],
                             fee: '',
                             amenities: []
@@ -273,7 +286,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                     )}
             > + Add More Room Types</Button>
 
-            <Button type='submit' className='bg-blue-500 text-white' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit Hotel' : 'Add Hotel')}</Button>
+            <Button type='submit' className='bg-red-400 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit Hotel' : 'Add Hotel')}</Button>
         </form>
     )
 }
@@ -292,9 +305,13 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
 
     const onHandleImage = (key: keyof RoomVarietyTypes, file: FileList) => {
         setValue(prev => ({
-            ...prev, rooms: prev.rooms?.map((d) => d.id == item.id ? ({
-                ...d, [key]: file
-            }) : d)
+            ...prev, rooms: prev.rooms?.map((d) => {
+                console.log("d", d.id)
+                console.log("item", item.id)
+                return (d.id == item.id ? ({
+                    ...d, [key]: file
+                }) : d)
+            })
         }))
     }
 
@@ -342,43 +359,73 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
     ];
 
     return (
-        <div key={item.id} className='relative flex flex-col gap-10 border-slate-300 p-10 border-2'>
+        <div className='relative flex flex-col gap-10 border-slate-200 p-10 border-2 shadow rounded-lg'>
+            <p className='text-lg bg-red-400 w-fit px-5 text-white absolute -top-4 rounded-full'>Room Type - {item.id + 1}</p>
             <div className='grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10 items-end'>
 
-                <Upload label='Upload Room Type Photo' className='flex-1' disabled={loading} setValue={file => onHandleImage('photos', file)} />
 
-                <Input label='Room Type' className='flex-1' placeholder='Room Type' disabled={loading} value={item?.type} setValue={txt => onChange('type', txt)} />
 
-                <Input label='Price' className='flex-1' type='number' placeholder='Price' disabled={loading} value={item?.price} setValue={txt => onChange('price', txt)} />
+                <TextField id="room_type"
+                    label="Room Type"
+                    variant="outlined"
+                    disabled={loading}
+                    value={item.type}
+                    className='*:text-xl z-0'
+                    onChange={e => onChange('type', e.target.value)}
+                    required
+                />
 
-                <Input label='Tax & fees' className='flex-1' type='number' placeholder='Tax & fees' disabled={loading} value={item?.fee} setValue={txt => onChange('fee', txt)} />
+                <TextField id="room_regular_price"
+                    label="Regular Price"
+                    variant="outlined"
+                    type='number'
+                    disabled={loading}
+                    value={item.regularPrice}
+                    className='*:text-xl z-0'
+                    onChange={e => onChange('regularPrice', e.target.value)}
+                    required
+                />
 
-                <Select className='z-50'
-                    styles={{
-                        container: (provided) => ({
-                            ...provided,
-                            height: '5rem',
-                        }),
-                        control: (provided) => ({
-                            ...provided,
-                            overflow: 'auto',
-                            height: '100%',
-                        }),
-                    }}
-                    isMulti
-                    isSearchable
-                    menuPlacement='top'
-                    placeholder="Select Hotel Amenities"
-                    options={hotelRoomAmenities?.map((item) => ({ label: item, value: item }))}
-                    value={item?.amenities?.map((item) => ({ label: item, value: item }))}
-                    onChange={(e) => {
-                        setValue(prev => ({
-                            ...prev, rooms: prev.rooms?.map((d) => d.id == item.id ? ({
-                                ...d, amenities: e?.map(it => it.value)
-                            }) : d)
-                        }))
-                    }} />
+                <TextField id="room_price"
+                    label="Price"
+                    variant="outlined"
+                    type='number'
+                    disabled={loading}
+                    value={item.price}
+                    className='*:text-xl z-0'
+                    onChange={e => onChange('price', e.target.value)}
+                    required
+                />
 
+                {/* <TextField id="room_fee"
+                    label="Tax & fee"
+                    variant="outlined"
+                    type='number'
+                    disabled={loading}
+                    value={item.fee}
+                    className='*:text-xl'
+                    onChange={e => onChange('fee', e.target.value)}
+                    required
+                /> */}
+
+                <div>
+                    <label className='text-lg text-slate-800'>Select Room Amenities</label>
+                    <MultiSelect
+                        className='w-96 max-w-full'
+                        labelledBy="Select Room Amenities"
+
+                        options={hotelRoomAmenities?.map((item) => ({ label: item, value: item }))}
+                        value={item.amenities?.map((item) => ({ label: item, value: item }))}
+                        onChange={(e: { label: string, value: string }[]) => {
+                            setValue(prev => ({
+                                ...prev, rooms: prev.rooms?.map((d) => d.id == item.id ? ({
+                                    ...d, amenities: e?.map(it => it.value)
+                                }) : d)
+                            }))
+                        }} />
+                </div>
+
+                <Upload label='Upload Room Image' id={String(item?.id) as string} className='w-full h-full bg-red-400' disabled={loading} setValue={file => onHandleImage('photos', file)} />
 
                 <IconButton disabled={loading} className='bg-red-500 absolute bottom-4 right-4' onClick={() => {
                     setValue(prev => ({ ...prev, rooms: prev?.rooms?.filter(it => it.id !== item.id) }))
@@ -394,8 +441,8 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
             >
                 {photos?.map((img, i) => {
                     return (
-                        <SwiperSlide key={i} className='relative border-2 size-32 flex items-center justify-center p-2'>
-                            <Image src={typeof img == 'string' ? img : URL.createObjectURL(img)} alt='' width={100} height={100} />
+                        <SwiperSlide key={i} className='relative border w-52 rounded-lg overflow-hidden aspect-video flex items-center justify-center p-2 shadow'>
+                            <Image src={typeof img == 'string' ? img : URL.createObjectURL(img)} alt='' fill objectFit='cover' />
                         </SwiperSlide>
                     )
                 })}

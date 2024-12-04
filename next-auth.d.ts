@@ -20,6 +20,6 @@ declare module "next-auth" {
 
     interface User {
         _id?: string,
-        contact1: string
+        contact1?: string
     }
 }

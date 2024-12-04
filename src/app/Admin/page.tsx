@@ -319,7 +319,7 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
         return (
           <div key={item?._id} className='flex justify-between items-center'>
             <div className='flex gap-10'>
-              <Image src={item?.photos?.[0]} alt='' width={100} height={100} objectFit='cover' className='rounded-md w-48 object-cover aspect-video' />
+              <Image src={item?.photos?.[0] as string} alt='' width={100} height={100} objectFit='cover' className='rounded-md w-48 object-cover aspect-video' />
               <div>
                 <p className='font-semibold'>{item?.type}</p>
                 <p>{item.number}</p>

@@ -8,14 +8,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // You can specify which fields should be submitted, by adding keys to the `credentials` object.
             // e.g. domain, username, password, 2FA token, etc.
             credentials: {
-                contact1: {},
+                contact1: {
+                    label: "contact1"
+                },
                 _id: {
                     label: "_id"
                 },
             },
             authorize: async (credentials): Promise<object> => {
-
-                console.log(credentials.contact1)
 
                 // logic to verify if the user exists
                 const user = await axios.get(`${process.env.SERVERURL}/api/User?contact1=${credentials.contact1}`)
@@ -46,7 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         async jwt({ token, user }) {
             if (user) {
                 token.id = user._id,
-                token.contact1 = user.contact1
+                    token.contact1 = user.contact1
             }
             return token
         },

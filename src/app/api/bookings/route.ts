@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 const myColl = client.collection("Bookings");
 import { ObjectId } from "mongodb";
+import { auth } from "@/auth";
+const UserColl = client.collection("Users");
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
@@ -17,12 +19,27 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+    const session = await auth()
     const searchParams = <T>(p: string) => req.nextUrl.searchParams.get(p) as T
     const searchParamsKeys = req.nextUrl.searchParams.entries()
     const page: number = searchParams('page')
     const pageSize: number = searchParams('pageSize')
 
     const searchKeys: { [key: string]: unknown } = {}
+
+    if (!session?.user?._id) {
+        return NextResponse.json('User not loggedin', { status: 400 });
+    }
+
+    const user = await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user._id as string) })
+
+    switch (user?.userRole) {
+        case 'HotelOwner':
+            searchKeys['hotelOwnerId'] = String(user._id)
+            break;
+        default:
+            break;
+    }
 
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize' && keys != 'userId' && keys != 'companyId' && keys !== 'hotelOwnerId' && keys !== 'userDetails.companyId') {
@@ -31,6 +48,8 @@ export async function GET(req: NextRequest) {
             searchKeys[keys] = values
         }
     }
+
+    console.log(searchKeys)
 
     try {
         const list = await myColl.aggregate(
@@ -64,11 +83,18 @@ export async function GET(req: NextRequest) {
                     }
                 }
             ]
-        ).skip(Number(page) || 0).limit(Number(pageSize) ||10).toArray()
+        ).skip(Number(page) || 0).limit(Number(pageSize) || 10).toArray()
+
+        const todayBookings = await myColl.find({...searchKeys, 'roomDetails.checkIn' : {} }).toArray()
+
+        console.log(todayBookings)
+
         const count = await myColl.countDocuments(searchKeys)
+
         return NextResponse.json({ list, count }, { status: 200 });
 
     } catch (error) {
+        console.log(error)
         return NextResponse.json({ error }, { status: 400, statusText: 'Something error' });
     }
 }

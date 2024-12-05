@@ -10,7 +10,8 @@ export interface RoomsTypes {
     photos?: string[],
     number: number,
     type: string,
-    hotelData?: HotelTypes
+    hotelData?: HotelTypes,
+    status?: boolean
 }
 
 // here type means varities of rooms

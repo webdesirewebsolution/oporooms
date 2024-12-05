@@ -3,8 +3,9 @@
 import Input from '@/Components/Input'
 import { HotelTypes } from '@/Types/Hotels'
 import { RoomsTypes } from '@/Types/Rooms'
-import { Button, CircularProgress, IconButton } from '@mui/material'
+import { Button, CircularProgress, IconButton, Switch } from '@mui/material'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { MdDelete } from 'react-icons/md'
 import Select from 'react-select'
@@ -16,18 +17,21 @@ type Props = {
     roomData?: RoomsTypes
 }
 
-const initialData: {
-    id: number, type: string, number: number
+type dataProps = {
+    id: number, type: string, number: number, status: boolean
+}
 
-}[] = [
-        {
-            id: 0,
-            number: 0,
-            type: 'Select Room Type',
-        }
-    ]
+const initialData: dataProps[] = [
+    {
+        id: 0,
+        number: 0,
+        type: 'Select Room Type',
+        status: true
+    }
+]
 
 const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
+    const router = useRouter()
     const [value, setValue] = useState(initialData)
     const [loading, setLoading] = useState(false)
     const [msg, setMsg] = useState('')
@@ -35,9 +39,7 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
     useEffect(() => {
         if (isEdit) {
             console.log(roomData)
-            setValue([roomData as {
-                id: number, type: string, number: number
-            }])
+            setValue([roomData as dataProps])
         }
     }, [isEdit, roomData])
 
@@ -50,10 +52,11 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
             try {
                 if (isEdit) {
 
-                    const formData: RoomsTypes[] = value
+                    const formData: RoomsTypes = value?.[0]
 
                     await axios.put(`/api/Rooms`, formData).then(r => {
                         if (r.status == 200) {
+                            router.refresh()
                             setShowModal(false)
                         }
                     }).finally(() => setLoading(false))
@@ -77,6 +80,8 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
         }
     }
 
+    console.log(value)
+
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
             <p className='text-3xl mb-5 text-red-500 text-center'>Add Room</p>
@@ -95,6 +100,7 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
                     id: value.length,
                     number: 0,
                     type: 'Select Room Type',
+                    status: true
                 }])
             }}>Add More Rooms</Button>}
 
@@ -104,23 +110,10 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
 }
 
 type AddRoomProps = {
-    item: {
-        id: number;
-        type: string;
-        number: number;
-    },
+    item: dataProps,
+    value: dataProps[],
 
-    value: {
-        id: number;
-        type: string;
-        number: number;
-    }[],
-
-    setValue: React.Dispatch<React.SetStateAction<{
-        id: number;
-        type: string;
-        number: number;
-    }[]>>
+    setValue: React.Dispatch<React.SetStateAction<dataProps[]>>
 
     loading: boolean,
     hotelData: HotelTypes,
@@ -149,6 +142,14 @@ const AddMoreRoom = ({ item, value, setValue, loading, hotelData, id }: AddRoomP
                     />
                 </div>
             </div>
+
+            <div className='flex items-center'>
+                <p>Available: </p>
+                <Switch defaultChecked value={item?.status} onClick={() => {
+                    setValue(prev => prev?.map((d) => d.id == item.id ? ({ ...d, status: !item?.status }) : d))
+                }} />
+            </div>
+
             {value.length > 1 &&
                 <div>
                     <IconButton disabled={loading} className='bg-red-500 absolute bottom-4 right-4' onClick={() => {

@@ -12,16 +12,18 @@ const Home = () => {
       <Header />
       <Banner />
 
-      <Container className='relative -top-60 md:-top-52 -mb-40'>
-        <SearchBox />
+      <SearchBox />
+      <Container className='transition-all relative -top-60 md:-top-[20rem] -mb-40'>
         <div className='mt-20 w-full'>
-          <ServicesComp />
-        </div>
-        <div className='mt-28 w-full'>
-          <DreamVacation />
-        </div>
-        <div className='mt-28 w-full'>
           <Rooms />
+        </div>
+        <div className='mt-28 w-full'>
+        <DreamVacation />
+
+        </div>
+        <div className='mt-28 w-full'>
+        <ServicesComp />
+
         </div>
         <div className='flex flex-col gap-5 mt-20 text-center items-center'>
           <p className='text-4xl font-semibold'>Explore the world with OPO ROOMS</p>
@@ -81,7 +83,7 @@ const Rooms = () => {
 
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'>
         {Array(3).fill(2)?.map((item, i) => (
-          <div key={i} className='w-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden'>
+          <div key={i} className='w-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden bg-white'>
             <div className='w-full aspect-video relative'>
               <Image src='/Images/banner.jpg' alt='' objectFit='cover' fill />
             </div>

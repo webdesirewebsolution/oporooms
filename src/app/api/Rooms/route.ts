@@ -112,11 +112,13 @@ export async function PUT(req: NextRequest) {
         }
     })
 
-    const isRoomExist = await myColl.findOne({ number: rest.number, hotelId: ObjectId.createFromHexString(rest?.hotelId), type: rest.type })
+    // const isRoomExist = await myColl.findOne({ number: rest.number, hotelId: ObjectId.createFromHexString(rest?.hotelId), type: rest.type })
 
-    if (isRoomExist) {
-        return NextResponse.json('Room already exist', { status: 400 });
-    }
+    // if (isRoomExist) {
+    //     return NextResponse.json('Room already exist', { status: 400 });
+    // }
+
+    console.log(data)
 
     try {
         await myColl.updateOne(

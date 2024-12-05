@@ -10,6 +10,9 @@ import Modal from './Modal'
 import { FaHotel, FaTrainSubway } from 'react-icons/fa6'
 import { MdOutlineFlightTakeoff } from 'react-icons/md'
 import { BiSolidBusSchool } from "react-icons/bi";
+import { Container } from '@mui/material'
+import { useMotionValueEvent, useScroll } from 'framer-motion'
+import useWindowDimensions from '@/Hooks/useWindow'
 
 type tabsTypes = {
     icon: string,
@@ -17,7 +20,19 @@ type tabsTypes = {
 }
 
 const SearchBox = ({ }) => {
+    const { scrollY } = useScroll()
+    const { width } = useWindowDimensions()
+    const [scrolled, setScrolled] = useState(false)
     const [activeTab, setActiveTab] = useState<tabsTypes['title']>('Hotels')
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        console.log(latest)
+        if (latest >= 433.6) {
+            setScrolled(true)
+        } else {
+            setScrolled(false)
+        }
+    })
 
     const tabs = [
         {
@@ -38,23 +53,33 @@ const SearchBox = ({ }) => {
         },
     ]
 
-    return (
-        <div className='bg-white shadow rounded-xl p-10 w-full flex flex-col gap-5'>
-            <div className='flex'>
-                {tabs?.map((tab) => (
-                    <div key={tab.title} className={`border-r-2 px-5 cursor-pointer w-full md:w-fit`} onClick={() => setActiveTab(tab.title as tabsTypes['title'])}>
-                        <div className={`${activeTab == tab.title ? 'border-[rgba(17,34,17,1)]' : 'border-white'} border-b-2 flex items-center gap-2 pb-2 px-5 justify-center`}>
-                            {tab.icon && <tab.icon />}
-                            <p className='hidden md:block text-[rgba(17,34,17,1)] font-bold'>
-                                {tab.title}
-                            </p>
-                        </div>
-                    </div>
-                ))}
-            </div>
+    const isScrolledOnDesktop = (width > 720 && scrolled)
 
-            {activeTab == 'Hotels' && <HotelSearchBox />}
-        </div>
+    return (
+        <>
+            <div className={`lg:sticky lg:top-[22rem] z-50`}>
+                <Container maxWidth={isScrolledOnDesktop ? 'xl' : 'lg'} className={`relative -top-[21rem] transition-all`}>
+                    <div className={`bg-white shadow rounded-xl p-10 w-full flex flex-col gap-5`}>
+                        <div className='flex'>
+                            {tabs?.map((tab) => (
+                                <div key={tab.title} className={`border-r-2 px-5 cursor-pointer w-full md:w-fit`} onClick={() => setActiveTab(tab.title as tabsTypes['title'])}>
+
+                                    <div className={`${activeTab == tab.title ? 'border-[rgba(17,34,17,1)]' : 'border-white'} border-b-2 flex items-center gap-2 pb-2 px-5 justify-center`}>
+                                        {tab.icon && <tab.icon size={isScrolledOnDesktop ? 12 : 15}/>}
+                                        <p className={`hidden md:block text-[rgba(17,34,17,1)] font-bold ${isScrolledOnDesktop ? 'text-xl' : 'text-2xl'} transition-all`}>
+                                            {tab.title}
+                                        </p>
+                                    </div>
+                                    
+                                </div>
+                            ))}
+                        </div>
+
+                        {activeTab == 'Hotels' && <HotelSearchBox isScrolledOnDesktop={isScrolledOnDesktop} />}
+                    </div>
+                </Container>
+            </div>
+        </>
     )
 }
 
@@ -80,13 +105,13 @@ const initialData: SearchProps = {
     }
 }
 
-const HotelSearchBox = ({ }) => {
+const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean }) => {
     const [placeId, setPlaceId] = useState('ChIJQbc2YxC6vzsRkkDzYv-H-Oo')
     const [value, setValue] = useState(initialData)
     const [selectRoom, setSelectRoom] = useState(false)
 
     return (
-        <div className='flex flex-col w-full gap-5 items-end'>
+        <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} w-full gap-5 items-end transition-all`}>
             <div className='flex flex-col md:flex-row gap-5 items-center w-full'>
                 <div className='w-full'>
                     <GooglePlacesAutocomplete
@@ -98,7 +123,7 @@ const HotelSearchBox = ({ }) => {
                                 setPlaceId(e?.value?.place_id)
                             },
                             classNames: {
-                                control: () => 'py-[0.7rem] mt-1'
+                                control: () => 'py-[0.5rem] mt-1'
                             }
                         }}
                         // apiOptions={{
@@ -113,7 +138,7 @@ const HotelSearchBox = ({ }) => {
                 <Input
                     placeholder="CHECK-IN"
                     type='date'
-                    className='bg-transparent'
+                    className='bg-transparent h-20'
                     value={moment(value.checkIn).format('YYYY-MM-DD')}
                     onChange={(e) => {
                         setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value).add(1, 'days') }))
@@ -123,15 +148,15 @@ const HotelSearchBox = ({ }) => {
                 <Input
                     placeholder="CHECK-OUT"
                     type='date'
-                    className='bg-transparent'
+                    className='bg-transparent h-20'
                     min={moment(value.checkIn).add(1, 'days').format('YYYY-MM-DD')}
                     value={moment(value.checkOut).format('YYYY-MM-DD')}
                     onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
                 />
 
-                <div className='flex flex-col w-full'>
-                    <button type='button' className='border-2 border-slate-400 px-5 rounded-md h-20' onClick={() => setSelectRoom(true)}>
-                        <p>{value.rooms} {value.guests.adults > 1 ? 'Rooms' : 'Room'}, {value.guests.adults} {value.guests.adults > 1 ? 'Adults' : 'Adult'}{value.guests.children > 0 && `, ${value.guests.children}`} {value.guests.children > 0 && (value.guests.children > 1 ? 'Childrens' : 'Children')}</p>
+                <div className='flex flex-col w-full h-20'>
+                    <button type='button' className='border-2 border-slate-400 px-5 rounded-md h-full' onClick={() => setSelectRoom(true)}>
+                        <p>{value.rooms} {value.guests.adults > 1 ? 'Rooms' : 'Room'}, {value.guests.adults} {value.guests.adults > 1 ? 'Adults' : 'Adult'}{value.guests.children > 0 && `, ${value.guests.children} `} {value.guests.children > 0 && (value.guests.children > 1 ? 'Childrens' : 'Children')}</p>
                     </button>
                 </div>
             </div>
@@ -148,7 +173,7 @@ const HotelSearchBox = ({ }) => {
                     childrens: value.guests.children
                 }
             }} passHref legacyBehavior>
-                <Button className='bg-red-500 text-white' size='large'>
+                <Button className={'bg-red-500 text-white text-nowrap'} size='large'>
                     Find Hotels</Button>
             </Link>
 

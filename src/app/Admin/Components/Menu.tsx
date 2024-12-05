@@ -7,12 +7,13 @@ import { IoMdMenu } from 'react-icons/io'
 import { signOut } from '@/auth'
 import { User } from '../../../Types/Profile'
 import { MdBedroomParent, MdHome, MdPrivacyTip } from "react-icons/md";
-import { FaHotel, FaUser } from "react-icons/fa6";
+import { FaBookmark, FaHotel, FaUser } from "react-icons/fa6";
 import { GrCurrency } from "react-icons/gr";
 import { FaUsers } from "react-icons/fa";
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { RiPagesLine } from "react-icons/ri";
+import { MdOutlineBookmark } from "react-icons/md";
 
 type Props = {
     user: User
@@ -28,12 +29,20 @@ const Menu = ({ user }: Props) => {
 
     const menuItems = [
         {
+            title: 'Home',
+            link: '/Admin/Home',
+            as: '/Admin/Home',
+            type: 'link',
+            userRoles,
+            icon: MdHome,
+        },
+        {
             title: 'Bookings',
             link: '/Admin',
             as: '/Admin',
             type: 'link',
             userRoles,
-            icon: MdHome
+            icon: MdOutlineBookmark,
         },
         {
             title: 'Users',
@@ -67,20 +76,20 @@ const Menu = ({ user }: Props) => {
             userRoles,
             icon: GrCurrency
         },
-        {
-            title: 'Profile',
-            link: '/Admin/Profile',
-            as: '/Admin/Profile',
-            type: 'link',
-            userRoles,
-            icon: FaUser
-        },
+        // {
+        //     title: 'Profile',
+        //     link: '/Admin/Profile',
+        //     as: '/Admin/Profile',
+        //     type: 'link',
+        //     userRoles,
+        //     icon: FaUser
+        // },
         {
             title: 'Privacy Policy',
             link: '/Admin/PrivacyPolicy',
             as: '/Admin/PrivacyPolicy',
             type: 'link',
-            userRoles : ['SADMIN'],
+            userRoles: ['SADMIN'],
             icon: MdPrivacyTip
         },
         {
@@ -88,7 +97,7 @@ const Menu = ({ user }: Props) => {
             link: '/Admin/TermsConditions',
             as: '/Admin/TermsConditions',
             type: 'link',
-            userRoles : ['SADMIN'],
+            userRoles: ['SADMIN'],
             icon: RiPagesLine
         },
     ]

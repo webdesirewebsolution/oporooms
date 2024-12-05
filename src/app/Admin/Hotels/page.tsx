@@ -64,7 +64,7 @@ const Hotels = () => {
             {user?.userRole == 'HotelOwner' && 
             <div className='flex items-center justify-between'>
                 <h1 className='text-3xl font-semibold'>Add Hotel</h1>
-                <Button onClick={() => setShowHotelForm(true)} className='bg-red-500 text-white'>Add Hotel</Button>
+                <Button onClick={() => setShowHotelForm(true)} className='bg-red-500 text-white' size='large'>Add Hotel</Button>
             </div>
             }
 

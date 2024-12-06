@@ -16,6 +16,6 @@ body {
   background-color: #f2f2f2;
 }
 
-footer li {
-  color: #777
+footer * {
+  color: #fff
 }

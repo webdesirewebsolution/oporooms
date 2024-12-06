@@ -27,7 +27,7 @@ const HeaderOption = ({ user }: Props) => {
                 </div>
             </Button>
 
-            <div className={`${show ? 'flex' : 'hidden'} absolute flex-col shadow bg-white z-50 top-28 rounded-lg overflow-hidden right-0`}>
+            <div className={`${show ? 'flex' : 'hidden'} absolute flex-col shadow bg-white z-[9999] top-28 rounded-lg overflow-hidden right-0`}>
                 <div className='flex p-5 gap-3 border-b-2'>
                     <Avatar className='size-14'>
                         {user.photo && <Image src={user.photo as string} alt='User' fill objectFit='cover' />}

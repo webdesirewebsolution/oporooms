@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Input from './Input'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
@@ -13,6 +13,7 @@ import { BiSolidBusSchool } from "react-icons/bi";
 import { Container } from '@mui/material'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
 import useWindowDimensions from '@/Hooks/useWindow'
+import { usePathname, useRouter } from 'next/navigation'
 
 type tabsTypes = {
     icon: string,
@@ -65,12 +66,12 @@ const SearchBox = ({ }) => {
                                 <div key={tab.title} className={`border-r-2 px-5 cursor-pointer w-full md:w-fit`} onClick={() => setActiveTab(tab.title as tabsTypes['title'])}>
 
                                     <div className={`${activeTab == tab.title ? 'border-[rgba(17,34,17,1)]' : 'border-white'} border-b-2 flex items-center gap-2 pb-2 px-5 justify-center`}>
-                                        {tab.icon && <tab.icon size={isScrolledOnDesktop ? 12 : 15}/>}
+                                        {tab.icon && <tab.icon size={isScrolledOnDesktop ? 12 : 15} />}
                                         <p className={`hidden md:block text-[rgba(17,34,17,1)] font-bold ${isScrolledOnDesktop ? 'text-xl' : 'text-2xl'} transition-all`}>
                                             {tab.title}
                                         </p>
                                     </div>
-                                    
+
                                 </div>
                             ))}
                         </div>
@@ -79,6 +80,7 @@ const SearchBox = ({ }) => {
                     </div>
                 </Container>
             </div>
+            <div className={isScrolledOnDesktop ? 'mb-16' : ''} />
         </>
     )
 }
@@ -106,9 +108,27 @@ const initialData: SearchProps = {
 }
 
 const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean }) => {
+    const pathname = usePathname()
+    const router = useRouter()
     const [placeId, setPlaceId] = useState('ChIJQbc2YxC6vzsRkkDzYv-H-Oo')
     const [value, setValue] = useState(initialData)
     const [selectRoom, setSelectRoom] = useState(false)
+
+    useEffect(() => {
+        if (pathname == '/') {
+            const params = new URLSearchParams()
+            params.set('placeId', placeId)
+            params.set('city', value.city)
+            params.set('checkIn', moment(value.checkIn).format('x'))
+            params.set('checkOut', moment(value.checkOut).format('x'))
+            params.set('rooms', value.rooms.toString())
+            params.set('adults', value.guests.adults.toString())
+            params.set('childrens', value.guests.children.toString())
+
+            router.replace(`?${params.toString()}`)
+
+        }
+    }, [value, placeId, pathname])
 
     return (
         <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} w-full gap-5 items-end transition-all`}>

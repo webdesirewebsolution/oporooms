@@ -43,7 +43,7 @@ const ServicesComp = () => {
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10 w-full'>
                 {data?.map((item, i) => (
                     <div key={i} className={`shadow-lg border flex-1 p-10 flex flex-col gap-5 items-center justify-center bg-white`}>
-                        <div className='w-24 aspect-video relative '>
+                        <div className='w-36 aspect-video relative '>
                             <Image src='/Images/logo.png' alt='Logo' fill objectFit='contain' />
                         </div>
                         <p className='font-bold text-2xl'>{item.title}</p>

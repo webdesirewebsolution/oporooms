@@ -29,29 +29,8 @@ const Home = () => {
     (async () => {
       setLoading(true)
 
-      console.log({ user })
-
       if (user.userRole !== '') {
-        const searchParams: { [key: string]: string } = {}
-
-        switch (user.userRole) {
-          case 'CADMIN':
-            searchParams['userDetails.companyId'] = user._id as string;
-            break;
-
-          case 'HR':
-            searchParams['userDetails.companyId'] = user.companyId as string;
-            break;
-
-          case 'HotelOwner':
-            searchParams['hotelOwnerId'] = user?._id as string;
-            searchParams['bookingStatus'] = 'approved';
-            break;
-        }
-
-        const params = new URLSearchParams(searchParams).toString();
-
-        await axios.get(`/api/bookings?page=${filter.page * 10}&pageSize=${filter?.pageSize}&${params}`).then(r => {
+        await axios.get(`/api/bookings?page=${filter.page * 10}&pageSize=${filter?.pageSize}`).then(r => {
           if (r.status == 200) {
             setData(r.data?.list)
             setCount(r.data?.count)

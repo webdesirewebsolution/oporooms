@@ -31,13 +31,23 @@ export async function GET(req: NextRequest) {
         return NextResponse.json('User not loggedin', { status: 400 });
     }
 
-    const user = await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user._id as string) })
+    const user = session?.user?._id ? await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user._id as string) }) : {
+        userRole: null, _id: null, companyId: null
+    }
+
 
     switch (user?.userRole) {
-        case 'HotelOwner':
-            searchKeys['hotelOwnerId'] = String(user._id)
+        case 'CADMIN':
+            searchKeys['userDetails.companyId'] = user?._id?.toString();
             break;
-        default:
+
+        case 'HR':
+            searchKeys['userDetails.companyId'] = user?.companyId?.toString();
+            break;
+
+        case 'HotelOwner':
+            searchKeys['hotelOwnerId'] = user?._id?.toString();
+            searchKeys['bookingStatus'] = 'approved';
             break;
     }
 
@@ -49,7 +59,6 @@ export async function GET(req: NextRequest) {
         }
     }
 
-    console.log(searchKeys)
 
     try {
         const list = await myColl.aggregate(
@@ -84,10 +93,6 @@ export async function GET(req: NextRequest) {
                 }
             ]
         ).skip(Number(page) || 0).limit(Number(pageSize) || 10).toArray()
-
-        const todayBookings = await myColl.find({...searchKeys, 'roomDetails.checkIn' : {} }).toArray()
-
-        console.log(todayBookings)
 
         const count = await myColl.countDocuments(searchKeys)
 

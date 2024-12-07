@@ -50,7 +50,7 @@ const Hotels = () => {
         { id: 4, field: 'rooms', headerName: 'Room Types', minWidth: 150, renderCell: (params) => <RoomTypes params={params} /> },
         { id: 5, field: 'status', headerName: 'Status', renderCell: (params) => <Status params={params} /> },
         { id: 6, field: 'amenities', headerName: 'View Amenities', renderCell: (params) => <Amenities params={params} /> },
-        { id: 7, field: 'hotelActions', headerName: 'Actions', minWidth: 100, renderCell: (params) => <Actions params={params} setData={setData} /> },
+        { id: 7, field: 'hotelActions', headerName: 'Actions', minWidth: 200, renderCell: (params) => <Actions params={params} setData={setData} /> },
         { id: 7, field: 'roomActions', headerName: 'Room Actions', minWidth: 150, renderCell: (params) => <RoomActions params={params} /> },
     ]
 
@@ -61,12 +61,12 @@ const Hotels = () => {
 
     return (
         <div className='flex flex-col gap-10'>
-            {user?.userRole == 'HotelOwner' && 
             <div className='flex items-center justify-between'>
-                <h1 className='text-3xl font-semibold'>Add Hotel</h1>
-                <Button onClick={() => setShowHotelForm(true)} className='bg-red-500 text-white' size='large'>Add Hotel</Button>
+                <h1 className='text-3xl font-semibold'>Hotels</h1>
+                {user?.userRole == 'HotelOwner' &&
+                    <Button onClick={() => setShowHotelForm(true)} className='bg-red-500 text-white' size='large'>Add Hotel</Button>
+                }
             </div>
-            }
 
             <Paper>
                 <DataGrid

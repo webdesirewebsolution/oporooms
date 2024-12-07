@@ -202,7 +202,6 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                     defaultValue: { label: value.address.City as string, value: value.address.City as string },
                     value: { label: value.address.City as string, value: value.address.City as string },
                     onChange: (e) => {
-                        console.log(e)
 
                         if (typeof window !== 'undefined') {
                             const geocoder = new google.maps.Geocoder()

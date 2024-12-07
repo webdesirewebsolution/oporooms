@@ -7,7 +7,7 @@ import { IoMdMenu } from 'react-icons/io'
 import { signOut } from '@/auth'
 import { User } from '../../../Types/Profile'
 import { MdBedroomParent, MdHome, MdPrivacyTip } from "react-icons/md";
-import { FaBookmark, FaHotel, FaUser } from "react-icons/fa6";
+import { FaHotel } from "react-icons/fa6";
 import { GrCurrency } from "react-icons/gr";
 import { FaUsers } from "react-icons/fa";
 import Link from 'next/link'
@@ -76,14 +76,14 @@ const Menu = ({ user }: Props) => {
             userRoles,
             icon: GrCurrency
         },
-        // {
-        //     title: 'Profile',
-        //     link: '/Admin/Profile',
-        //     as: '/Admin/Profile',
-        //     type: 'link',
-        //     userRoles,
-        //     icon: FaUser
-        // },
+        {
+            title: 'Categories',
+            link: '/Admin/Categories',
+            as: '/Admin/Categories',
+            type: 'link',
+            userRoles: ['SADMIN'],
+            icon: GrCurrency
+        },
         {
             title: 'Privacy Policy',
             link: '/Admin/PrivacyPolicy',

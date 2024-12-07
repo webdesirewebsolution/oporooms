@@ -12,14 +12,12 @@ export async function loginUser(prevState: unknown, formData: FormData) {
 
     if (email !== "" && password !== "") {
         await axios.get(`${process.env.SERVERURL}/api/login?email=${email}&password=${password}`).then(async (r) => {
-
-            console.log(r.data)
-
             if (r.status == 200) {
+                const newContact = r.data?.user?.contact1
+
                 await signIn('credentials', {
-                    redirect: true,
-                    email,
-                    _id: r.data?.user?._id
+                    contact1: newContact,
+                    _id: r.data?.user?._id,
                 })
 
                 return { message: 'Logged In Successfully' }

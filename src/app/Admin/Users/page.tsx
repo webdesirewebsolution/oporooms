@@ -27,24 +27,7 @@ const Users = () => {
         (async () => {
             setLoading(true)
             if (user?.userRole !== '') {
-                const searchParams: { [key: string]: string } = {}
-
-                switch (user.userRole) {
-                    case 'CADMIN':
-                        searchParams['companyId'] = user._id as string
-                        break;
-
-                    case 'HR':
-                        searchParams['companyId'] = user.companyId as string
-                        break;
-
-                    default:
-                        break;
-                }
-
-                const params = new URLSearchParams(searchParams).toString();
-
-                await axios.get(`/api/Users?page=${filter.page * 10}&pageSize=${filter?.pageSize}&${params}`).then(r => {
+                await axios.get(`/api/Users?page=${filter.page * 10}&pageSize=${filter?.pageSize}`).then(r => {
                     if (r.status == 200) {
                         setData(r.data?.list)
                         setCount(r.data?.count)
@@ -76,11 +59,14 @@ const Users = () => {
 
     return (
         <div className='flex flex-col gap-10'>
-            {(user?.userRole == 'SADMIN' || user?.userRole == 'CADMIN' || user?.userRole == 'HR') && <div>
-                <Button onClick={() => setShowForm(true)} className='bg-red-500 text-white'>
-                    Add User
-                </Button>
-            </div>}
+            <div className='flex items-center justify-between'>
+                <h1 className='text-3xl font-semibold'>Users</h1>
+                {(user?.userRole == 'SADMIN' || user?.userRole == 'CADMIN' || user?.userRole == 'HR') &&
+                    <Button onClick={() => setShowForm(true)} className='bg-red-500 text-white'>
+                        Add User
+                    </Button>
+                }
+            </div>
 
             <Paper>
                 <DataGrid
@@ -128,7 +114,7 @@ const Action = ({ params }: { params: GridRenderCellParams }) => {
     const [showEdit, setShowEdit] = useState(false)
     return (
         <div>
-            <Button onClick={() => setShowEdit(true)}>
+            <Button onClick={() => setShowEdit(true)} className='bg-red-400 text-white'>
                 Edit User
             </Button>
 

@@ -61,7 +61,10 @@ const Home = () => {
   })
 
   return (
-    <div>
+    <div className='flex flex-col gap-10'>
+      <div className='flex items-center justify-between'>
+        <h1 className='text-3xl font-semibold'>Bookings</h1>
+      </div>
       <DataGrid
         sx={{
           height: '100%'
@@ -249,7 +252,6 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
   }
 
   const handleUpdate = async () => {
-    if (selectedRooms?.length > 0) {
       setSubmitLoading(true)
       await axios.put(`/api/bookings`, {
         _id: params.row?._id,
@@ -260,7 +262,6 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
           setBookingData((prev) => prev?.map((item) => item._id == params.row?._id ? ({ ...item, assignedRooms: selectedRooms, status: 'approved' }) : item))
         }
       }).finally(() => setSubmitLoading(false))
-    }
   }
 
   return (
@@ -273,7 +274,7 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
         return (
           <div key={item?._id} className='flex justify-between items-center'>
             <div className='flex gap-10'>
-              <Image src={item?.photos?.[0]} alt='' width={100} height={100} objectFit='cover' className='rounded-md w-48 object-cover aspect-video' />
+              {item?.photos?.[0] && <Image src={item?.photos?.[0]} alt='' width={100} height={100} objectFit='cover' className='rounded-md w-48 object-cover aspect-video' />}
               <div>
                 <p className='font-semibold'>{item?.type}</p>
                 <p>{item.number}</p>
@@ -298,7 +299,7 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
         return (
           <div key={item?._id} className='flex justify-between items-center'>
             <div className='flex gap-10'>
-              <Image src={item?.photos?.[0] as string} alt='' width={100} height={100} objectFit='cover' className='rounded-md w-48 object-cover aspect-video' />
+              {item?.photos?.[0] && <Image src={item?.photos?.[0]} alt='' width={100} height={100} objectFit='cover' className='rounded-md w-48 object-cover aspect-video' />}
               <div>
                 <p className='font-semibold'>{item?.type}</p>
                 <p>{item.number}</p>
@@ -321,7 +322,7 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
         >Next</Button>
       </div>
 
-      <Button onClick={() => handleUpdate()} disabled={submitLoading || compareArray(params.row?.assignedRooms, selectedRooms, '_id')} className={`${submitLoading || compareArray(params.row?.assignedRooms, selectedRooms, '_id') ? 'bg-blue-300' : 'bg-blue-500'} text-white w-fit px-16 py-5`} size='large'>{submitLoading ? <CircularProgress size={15} color='inherit' /> : "Assign Room"}</Button>
+      <Button onClick={() => handleUpdate()} disabled={submitLoading || compareArray(params.row?.assignedRooms, selectedRooms, '_id')} className={`${submitLoading || compareArray(params.row?.assignedRooms, selectedRooms, '_id') ? 'bg-blue-300' : 'bg-blue-500'} text-white w-fit px-16 py-5`} size='large'>{submitLoading ? <CircularProgress size={15} color='inherit' /> : "Submit"}</Button>
     </div>
   )
 }
@@ -377,7 +378,7 @@ const UpdateBookingStatus = ({ params, setBookingData }: { params: GridRenderCel
   const options = ["approved", "pending", "declined"]
 
   const handleUpdate = async () => {
-    if (params.row?.status != value?.value) {
+    if (params.row?.bookingStatus != value?.value) {
       setSubmitLoading(true)
       await axios.put(`/api/bookings`, {
         _id: params.row?._id,

@@ -1,21 +1,21 @@
 'use client'
 
-import Modal from '@/Components/Modal'
+// import Modal from '@/Components/Modal'
 import { EnquiryTypes } from '@/Types/EnquiryType'
-import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Button, CircularProgress, TextField } from '@mui/material'
 import axios from 'axios'
 import { MuiTelInput } from 'mui-tel-input'
 import React, { useState } from 'react'
 
+type Props = {}
+
 const initialData: EnquiryTypes = {
     fullname: '',
     email: '',
-    contact1: '',
-    companyName: '',
-    employeesNo: ''
+    contact1: ''
 }
 
-const Enquiry = () => {
+const Enquiry = (props: Props) => {
     const [value, setValue] = useState(initialData)
     const [msg, setMsg] = useState('')
     const [loading, setLoading] = useState(false)
@@ -24,7 +24,7 @@ const Enquiry = () => {
         e.preventDefault()
         if (value.email !== '' && value.fullname !== '' && value.contact1 !== '') {
             setLoading(true)
-            await axios.post(`/api/enquiry`, { ...value, userRole: 'CADMIN' }).then(r => {
+            await axios.post(`/api/enquiry`, {...value, userRole: 'USER'}).then(r => {
                 if (r.status == 200) {
                     setValue(initialData)
                     setMsg('Success')
@@ -58,40 +58,12 @@ const Enquiry = () => {
                     required
                 />
 
-                <TextField
-                    disabled={loading}
-                    id="outlined-basic" label="Company Name" variant="outlined"
-                    value={value.companyName}
-                    className='*:text-xl'
-                    onChange={e => setValue(prev => ({ ...prev, companyName: e.target.value }))}
-                    required
-                />
-
                 <MuiTelInput
                     disabled={loading}
                     label='Primary Contact'
                     defaultCountry='IN'
                     className='*:text-xl'
-                    value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} 
-                    required/>
-
-
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label" className='text-2xl'>No. of employees</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        disabled={loading}
-                        className='*:text-xl'
-                        label='No. of employees'
-                        value={value.employeesNo}
-                        onChange={(e) => e && setValue(prev => ({ ...prev, employeesNo: e.target.value }))}
-                        required >
-                        <MenuItem value='0 to 10' className='text-xl'>0 to 10</MenuItem>
-                        <MenuItem value='10 to 100' className='text-xl'>10 to 100</MenuItem>
-                        <MenuItem value='100+' className='text-xl'>100+</MenuItem>
-                    </Select>
-                </FormControl>
+                    value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} />
 
                 <Button
                     type='submit'

@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     const { ...rest } = body;
 
     try {
-        const result = await myColl.insertOne(rest);
+        const result = await myColl.insertOne({...rest, createdAt: new Date()});
         return NextResponse.json({ msg: result }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ status: 400, error });
@@ -52,7 +52,7 @@ export async function PUT(req: NextRequest) {
             { _id: new ObjectId(_id) },
             {
                 $set: {
-                    ...rest
+                    ...rest,
                 },
             }
         );

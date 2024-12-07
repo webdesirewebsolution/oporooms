@@ -79,7 +79,11 @@ const Footer = () => {
                             <li>Services</li>
                             <li>Rooms</li>
                             <li>About Us</li>
-                            <li>Contact Us</li>
+                            <li>
+                                <Link href='/Contact'>
+                                    Contact Us
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

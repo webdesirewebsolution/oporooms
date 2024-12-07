@@ -3,5 +3,7 @@ export interface EnquiryTypes {
     fullname: string,
     email: string,
     contact1: string,
-    userRole?: 'HotelOwner' | 'CADMIN'
+    userRole?: 'HotelOwner' | 'CADMIN',
+    companyName?: string,
+    employeesNo?: string
 }

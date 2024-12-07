@@ -17,7 +17,7 @@ type Props = {
 
 const BookRoom = ({ hotelData, roomData }: Props) => {
     const { status } = useSession()
-    const { setBookingData } = useContext(Context)
+    const { setBookingData, setAuthModal } = useContext(Context)
     const route = useRouter()
     const searchParams = useSearchParams()
     const { user } = useContext(Context)
@@ -61,16 +61,18 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
         route.push('/Checkout')
     }
 
-    if (status == 'unauthenticated' || status == 'loading' || user.userRole == '') {
-        return (
-            <></>
-        )
+    const handleButton = async () => {
+
     }
 
     return (
         <div>
             <Button className='bg-[rgba(26,182,79,1)] text-white py-5 px-20' size='large' onClick={() => {
-                handleSubmit()
+                if (status == 'authenticated') {
+                    handleSubmit()
+                } else {
+                    setAuthModal('SignIn')
+                }
             }}>Book Now</Button>
         </div>
     )

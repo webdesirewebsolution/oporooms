@@ -29,6 +29,7 @@ interface HotelFormTypes {
     name: string,
     address: AddressTypes,
     customAddress: string,
+    desc: string,
     rooms: RoomVarietyTypes[],
     status: string,
     amenities: string[]
@@ -41,6 +42,7 @@ const initialData: HotelFormTypes = {
         lat: 0, lng: 0, placeId: '', City: 'Goa, India', Locality: ''
     },
     customAddress: '',
+    desc: '',
     rooms: [{
         id: 0,
         type: '',
@@ -249,6 +251,15 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                 minRows={2}
                 value={value.customAddress}
                 onChange={e => setValue(prev => ({ ...prev, customAddress: e.target.value }))}
+            />
+
+            <TextareaAutosize
+                className="min-h-20 border-2 px-5 py-5 rounded-lg focus:outline-blue-500"
+                aria-label="empty textarea"
+                placeholder="Description"
+                minRows={2}
+                value={value.desc}
+                onChange={e => setValue(prev => ({ ...prev, desc: e.target.value }))}
             />
 
             <MultiSelect

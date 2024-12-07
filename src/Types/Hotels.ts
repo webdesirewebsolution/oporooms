@@ -15,6 +15,7 @@ export interface HotelTypes {
     photos: string[],
     name: string,
     address: AddressTypes,
+    desc: '',
     customAddress: string,
     rooms: RoomVarietyTypes[],
     status: 'approved' | 'pending' | 'declined',

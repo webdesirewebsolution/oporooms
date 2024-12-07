@@ -28,6 +28,7 @@ const HotelListClient = () => {
   const [loading, setLoading] = useState(false)
   const [count, setCount] = useState(0)
   const [address, setAddress] = useState('')
+  console.log(address)
   const [filter, setFilter] = useState<{
     page: number, pageSize: number, hotelName: string | undefined
   }>({
@@ -135,7 +136,7 @@ const HotelListClient = () => {
 
                   <div className='flex gap-2 items-center'>
                     <IoLocation />
-                    <p className='text-lg'>{address}</p>
+                    <p className='text-lg'>{item?.address?.City}</p>
                   </div>
 
                   <div className='flex gap-10'>

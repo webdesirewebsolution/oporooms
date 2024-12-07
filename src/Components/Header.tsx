@@ -7,6 +7,7 @@ import { getUser } from '@/app/actions'
 import { Session } from 'next-auth'
 import DesktopHeader from './Header/DesktopHeader'
 import Cities from './Header/Cities'
+import Link from 'next/link'
 
 const Header = async ({ }) => {
     const session = await auth()
@@ -59,9 +60,9 @@ const Header = async ({ }) => {
         <>
             <div className='w-full bg-white shadow border-b-2 border-slate-200'>
                 <div className='py-5 flex justify-between items-center px-8'>
-                    <div className='w-[140px] h-[53px] relative'>
+                    <Link href='/' className='w-[140px] h-[53px] relative'>
                         <Image src='/Images/logo.png' alt='Logo' fill objectFit='contain' />
-                    </div>
+                    </Link>
                     <DesktopHeader />
                     {/* <Menu /> */}
 

@@ -1,18 +1,18 @@
 'use client'
 
 import { Button, CircularProgress, Skeleton, TextField } from '@mui/material'
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useContext, useState } from 'react'
 import Modal from '@/Components/Modal'
 import { signIn, useSession } from 'next-auth/react'
 import axios, { AxiosError } from 'axios'
 import AddUser from './AddUser'
 import OTPInput from 'react-otp-input'
 import { MuiTelInput } from 'mui-tel-input'
+import { Context } from '@/Context/context'
 
 const AuthButtons = () => {
     const { status } = useSession()
-    const [modal, setModal] = useState<'SignIn' | 'Register' | ''>('')
-
+    const {authModal, setAuthModal} = useContext(Context)
 
     if (status == 'loading') {
         return (
@@ -26,19 +26,19 @@ const AuthButtons = () => {
         return (
             <>
                 <div className='flex gap-5'>
-                    <Button className='text-red-500 font-bold border-red-500' variant='outlined' onClick={() => setModal('Register')}>Register</Button>
-                    <Button className='bg-red-500 text-white font-bold' onClick={() => setModal('SignIn')}>
+                    <Button className='text-red-500 font-bold border-red-500' variant='outlined' onClick={() => setAuthModal('Register')}>Register</Button>
+                    <Button className='bg-red-500 text-white font-bold' onClick={() => setAuthModal('SignIn')}>
                         Sign In
                     </Button>
                 </div>
 
-                <Modal open={modal !== ''} setOpen={() => setModal('')} className='w-[50rem] max-w-full' isLogo={true}>
+                <Modal open={authModal !== ''} setOpen={() => setAuthModal('')} className='w-[50rem] max-w-full' isLogo={true}>
                     <div>
-                        {modal == 'SignIn' && <SignIn setModal={setModal} />}
-                        {modal == 'Register' && <>
+                        {authModal == 'SignIn' && <SignIn setModal={setAuthModal} />}
+                        {authModal == 'Register' && <>
                             <p className='uppercase text-red-500 text-center mb-10'>Register</p>
 
-                            <AddUser setShowModal={setModal as React.Dispatch<React.SetStateAction<boolean | "SignIn" | ''>>} isSignIn={true} />
+                            <AddUser setShowModal={setAuthModal as React.Dispatch<React.SetStateAction<boolean | "SignIn" | ''>>} isSignIn={true} />
                         </>}
                     </div>
                 </Modal>

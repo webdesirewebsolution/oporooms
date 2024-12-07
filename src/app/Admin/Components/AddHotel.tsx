@@ -5,7 +5,7 @@ import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { AddressTypes, HotelTypes } from '@/Types/Hotels'
 import { User } from '@/Types/Profile'
 import { RoomVarietyTypes } from '@/Types/Rooms'
-import { Button, CircularProgress, IconButton, TextField } from '@mui/material'
+import { Button, CircularProgress, IconButton, TextareaAutosize, TextField } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
@@ -28,6 +28,7 @@ interface HotelFormTypes {
     photos: FileList | string[],
     name: string,
     address: AddressTypes,
+    customAddress: string,
     rooms: RoomVarietyTypes[],
     status: string,
     amenities: string[]
@@ -39,6 +40,7 @@ const initialData: HotelFormTypes = {
     address: {
         lat: 0, lng: 0, placeId: '', City: 'Goa, India', Locality: ''
     },
+    customAddress: '',
     rooms: [{
         id: 0,
         type: '',
@@ -238,6 +240,15 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                 }}
                 apiKey="AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U"
 
+            />
+
+            <TextareaAutosize
+                className="min-h-20 border-2 px-5 py-5 rounded-lg focus:outline-blue-500"
+                aria-label="empty textarea"
+                placeholder="Full Address"
+                minRows={2}
+                value={value.customAddress}
+                onChange={e => setValue(prev => ({ ...prev, customAddress: e.target.value }))}
             />
 
             <MultiSelect

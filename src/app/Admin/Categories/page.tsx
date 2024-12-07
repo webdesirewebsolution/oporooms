@@ -53,7 +53,7 @@ const Categories = () => {
     return (
         <div className='flex flex-col gap-10'>
             <div className='flex items-center justify-between'>
-                <h1 className='text-3xl font-semibold'>Users</h1>
+                <h1 className='text-3xl font-semibold'>Categories</h1>
                 {(user?.userRole == 'SADMIN') &&
                     <Button onClick={() => setShowForm(true)} className='bg-red-500 text-white'>
                         Add Category

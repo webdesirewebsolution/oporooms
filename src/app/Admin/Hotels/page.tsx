@@ -47,6 +47,7 @@ const Hotels = () => {
         { id: 1, field: 'photos', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
         { id: 2, field: 'name', headerName: 'Name', minWidth: 150, },
         { id: 3, field: 'address', headerName: 'Address', minWidth: 110, renderCell: (params) => <Address params={params} /> },
+        { id: 3, field: 'customAddress', headerName: 'Full Address' },
         { id: 4, field: 'rooms', headerName: 'Room Types', minWidth: 150, renderCell: (params) => <RoomTypes params={params} /> },
         { id: 5, field: 'status', headerName: 'Status', renderCell: (params) => <Status params={params} /> },
         { id: 6, field: 'amenities', headerName: 'View Amenities', renderCell: (params) => <Amenities params={params} /> },

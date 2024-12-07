@@ -6,8 +6,8 @@ import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListI
 import { IoMdMenu } from 'react-icons/io'
 import { signOut } from '@/auth'
 import { User } from '../../../Types/Profile'
-import { MdBedroomParent, MdHome, MdPrivacyTip } from "react-icons/md";
-import { FaHotel } from "react-icons/fa6";
+import { MdBedroomParent, MdCategory, MdHome, MdPrivacyTip } from "react-icons/md";
+import { FaHotel, FaRegEnvelopeOpen } from "react-icons/fa6";
 import { GrCurrency } from "react-icons/gr";
 import { FaUsers } from "react-icons/fa";
 import Link from 'next/link'
@@ -82,7 +82,15 @@ const Menu = ({ user }: Props) => {
             as: '/Admin/Categories',
             type: 'link',
             userRoles: ['SADMIN'],
-            icon: GrCurrency
+            icon: MdCategory
+        },
+        {
+            title: 'Enquiries',
+            link: '/Admin/Enquiry',
+            as: '/Admin/Enquiry',
+            type: 'link',
+            userRoles: ['SADMIN'],
+            icon: FaRegEnvelopeOpen
         },
         {
             title: 'Privacy Policy',

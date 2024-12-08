@@ -19,3 +19,14 @@ body {
 footer * {
   color: #fff
 }
+
+/* .swiper-wrapper {
+	-webkit-transition-timing-function: linear !important;
+	-o-transition-timing-function: linear !important;
+	transition-timing-function: linear !important;
+} */
+
+
+.swiper-slide {
+	height: auto;
+}

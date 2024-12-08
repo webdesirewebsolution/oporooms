@@ -6,8 +6,8 @@ import client from "@/Lib/mongo";
 const myColl = client.collection("Users");
 
 export async function POST(req: NextRequest) {
-    const { companyId, hrId, password, ...rest } = await req.json();
-    const pass = await bcrypt.hash(password, 10)
+    const { companyId, hrId, ...rest } = await req.json();
+    // const pass = await bcrypt.hash(password, 10)
 
     try {
         const user = await myColl.findOne({ contact1: rest.contact1 })
@@ -16,14 +16,13 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ msg: 'User already Exist' }, { status: 400 });
         } else {
 
-            await myColl.insertOne({
+            const data = await myColl.insertOne({
                 companyId: ObjectId.isValid(companyId) ? ObjectId.createFromHexString(companyId) : null,
                 hrId: ObjectId.isValid(hrId) ? ObjectId.createFromHexString(hrId) : null,
-                password: pass,
                 ...rest
             });
 
-            return NextResponse.json({ msg: 'Success' }, { status: 200 });
+            return NextResponse.json({ msg: data.insertedId }, { status: 200 });
         }
 
     } catch (error) {

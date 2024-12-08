@@ -53,7 +53,7 @@ export interface Bookings {
     bookingId?: string | ObjectId,
     bookingUid: string,
     bookingType: 'Hotel' | 'Flight' | 'Train' | 'Bus',
-    status: "pending" | "approved" | "declined" | "cancel request" | "cancelled",
+    status: "pending" | "booked" | "declined" | "cancel request" | "cancelled",
     bookingStatus: "pending" | "approved" | "declined" | '',
     bookingDate: Date,
     createdAt?: Date,

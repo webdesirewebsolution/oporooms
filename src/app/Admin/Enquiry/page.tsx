@@ -7,7 +7,6 @@ import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import { Context } from '@/Context/context'
 import { Paper } from '@mui/material'
 import Modal from '@/Components/Modal'
-import { CategoriesTypes } from '@/Types/Categories'
 import AddCategory from '../Components/AddCategory'
 import { EnquiryTypes } from '@/Types/EnquiryType'
 

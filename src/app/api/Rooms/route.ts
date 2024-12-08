@@ -34,10 +34,11 @@ export async function GET(req: NextRequest) {
     const searchParamsKeys = req.nextUrl.searchParams.entries()
     const page: number = searchParams('page')
     const pageSize: number = searchParams('pageSize')
+    const forAssign: number = searchParams('forAssign')
 
     const searchKeys: { [key: string]: unknown } = {}
 
-    if(!session?.user?._id){
+    if (!session?.user?._id) {
         return NextResponse.json('User not loggedin', { status: 400 });
     }
 
@@ -50,12 +51,12 @@ export async function GET(req: NextRequest) {
         default:
             break;
     }
-    
+
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize') {
             searchKeys[keys] = ObjectId.createFromHexString(values)
         } else
-            if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize' && keys !== 'checkExist') {
+            if (typeof values !== 'undefined' && values !== 'undefined' && values !== null && values !== 'null' && keys !== 'page' && keys !== 'pageSize' && keys !== 'checkExist' && keys !== 'forAssign') {
                 searchKeys[keys] = values
             }
     }
@@ -86,8 +87,23 @@ export async function GET(req: NextRequest) {
                     'foreignField': '_id',
                     'as': 'HotelData'
                 }
+            },
+            {
+                '$addFields': {
+                    'BookingsSize': {
+                        '$size': '$BookingsData'
+                    }
+                }
+            },
+            {
+                $match: Boolean(forAssign) ? {
+                    'BookingsSize': 0
+                }: {}
             }
         ]).limit(Number(pageSize)).skip(Number(page)).toArray()
+
+
+        console.log(Boolean(forAssign))
 
         const count = await myColl.countDocuments(searchKeys)
         return NextResponse.json({ list, count }, { status: 200 });
@@ -117,8 +133,6 @@ export async function PUT(req: NextRequest) {
     // if (isRoomExist) {
     //     return NextResponse.json('Room already exist', { status: 400 });
     // }
-
-    console.log(data)
 
     try {
         await myColl.updateOne(

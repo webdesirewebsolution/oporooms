@@ -4,6 +4,8 @@ import Menu from './Menu'
 import { auth } from '@/auth'
 import { Session } from 'next-auth'
 import HeaderOption from './HeaderOption'
+import Link from 'next/link'
+import Image from 'next/image'
 
 type Props = {
     children: React.ReactNode
@@ -19,7 +21,9 @@ const Header = async ({ children }: Props) => {
 
                 <div className='flex gap-8 items-center'>
                     <Menu user={user} />
-                    <h1 className='text-red-500 text-3xl font-bold'>Opo Rooms</h1>
+                    <Link href='/' className='w-[80px] h-[3rem] relative'>
+                        <Image src='/Images/logo.png' alt='Logo' fill objectFit='contain' />
+                    </Link>
                 </div>
 
                 <div className='flex gap-8 items-center'>
@@ -27,7 +31,7 @@ const Header = async ({ children }: Props) => {
                         {user?.userRole}
                     </p>
 
-                    <HeaderOption user={user}/>
+                    <HeaderOption user={user} />
                 </div>
             </div>
 

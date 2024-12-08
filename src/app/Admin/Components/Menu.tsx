@@ -77,6 +77,14 @@ const Menu = ({ user }: Props) => {
             icon: GrCurrency
         },
         {
+            title: 'Wallet',
+            link: '/Admin/Wallet',
+            as: '/Admin/Wallet',
+            type: 'link',
+            userRoles,
+            icon: GrCurrency
+        },
+        {
             title: 'Categories',
             link: '/Admin/Categories',
             as: '/Admin/Categories',

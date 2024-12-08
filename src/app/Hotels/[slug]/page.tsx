@@ -2,6 +2,7 @@ import BookRoom from '@/Components/BookRoom';
 import Footer from '@/Components/Footer';
 import Header from '@/Components/Header'
 import { HotelTypes } from '@/Types/Hotels';
+import { RoomVarietyTypes } from '@/Types/Rooms';
 import { Container } from '@mui/material';
 import axios from 'axios'
 import moment from 'moment';
@@ -11,6 +12,7 @@ import Image from 'next/image';
 import React from 'react'
 import { FaStar } from 'react-icons/fa6';
 import { IoLocationSharp } from "react-icons/io5";
+import client from "@/Lib/mongo";
 
 type Props = {
     params: Promise<Params>,
@@ -111,7 +113,18 @@ const Hotel = async ({ params, searchParams }: Props) => {
                         </div>
 
 
-                        {item?.rooms?.length > 0 && <Rooms hotelData={item} item={item?.rooms} />}
+                        {item?.rooms?.length > 0 && (
+                            <div className='mt-10'>
+                                <h2 className='text-4xl font-semibold mb-5'>Rooms</h2>
+                                <div className='flex flex-col gap-10' id='rooms'>
+                                    {item?.rooms?.map((room) => {
+                                        return (
+                                            <Rooms key={room.id} hotelData={item} room={room} />
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        )}
                     </Container>
                 </div>
                 <Footer />
@@ -120,42 +133,128 @@ const Hotel = async ({ params, searchParams }: Props) => {
     }
 }
 
-const Rooms = ({ hotelData, item }: { hotelData: HotelTypes, item: HotelTypes['rooms'] }) => {
+const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVarietyTypes }) => {
+    const roomsColl = client.collection("Rooms");
+
+    const totalSize = await roomsColl.aggregate([
+        {
+            $match: {
+                type: room.type
+            }
+        },
+        {
+            '$addFields': {
+                'id': {
+                    '$toString': '$_id'
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'Bookings',
+                'localField': 'id',
+                'foreignField': 'assignedRooms._id',
+                'as': 'BookingsData'
+            }
+        }, {
+            '$lookup': {
+                'from': 'Hotels',
+                'localField': 'hotelId',
+                'foreignField': '_id',
+                'as': 'HotelData'
+            }
+        },
+        {
+            '$addFields': {
+                'BookingsSize': {
+                    '$size': '$BookingsData'
+                }
+            }
+        },
+        {
+            $count: "TotalSize"
+        },
+    ]).toArray()
+
+    const bookingSize = await roomsColl.aggregate([
+        {
+            $match: {
+                type: room.type
+            }
+        },
+        {
+            '$addFields': {
+                'id': {
+                    '$toString': '$_id'
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'Bookings',
+                'localField': 'id',
+                'foreignField': 'assignedRooms._id',
+                'as': 'BookingsData'
+            }
+        }, {
+            '$lookup': {
+                'from': 'Hotels',
+                'localField': 'hotelId',
+                'foreignField': '_id',
+                'as': 'HotelData'
+            }
+        },
+        {
+            '$addFields': {
+                'BookingsSize': {
+                    '$size': '$BookingsData'
+                }
+            }
+        },
+        {
+            $match: {
+                'BookingsSize': { $gt: 0 }
+            }
+        },
+        {
+            $count: "BookingSize"
+        },
+    ]).toArray()
+
     return (
-        <div className='mt-10'>
-            <h2 className='text-4xl font-semibold mb-5'>Rooms</h2>
-            <div className='flex flex-col gap-10' id='rooms'>
-                {item?.map((room) => {
-                    return (
-                        <div key={room.type} className='border flex flex-col md:flex-row shadow-lg bg-white overflow-hidden rounded-lg'>
-                            <div className='w-full md:w-[35rem] aspect-video max-w-full relative rounded-xl'>
-                                <Image src={room?.photos?.[0]} alt='' fill objectFit='cover' />
-                            </div>
+        <div key={room.type} className='border flex flex-col md:flex-row shadow-lg bg-white overflow-hidden rounded-lg'>
+            <div className='w-full md:w-[35rem] aspect-video max-w-full relative rounded-xl'>
+                <Image src={room?.photos?.[0]} alt='' fill objectFit='cover' />
+            </div>
 
 
-                            <div className='flex flex-col lg:flex-row p-10 flex-1 justify-between'>
-                                <div className='flex flex-col flex-1 gap-3'>
-                                    <p className='font-bold text-3xl'>{room?.type}</p>
-                                    <p className='text-lg'>Radisson Collection is a unique collection of iconic properties. While the character of each hotel feels authentic to its locality, all offer the ultimate template for contemporary living; united by bespoke design and exceptional experiences across dining, fitness, wellness and sustainability.</p>
-                                    <ul className='flex gap-x-3'>
-                                        {room?.amenities?.slice(0, 3)?.map((amenity) => (
-                                            <li key={amenity} className='text-[1rem] text-slate-600 shadow bg-white px-4 py-1'>{amenity}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className='flex flex-col-reverse lg:flex-col flex-1 gap-5 md:gap-0 lg:items-end justify-between mt-10 lg:mt-0'>
-                                    <div>
-                                        <BookRoom hotelData={hotelData} roomData={room} />
-                                    </div>
-                                    <div className='flex flex-col lg:items-end'>
-                                        <p className='text-4xl font-bold text-green-400'>&#8377;{room?.price}</p>
-                                        <p className='text-xl'>+ &#8377;{room?.fee} taxes & fees</p>
-                                    </div>
-                                </div>
+            <div className='flex flex-col lg:flex-row p-10 flex-1 justify-between'>
+                <div className='flex flex-col flex-1 gap-3'>
+                    <p className='font-bold text-3xl'>{room?.type}</p>
+                    <p className='text-lg'>Radisson Collection is a unique collection of iconic properties. While the character of each hotel feels authentic to its locality, all offer the ultimate template for contemporary living; united by bespoke design and exceptional experiences across dining, fitness, wellness and sustainability.</p>
+                    <ul className='flex gap-x-3'>
+                        {room?.amenities?.slice(0, 3)?.map((amenity) => (
+                            <li key={amenity} className='text-[1rem] text-slate-600 shadow bg-white px-4 py-1'>{amenity}</li>
+                        ))}
+                    </ul>
+                </div>
+                <div className='flex flex-col-reverse lg:flex-col flex-1 gap-5 md:gap-0 lg:items-end justify-between mt-10 lg:mt-0'>
+                    <div>
+                        {totalSize?.[0]?.TotalSize == bookingSize?.[0]?.BookingSize ?
+                            <div>
+                                {/* <p className='text-3xl text-red-500 font-semibold'>Sold Out</p> */}
+                                <Image src='/Images/soldout.png' alt=''
+                                    width={0}
+                                    height={0}
+                                    sizes='100vw'
+                                    className='w-28'
+                                />
                             </div>
-                        </div>
-                    )
-                })}
+                            : <BookRoom hotelData={hotelData} roomData={room} />}
+                    </div>
+                    <div className='flex flex-col lg:items-end'>
+                        <p className='text-4xl font-bold text-green-400'>&#8377;{room?.price}</p>
+                        <p className='text-xl'>+ &#8377;{room?.fee} taxes & fees</p>
+                    </div>
+                </div>
             </div>
         </div>
     )

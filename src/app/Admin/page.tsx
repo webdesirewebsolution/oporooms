@@ -211,7 +211,7 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
   useEffect(() => {
     (async () => {
       setLoading(true)
-      await axios.get(`/api/Rooms?hotelId=${params?.row?.details?._id}&type=${params.row?.roomType}&page=${filter.page}&pageSize=${filter.pageSize}`).then(r => {
+      await axios.get(`/api/Rooms?hotelId=${params?.row?.details?._id}&type=${params.row?.roomType}&page=${filter.page}&pageSize=${filter.pageSize}&forAssign=true`).then(r => {
         if (r.status == 200) {
           setData(r.data?.list)
           setCount(r.data?.count)
@@ -252,16 +252,18 @@ const AssignRooms = ({ params, setBookingData }: { params: GridRenderCellParams,
   }
 
   const handleUpdate = async () => {
-      setSubmitLoading(true)
-      await axios.put(`/api/bookings`, {
-        _id: params.row?._id,
-        assignedRooms: selectedRooms,
-        status: 'approved'
-      }).then(r => {
-        if (r.status == 200) {
-          setBookingData((prev) => prev?.map((item) => item._id == params.row?._id ? ({ ...item, assignedRooms: selectedRooms, status: 'approved' }) : item))
-        }
-      }).finally(() => setSubmitLoading(false))
+    setSubmitLoading(true)
+    await axios.put(`/api/bookings`, {
+      _id: params.row?._id,
+      assignedRooms: selectedRooms,
+      status: 'approved'
+    }).then(async (r) => {
+      if (r.status == 200) {
+        // await axios.put(`/api/ManyRooms`, {})
+
+        setBookingData((prev) => prev?.map((item) => item._id == params.row?._id ? ({ ...item, assignedRooms: selectedRooms, status: 'booked' }) : item))
+      }
+    }).finally(() => setSubmitLoading(false))
   }
 
   return (
@@ -335,7 +337,7 @@ const UpdateStatus = ({ params, setBookingData }: { params: GridRenderCellParams
     setValue({ label: params.row?.status?.toUpperCase(), value: params.row?.status })
   }, [params.row])
 
-  const options = ["approved", "pending", "cancel request", "cancelled"]
+  const options = ["booked", "pending", "cancel request", "cancelled"]
 
   const handleUpdate = async () => {
     if (params.row?.status != value?.value) {

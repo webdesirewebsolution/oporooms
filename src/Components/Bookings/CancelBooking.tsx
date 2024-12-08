@@ -5,19 +5,21 @@ import React, { useState } from 'react'
 import Modal from '../Modal'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { Bookings } from '@/Types/Booking'
 
 type Props = {
-    bookingId: string
+    bookingId: string,
+    bookingData: Bookings
 }
 
-const CancelBooking = ({ bookingId }: Props) => {
+const CancelBooking = ({ bookingId, bookingData }: Props) => {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
 
     const handleCancel = async () => {
         setLoading(true)
-        await axios.put(`/api/bookings`, { _id: bookingId, status: 'cancel request' }).then((r) => {
+        await axios.put(`/api/bookings`, { _id: bookingId, status: bookingData?.paymentMode == 'Pay at hotel' ? 'cancelled' :  'cancel request' }).then((r) => {
             if (r.status == 200) {
                 router.refresh()
                 setShowModal(false)

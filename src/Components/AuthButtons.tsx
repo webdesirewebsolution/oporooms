@@ -12,7 +12,7 @@ import { Context } from '@/Context/context'
 
 const AuthButtons = () => {
     const { status } = useSession()
-    const {authModal, setAuthModal} = useContext(Context)
+    const { authModal, setAuthModal } = useContext(Context)
 
     if (status == 'loading') {
         return (
@@ -75,11 +75,19 @@ export const SignIn = ({ setModal }: { setModal: React.Dispatch<React.SetStateAc
             await axios.get(`/api/LoginWithOtp?contact1=${newContact}&otp=${code}`).then(async (r) => {
                 console.log(r.data)
                 if (r.status == 200) {
-                    await signIn('credentials', {
-                        redirectTo: r.data?.user?.userRole == 'HotelOwner' ? '/Admin': '/',
-                        contact1: newContact,
-                        _id: r.data?.user?._id
-                    })
+                    if (r.data?.user?.userRole == 'HotelOwner') {
+                        await signIn('credentials', {
+                            redirectTo: '/Admin',
+                            contact1: newContact,
+                            _id: r.data?.user?._id
+                        })
+                    } else {
+                        await signIn('credentials', {
+                            redirect: false,
+                            contact1: newContact,
+                            _id: r.data?.user?._id
+                        })
+                    }
 
                 }
             }).catch((err) => {

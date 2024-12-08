@@ -1,7 +1,9 @@
 import Footer from '@/Components/Footer'
 import Header from '@/Components/Header'
+import HotelSlider from '@/Components/HotelSlider'
 import SearchBox from '@/Components/SearchBox'
 import ServicesComp from '@/Components/ServicesComp'
+import TestimonialSlider from '@/Components/TestimonialSlider'
 import { HotelTypes } from '@/Types/Hotels'
 import { Button, Container } from '@mui/material'
 import axios from 'axios'
@@ -30,11 +32,13 @@ const Home = async ({ searchParams }: Props) => {
         </div>
         <div className='mt-28 w-full'>
           <DreamVacation />
-
         </div>
         <div className='mt-28 w-full'>
           <ServicesComp />
+        </div>
 
+        <div className='mt-28 w-full'>
+          <Testimonials />
         </div>
 
       </Container>
@@ -114,13 +118,11 @@ const DreamVacation = () => {
   )
 }
 
-const Rooms = async ({ searchParams } : {searchParams : any}) => {
-  const data = await axios.get(`${process.env.SERVERURL}/api/Hotels?page=0&pageSize=3`)
+const Rooms = async ({ searchParams }: { searchParams: any }) => {
+  const data = await axios.get(`${process.env.SERVERURL}/api/Hotels?page=0&pageSize=10`)
 
   const list: HotelTypes[] = data.data?.list
   const params = new URLSearchParams(searchParams)
-
-  console.log(params.toString())
 
   return (
     <div className='flex flex-col gap-14 items-center w-full'>
@@ -131,28 +133,64 @@ const Rooms = async ({ searchParams } : {searchParams : any}) => {
       </div>
       <div className='text-5xl font-bold'>Explore Our <span className='text-red-500 text-5xl font-bold uppercase'>Hotels</span></div>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'>
-        {list?.map((item, i) => (
-          <div key={i} className='w-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden bg-white'>
-            <div className='w-full aspect-video relative'>
-              {item.photos?.[0] ? <Image src={item.photos?.[0]} alt='' objectFit='cover' fill /> : (
-                <div className='w-full aspect-video flex items-center justify-center bg-slate-300'>
-                  <CiImageOff size={100} />
-                </div>
-              )}
-            </div>
-            <div className='p-5 flex flex-col gap-4'>
-              <p className='text-4xl font-semibold'>{item.name}</p>
-              <p className='text-[1.2rem] w-96 text-slate-700'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s</p>
-              <p className='font-semibold'>
-                &#8377;{item.rooms?.[0]?.price} Per Night</p>
-              <Link href={`/Hotels/${item._id}?${params.toString()}`}>
-                <Button className='bg-red-500 text-white py-5 w-full' size='large'>Book Now</Button>
-              </Link>
-            </div>
-          </div>
-        ))}
+      {/* <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'> */}
+      <HotelSlider list={list} params={params.toString()} />
+    </div>
+  )
+}
+
+const Testimonials = async () => {
+
+  const list = [
+    {
+      image: '',
+      title: 'Rahul',
+      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+    },
+    {
+      image: '',
+      title: 'Rahul',
+      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+    },
+    {
+      image: '',
+      title: 'Rahul',
+      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+    },
+    {
+      image: '',
+      title: 'Rahul',
+      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+    },
+    {
+      image: '',
+      title: 'Rahul',
+      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+    },
+    {
+      image: '',
+      title: 'Rahul',
+      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+    },
+    {
+      image: '',
+      title: 'Rahul',
+      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+    },
+  ]
+
+  return (
+    <div className='flex flex-col gap-14 items-center w-full'>
+      <div className='flex items-center gap-4'>
+        <div className='w-20 border border-black' />
+        <p className='uppercase text-center font-semibold'>Testimonials</p>
+        <div className='w-20 border border-black' />
       </div>
+      <div className='text-5xl font-bold'>What <span className='text-red-500 text-5xl font-bold uppercase'>Users </span>
+      {" "}say</div> 
+
+      {/* <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'> */}
+      <TestimonialSlider list={list} />
     </div>
   )
 }

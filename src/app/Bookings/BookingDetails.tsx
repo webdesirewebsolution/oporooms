@@ -64,7 +64,7 @@ const BookingsDetails = () => {
 
                             const statusStyle = {
                                 'pending': 'bg-yellow-500',
-                                'approved': 'bg-green-500',
+                                'booked': 'bg-green-500',
                                 'declined': 'bg-red-500',
                                 'cancelled': 'bg-red-500',
                                 'cancel request': 'bg-red-500'
@@ -97,7 +97,7 @@ const BookingsDetails = () => {
                                                     Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
                                                 </p>
 
-                                                {(item?.status == 'cancel request' || item?.status == 'cancelled') ? <></> : <CancelBooking bookingId={item._id as string} />}
+                                                {(item?.status == 'cancel request' || item?.status == 'cancelled') ? <></> : <CancelBooking bookingId={item._id as string} bookingData={item}/>}
                                             </div>
 
                                         </div>

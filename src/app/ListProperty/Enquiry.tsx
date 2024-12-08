@@ -5,6 +5,7 @@ import { EnquiryTypes } from '@/Types/EnquiryType'
 import { Button, CircularProgress, TextField } from '@mui/material'
 import axios from 'axios'
 import { MuiTelInput } from 'mui-tel-input'
+import { signIn, signOut } from 'next-auth/react'
 import React, { useState } from 'react'
 
 type Props = {}
@@ -24,14 +25,39 @@ const Enquiry = (props: Props) => {
         e.preventDefault()
         if (value.email !== '' && value.fullname !== '' && value.contact1 !== '') {
             setLoading(true)
-            await axios.post(`/api/enquiry`, {...value, userRole: 'HotelOwner'}).then(r => {
+
+            const newContact = value?.contact1?.split(' ').join('')?.split('+')?.[1]
+
+            await axios.post(`/api/User`, {
+                ...value,
+                contact1: newContact,
+                userRole: 'HotelOwner',
+                companyId: null,
+                hrId: null,
+
+            }).then(async (r) => {
                 if (r.status == 200) {
                     setValue(initialData)
                     setMsg('Success')
+
+                    console.log({newContact, r: r.data?.msg})
+
+                    await signIn('credentials', {
+                        redirectTo: '/Admin/Hotels',
+                        contact1: newContact,
+                        _id: r.data?.msg
+                    })
                 }
-            }).catch(err => {
-                setMsg('Something wrong')
             }).finally(() => setLoading(false))
+
+            // await axios.post(`/api/enquiry`, {...value, userRole: 'HotelOwner'}).then(r => {
+            //     if (r.status == 200) {
+            //         setValue(initialData)
+            //         setMsg('Success')
+            //     }
+            // }).catch(err => {
+            //     setMsg('Something wrong')
+            // }).finally(() => setLoading(false))
         }
     }
 

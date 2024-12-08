@@ -153,7 +153,7 @@ export const CompleteBooking = () => {
     const handleBooking = async () => {
         if (bookingData.paymentMode != 'Online Pay') {
             setBookingSubmitLoading(true)
-            await axios.post(`/api/bookings`, bookingData).then(() => {
+            await axios.post(`/api/bookings`, {...bookingData, status: (bookingData.paymentMode== 'Pay at hotel') ? 'booked' : 'pending'}).then(() => {
                 setShowModal(true)
             }).finally(() => setBookingSubmitLoading(false))
         }
@@ -166,7 +166,7 @@ export const CompleteBooking = () => {
                 {bookingSubmitLoading ? <CircularProgress size={15} color='inherit' /> : "Complete Booking"}
             </Button>
             <Modal open={showModal}>
-                <div>
+                <div className='mt-14'>
                     <p className='text-2xl font-semibold'>Thank you for booking</p>
                     <div className='flex flex-col items-center gap-3 mt-7'>
                         <Link href='/' className='text-blue-500'>

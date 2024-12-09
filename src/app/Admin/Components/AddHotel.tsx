@@ -194,7 +194,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
 
             <TextField id="outlined-basic" label="Hotel Name" variant="outlined"
                 disabled={loading}
-                value={value.name}
+                value={value?.name}
                 className='*:text-xl'
                 onChange={e => setValue(prev => ({ ...prev, name: e.target.value }))}
                 required
@@ -249,7 +249,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                 aria-label="empty textarea"
                 placeholder="Full Address"
                 minRows={2}
-                value={value.customAddress}
+                value={value?.customAddress}
                 onChange={e => setValue(prev => ({ ...prev, customAddress: e.target.value }))}
             />
 
@@ -258,7 +258,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                 aria-label="empty textarea"
                 placeholder="Description"
                 minRows={2}
-                value={value.desc}
+                value={value?.desc}
                 onChange={e => setValue(prev => ({ ...prev, desc: e.target.value }))}
             />
 
@@ -267,7 +267,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                 labelledBy="Select Hotel Amenities"
 
                 options={amenities?.map((item) => ({ label: item, value: item }))}
-                value={value.amenities?.map((item) => ({ label: item, value: item }))}
+                value={value?.amenities?.map((item) => ({ label: item, value: item }))}
                 onChange={(e: { label: string, value: string }[]) => {
                     setValue(prev => ({ ...prev, amenities: e?.map(it => it.value) }))
                 }} />
@@ -326,8 +326,6 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
     const onHandleImage = (key: keyof RoomVarietyTypes, file: FileList) => {
         setValue(prev => ({
             ...prev, rooms: prev.rooms?.map((d) => {
-                console.log("d", d.id)
-                console.log("item", item.id)
                 return (d.id == item.id ? ({
                     ...d, [key]: file
                 }) : d)
@@ -384,13 +382,11 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
                 {item?.id && (item?.id + 1)}</p>
             <div className='grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10 items-end'>
 
-
-
                 <TextField id="room_type"
                     label="Room Type"
                     variant="outlined"
                     disabled={loading}
-                    value={item.type}
+                    value={item?.type}
                     className='*:text-xl z-0'
                     onChange={e => onChange('type', e.target.value)}
                     required
@@ -401,7 +397,7 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
                     variant="outlined"
                     type='number'
                     disabled={loading}
-                    value={item.regularPrice}
+                    value={item?.regularPrice}
                     className='*:text-xl z-0'
                     onChange={e => onChange('regularPrice', e.target.value)}
                     required
@@ -412,7 +408,7 @@ const RoomType = ({ item, setValue, loading }: RoomTypeProps) => {
                     variant="outlined"
                     type='number'
                     disabled={loading}
-                    value={item.price}
+                    value={item?.price}
                     className='*:text-xl z-0'
                     onChange={e => onChange('price', e.target.value)}
                     required

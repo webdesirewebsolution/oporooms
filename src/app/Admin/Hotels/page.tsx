@@ -117,7 +117,7 @@ const Address = ({ params }: { params: GridRenderCellParams }) => {
 
             <Modal open={showAddr} setOpen={() => setShowAddr(false)}>
                 <div className='flex flex-col gap-5 border shadow p-10 rounded-lg'>
-                    {Object.entries(params?.row?.address as AddressTypes)?.map((item, i) => (
+                    {params?.row?.address && Object.entries(params?.row?.address as AddressTypes)?.map((item, i) => (
                         <div key={i} className='flex gap-20 justify-between items-center'>
                             <div className='capitalize'>{item?.[0]}:</div>
                             <div>{item?.[1]}</div>

@@ -63,8 +63,8 @@ export const Details = () => {
     const childrens = bookingData ? Number(bookingData?.roomDetails?.childrens) : 0
     const checkIn = bookingData ? Number(bookingData?.roomDetails?.checkIn) : 0
     const checkOut = bookingData ? Number(bookingData?.roomDetails?.checkOut) : 0
-    const price = bookingData ? Number(bookingData?.roomDetails?.roomData.price) : 0
-    const fee = bookingData ? Number(bookingData?.roomDetails?.roomData.fee) : 0
+    const price = bookingData ? Number(bookingData?.transactionDetails?.cost) : 0
+    const fee = bookingData ? Number(bookingData?.transactionDetails?.fee) : 0
 
     const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 0
 

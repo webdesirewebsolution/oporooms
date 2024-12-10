@@ -1,21 +1,19 @@
 'use client'
 
-import { HotelTypes } from '@/Types/Hotels'
 import { Button } from '@mui/material'
 import React, { useContext } from 'react'
 import { Context } from '@/Context/context'
 import { useRouter, useSearchParams } from 'next/navigation'
 import moment from 'moment'
-import { RoomVarietyTypes } from '@/Types/Rooms'
 import { Bookings } from '@/Types/Booking'
 import { useSession } from 'next-auth/react'
+import axios from 'axios'
 
 type Props = {
-    hotelData: HotelTypes,
-    roomData: RoomVarietyTypes,
+    hotelId: string,
 }
 
-const BookRoom = ({ hotelData, roomData }: Props) => {
+const BookRoom = ({ hotelId }: Props) => {
     const { status } = useSession()
     const { setBookingData, setAuthModal } = useContext(Context)
     const route = useRouter()
@@ -23,6 +21,13 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
     const { user } = useContext(Context)
 
     const handleSubmit = async () => {
+        console.log(hotelId)
+        const hotelData = await axios.get(`/api/Hotels?_id=${hotelId}`).then(r => {
+            if (r.status == 200) return r.data?.list?.[0]
+        })
+
+        const roomData = hotelData?.rooms?.[0]
+
         const searchData: { [key: string]: string } = {}
 
         for (const i of searchParams.entries()) {
@@ -33,7 +38,7 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
 
         const transactionDetails = {
             cost: Number(roomData?.price) * totalNights * Number(searchData?.rooms),
-            fee: Number(roomData?.fee),
+            fee: 100,
         }
 
         const formData: Bookings = {
@@ -59,10 +64,6 @@ const BookRoom = ({ hotelData, roomData }: Props) => {
 
         setBookingData(formData)
         route.push('/Checkout')
-    }
-
-    const handleButton = async () => {
-
     }
 
     return (

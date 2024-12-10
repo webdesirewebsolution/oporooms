@@ -107,7 +107,7 @@ const HotelListClient = () => {
               <Skeleton variant='rounded' className='absolute w-full h-full' />
             </div>
           ) : data?.map((item) => (
-            <div key={item?._id} className='bg-white p-6 rounded-md flex flex-col lg:flex-row gap-10 justify-between'>
+            <div key={item?._id as string} className='bg-white p-6 rounded-md flex flex-col lg:flex-row gap-10 justify-between'>
               <div className='flex flex-col lg:flex-row gap-10'>
                 {item?.photos?.length > 0 ? <Swiper slidesPerView={1} spaceBetween={10}>
                   {item?.photos?.map(img => (

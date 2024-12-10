@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { RoomVarietyTypes } from "./Rooms";
 
 export interface AddressTypes {
@@ -9,7 +10,7 @@ export interface AddressTypes {
 }
 
 export interface HotelTypes {
-    _id?: string,
+    _id?: string | ObjectId,
     hotelUId?: string,
     hotelOwnerId?: string,
     photos: string[],

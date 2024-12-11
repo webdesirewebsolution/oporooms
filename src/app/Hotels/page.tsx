@@ -16,7 +16,7 @@ import SliderImage from './SliderImage';
 import SearchInput, { Filter } from './SearchInput';
 
 type Props = {
-    searchParams: SearchParams
+    searchParams: Promise<SearchParams>
 }
 
 const HotelList = async ({ searchParams }: Props) => {

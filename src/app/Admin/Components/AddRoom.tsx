@@ -63,8 +63,8 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
                 } else {
 
                     const formData: RoomsTypes[] = value?.map(({ id, ...item }) => ({
-                        ...item, hotelId: hotelData?._id,
-                        hotelOwnerId: hotelData?.hotelOwnerId
+                        ...item, hotelId: hotelData?._id as string,
+                        hotelOwnerId: hotelData?.hotelOwnerId as string
                     }))
 
                     await axios.post(`/api/Rooms`, formData).then(r => {

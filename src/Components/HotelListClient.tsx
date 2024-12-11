@@ -146,7 +146,7 @@ const HotelListClient = () => {
                       </Button>
                     </Link>
 
-                    <BookRoom hotelData={item} roomData={item?.rooms?.[0]} />
+                    <BookRoom hotelId={item._id as string} />
                   </div>
                 </div>
 

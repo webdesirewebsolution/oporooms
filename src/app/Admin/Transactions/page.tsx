@@ -2,40 +2,73 @@
 
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import { Context } from '@/Context/context'
-import { Paper } from '@mui/material'
+import { Button, Checkbox, FormControl, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material'
 import { TransactionAction, TransactionType } from '@/Types/Transaction'
+import moment from 'moment'
+import Modal from '@/Components/Modal'
+import AddTransactions from '../Components/AddTransactions'
 
 const Transaction = () => {
-    const { user } = useContext(Context)
     const [data, setData] = useState<TransactionType[]>([])
     const [count, setCount] = useState(0)
-    const [filter, setFilter] = useState({
+    const [filter, setFilter] = useState<{
+        page: number, pageSize: number, status?: 'All' | 'pending' | 'completed' | 'cancelled',
+        'payer.contact1'?: string,
+        'receiver.contact1'?: string,
+        from?: string | null,
+        to?: string | null
+    }>({
         page: 0,
-        pageSize: 10
+        pageSize: 10,
+        status: 'All',
+        'payer.contact1': '',
+        'receiver.contact1': '',
+        'from': null,
+        'to': null
     })
     const [loading, setLoading] = useState(true)
+    const [show, setShow] = useState(false)
 
     useEffect(() => {
         (async () => {
             setLoading(true)
-            if (user?.userRole !== '') {
-                await axios.get(`/api/transactions?page=${filter.page * 10}&pageSize=${filter?.pageSize}`).then(r => {
-                    if (r.status == 200) {
-                        setData(r.data?.list)
-                        setCount(r.data?.count)
-                    }
-                }).finally(() => setLoading(false))
-            }
-        })()
-    }, [filter, user])
+            const params = new URLSearchParams()
 
+            Object.entries(filter)?.map(([key, value]) => {
+                if (key == 'page') {
+                    params.set(key, String(Number(value as number * 10)))
+                } else if (value == '' || value == 'All' || value == null) {
+                    params.delete(key)
+                } else {
+                    params.set(key, String(value))
+                }
+            })
+
+            await axios.get(`/api/transactions?${params.toString()}`).then(r => {
+                if (r.status == 200) {
+                    setData(r.data?.list)
+                    setCount(r.data?.count)
+                }
+            }).finally(() => setLoading(false))
+        })()
+    }, [filter])
 
     const columns: TypeSafeColDef<TransactionAction>[] = [
         { id: 0, field: '_id', headerName: 'Id' },
-        { id: 10, field: 'action', headerName: 'Action' }
+        { id: 2, field: 'bookings', headerName: 'booking_id', minWidth: 200, renderCell: (params) => <BookingDetails params={params} /> },
+        { id: 1, field: 'amount', headerName: 'Amount' },
+        // { id: 2, field: 'type', headerName: 'Type' },
+        {
+            id: 3, field: 'payer', headerName: 'Payer Name', minWidth: 200, renderCell: (params) => <UserDetails params={params} />
+        },
+        {
+            id: 4, field: 'receiver', headerName: 'Receiver Name', minWidth: 300, renderCell: (params) => <UserDetails params={params} />
+        },
+        { id: 3, field: 'status', headerName: 'Status' },
+        { id: 4, field: 'created_at', headerName: 'Created At', minWidth: 150, valueGetter: (value) => moment(new Date(value)).format('Do MMM YYYY') },
     ]
 
     columns.forEach((item) => {
@@ -47,13 +80,68 @@ const Transaction = () => {
         <div className='flex flex-col gap-10'>
             <div className='flex items-center justify-between'>
                 <h1 className='text-3xl font-semibold'>Transactions</h1>
+                <Button className='bg-red-500 text-white' onClick={() => setShow(true)}>Add Transactions</Button>
+            </div>
+
+            <div className='flex gap-10'>
+                <TextField label="Payer mobile no."
+                    type='number'
+                    onChange={(e) => {
+                        setTimeout(() => {
+                            setFilter(prev => ({ ...prev, 'payer.contact1': e.target.value }))
+                        }, 300)
+                    }}
+                    className='w-full *:text-xl' />
+
+                <TextField label="Receiver mobile no."
+                    type='number'
+                    onChange={(e) => {
+                        setTimeout(() => {
+                            setFilter(prev => ({ ...prev, 'receiver.contact1': e.target.value }))
+                        }, 300)
+                    }}
+                    className='w-full *:text-xl' />
+
+                <div className='flex gap-5'>
+                    <FormControl fullWidth>
+                        <TextField
+                            label="Date From"
+                            type='date'
+                            value={moment(Number(filter.from) || Date.now()).format('YYYY-MM-DD')}
+                            onChange={(e) => {
+                                setFilter(prev => ({ ...prev, from: moment(e.target.value).valueOf().toString() }))
+                            }}
+                            className='w-full *:text-xl' />
+                    </FormControl>
+
+                    <FormControl fullWidth>
+                        <TextField
+                            label="Date To"
+                            type='date'
+                            value={moment(Number(filter.to) || Date.now()).format('YYYY-MM-DD')}
+                            onChange={(e) => {
+                                setFilter(prev => ({ ...prev, to: moment(e.target.value).valueOf().toString() }))
+                            }}
+                            className='w-full *:text-xl' />
+                    </FormControl>
+                </div>
+
+                <FormControl fullWidth>
+                    <InputLabel id="Status" className='text-xl'>Status</InputLabel>
+                    <Select label="Status" placeholder='Status' className='flex-1 *:text-xl' defaultValue='All' value={filter?.status} onChange={(e) => setFilter(prev => ({ ...prev, status: e.target.value as "All" | "pending" | "completed" | "cancelled" }))}>
+                        <MenuItem className='py-5' value="All">All</MenuItem>
+                        <MenuItem className='py-5' value="pending">Pending</MenuItem>
+                        <MenuItem className='py-5' value="completed">Completed</MenuItem>
+                        <MenuItem className='py-5' value="cancelled">Cancelled</MenuItem>
+                    </Select>
+                </FormControl>
             </div>
 
             <Paper>
                 <DataGrid
                     sx={{
                         minHeight: 200,
-                        height: '100%'
+                        height: '100%',
                     }}
                     columns={columns}
                     rows={data}
@@ -72,6 +160,85 @@ const Transaction = () => {
                     onPaginationModelChange={setFilter}
                 />
             </Paper>
+
+            <Modal open={show} setOpen={setShow}>
+                <AddTransactions setShowModal={setShow} />
+            </Modal>
+        </div>
+    )
+}
+
+const UserDetails = ({ params }: { params: GridRenderCellParams }) => {
+    const [show, setShow] = useState(false)
+
+    return (
+        <div className='h-full flex items-center justify-center'>
+            <Button className='flex gap-3 items-center justify-center' onClick={() => setShow(true)}>
+                <p className='text-lg'>{params.row?.[params?.field]?.fullname}</p>
+                <p className='text-lg'>({params.row?.[params?.field]?.userRole})</p>
+            </Button>
+
+            <Modal open={show} setOpen={setShow} className='w-[50rem] max-w-full'>
+                <>
+                    <div className="max-w-4xl mx-auto p-10 bg-gradient-to-r from-blue-50 to-indigo-100 rounded-lg shadow-lg">
+                        <h1 className="text-3xl font-extrabold text-gray-900 mb-6 text-center capitalize">{params.field} Data</h1>
+                        <div className="border-0 border-gray-300 rounded-lg divide-y divide-gray-200 overflow-hidden">
+                            {params.row?.[params?.field] && Object.entries(params.row?.[params?.field])
+                                .filter(([key]) => ['fullname', 'email', 'userRole', 'contact1'].includes(key))
+                                .map(([key, value], index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center justify-between p-10 bg-white hover:bg-indigo-50 transition-all"
+                                    >
+                                        <span className="text-gray-700 font-medium text-xl capitalize">
+                                            {key}
+                                        </span>
+                                        <span className="text-gray-900 font-semibold text-xl">
+                                            {value instanceof Date ? moment(new Date(value)).format('Do MMM YYYY') as string : value as string}
+                                        </span>
+                                    </div>
+                                ))}
+                        </div>
+                    </div>
+                </>
+            </Modal>
+        </div>
+    )
+}
+
+const BookingDetails = ({ params }: { params: GridRenderCellParams }) => {
+    const [show, setShow] = useState(false)
+
+    console.log(params.row.bookings)
+
+    return (
+        <div className='h-full flex items-center justify-center'>
+            <Button className='flex gap-3 items-center justify-center' onClick={() => setShow(true)}>
+                <p className='text-lg'>{params.row?.[params?.field]?._id}</p>
+            </Button>
+
+            <Modal open={show} setOpen={setShow} className='w-[50rem] max-w-full'>
+                <>
+                    <div className="max-w-4xl mx-auto p-10 bg-gradient-to-r from-blue-50 to-indigo-100 rounded-lg shadow-lg">
+                        <h1 className="text-3xl font-extrabold text-gray-900 mb-6 text-center capitalize">{params.field} Data</h1>
+                        <div className="border-0 border-gray-300 rounded-lg divide-y divide-gray-200 overflow-hidden">
+                            {params.row?.[params?.field] && Object.entries(params.row?.[params?.field]).filter(([key, value]) => typeof value == 'string').map(([key, value], index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between p-10 bg-white hover:bg-indigo-50 transition-all"
+                                >
+                                    <span className="text-gray-700 font-medium text-xl capitalize">
+                                        {key}
+                                    </span>
+                                    <span className="text-gray-900 font-semibold text-xl">
+                                        {moment(value as string).isValid() ? moment(new Date(value as string)).format('Do MMM YYYY') : value as string}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </>
+            </Modal>
         </div>
     )
 }

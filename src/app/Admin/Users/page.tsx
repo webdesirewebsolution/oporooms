@@ -118,7 +118,7 @@ const Action = ({ params }: { params: GridRenderCellParams }) => {
                 Edit User
             </Button>
 
-            <Modal open={showEdit} setOpen={setShowEdit}>
+            <Modal open={showEdit} setOpen={setShowEdit} className='overflow-y-auto w-[50rem] max-w-full'>
                 <AddUser userData={params?.row} setShowModal={setShowEdit} isEdit={true} />
             </Modal>
         </div>

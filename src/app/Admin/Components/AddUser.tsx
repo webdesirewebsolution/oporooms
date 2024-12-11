@@ -1,14 +1,16 @@
 'use client'
 
 import Upload from '@/Components/Upload'
+import { Context } from '@/Context/context'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { User } from '@/Types/Profile'
 import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import axios, { AxiosError } from 'axios'
 import moment from 'moment'
 import { MuiTelInput } from 'mui-tel-input'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import OTPInput from 'react-otp-input'
 
 type Props = {
@@ -20,6 +22,7 @@ type Props = {
 const initialData: User = {
     fullname: '',
     email: '',
+    wallet: 0,
     password: '',
     photo: '',
     username: '',
@@ -37,6 +40,7 @@ const initialData: User = {
 }
 
 const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
+    const { user: session } = useContext(Context)
     const [value, setValue] = useState(initialData)
     const [loading, setLoading] = useState(false)
     const [msg, setMsg] = useState('')
@@ -83,12 +87,12 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
 
                 switch (userData.userRole) {
                     case 'CADMIN':
-                        companyId = userData._id
+                        companyId = userData._id as string
                         break;
 
                     case 'HR':
-                        companyId = userData.companyId
-                        hrId = userData._id
+                        companyId = userData.companyId as string
+                        hrId = userData._id as string
                         break;
 
                     default:
@@ -134,49 +138,49 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
             break;
     }
 
-    const handleOtp = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if ((userData && value.email !== '' && value.email !== userData?.email) || !isEdit) {
-            setLoading(true)
+    // const handleOtp = async (e: React.FormEvent) => {
+    //     e.preventDefault()
+    //     if ((userData && value.email !== '' && value.email !== userData?.email) || !isEdit) {
+    //         setLoading(true)
 
-            await axios.put(`/api/Otp`, { email: value.email, type: 'register' })
-                .then(() => {
-                    setMsg('')
-                    setIsOtpSent(true)
-                }).catch((err: AxiosError) => {
-                    const errorData = err.response?.data as { error: string }
+    //         await axios.put(`/api/Otp`, { email: value.email, type: 'register' })
+    //             .then(() => {
+    //                 setMsg('')
+    //                 setIsOtpSent(true)
+    //             }).catch((err: AxiosError) => {
+    //                 const errorData = err.response?.data as { error: string }
 
-                    setMsg(errorData.error)
-                }).finally(() => setLoading(false))
+    //                 setMsg(errorData.error)
+    //             }).finally(() => setLoading(false))
 
-        } else {
-            await handleSubmit(e)
-        }
-    }
+    //     } else {
+    //         await handleSubmit(e)
+    //     }
+    // }
 
-    const handleOtpCheck = async (e: React.FormEvent) => {
-        e.preventDefault()
+    // const handleOtpCheck = async (e: React.FormEvent) => {
+    //     e.preventDefault()
 
-        if (code !== '') {
-            setLoading(true)
-            await axios.post(`/api/Otp`, {
-                code, email: value.email
-            }).then(r => {
-                if (r.status == 200) {
-                    setMsg('')
-                    handleSubmit(e)
-                }
-            }).catch((err: AxiosError) => {
-                const errorData = err.response?.data as { error: string }
+    //     if (code !== '') {
+    //         setLoading(true)
+    //         await axios.post(`/api/Otp`, {
+    //             code, email: value.email
+    //         }).then(r => {
+    //             if (r.status == 200) {
+    //                 setMsg('')
+    //                 handleSubmit(e)
+    //             }
+    //         }).catch((err: AxiosError) => {
+    //             const errorData = err.response?.data as { error: string }
 
-                setMsg(errorData.error)
-            }).finally(() => setLoading(false))
-        }
-    }
+    //             setMsg(errorData.error)
+    //         }).finally(() => setLoading(false))
+    //     }
+    // }
 
     return (
         <>
-            {isOtpSent ?
+            {/* {isOtpSent ?
                 <form onSubmit={handleOtpCheck} className='flex flex-col gap-10'>
                     {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
                     <OTPInput
@@ -190,93 +194,102 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                     />
 
                     <Button type='submit' className='bg-blue-500 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit' : 'Register')}</Button>
-                </form> :
+                </form> : */}
 
-                <form onSubmit={handleOtp} className='flex flex-col gap-10'>
+            <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
 
-                    {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
+                {msg !== '' && <p className='text-red-500 text-lg text-center'>{msg}</p>}
 
-                    {isEdit && <Upload disabled={loading} multiple={false} label='Upload File' setValue={files => {
-                        setValue(prev => ({ ...prev, photo: files?.[0] }))
-                    }} />}
+                {isEdit && <Upload disabled={loading} multiple={false} label='Upload File' setValue={files => {
+                    setValue(prev => ({ ...prev, photo: files?.[0] }))
+                }} />}
 
-                    {url &&
-                        <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
+                {url &&
+                    <Image src={url as string} alt='' width={100} height={100} className='aspect-square rounded-lg w-52' />}
 
-                    <TextField id="outlined-basic" label="Full Name" variant="outlined"
-                        value={value.fullname}
+                <TextField id="outlined-basic" label="Full Name" variant="outlined"
+                    value={value.fullname}
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, fullname: e.target.value }))}
+                    required
+                />
+
+                <TextField id="outlined-basic" label="Email" variant="outlined"
+                    value={value.email}
+                    type='email'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, email: e.target.value }))}
+                    required
+                />
+
+                {session?.userRole === 'SADMIN' && userData?.userRole == 'CADMIN' && <TextField id="outlined-basic" label="Wallet" variant="outlined"
+                    value={String(value.wallet || 0)}
+                    type='wallet'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, wallet: Number(e.target.value) }))}
+                    required
+                />}
+
+                <MuiTelInput
+                    label='Primary Contact'
+                    defaultCountry='IN'
+                    className='*:text-xl'
+                    value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} />
+
+                {isEdit && <TextField id="outlined-basic" label="DOB" variant="outlined"
+                    value={moment(value.dob).format('YYYY-MM-DD')}
+                    type='date'
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, dob: moment(e.target.value) }))}
+                    required
+                />}
+
+                {isEdit && <TextField id="outlined-basic" label="Address" variant="outlined"
+                    value={value.address}
+                    multiline
+                    className='*:text-xl'
+                    onChange={e => setValue(prev => ({ ...prev, address: e.target.value }))}
+                    required
+                />}
+
+                {isEdit && <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label" className='text-2xl'>Select Gender</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        disabled={loading}
                         className='*:text-xl'
-                        onChange={e => setValue(prev => ({ ...prev, fullname: e.target.value }))}
-                        required
-                    />
+                        label='Select Gender'
+                        value={value.gender}
+                        onChange={(e) => e && setValue(prev => ({ ...prev, gender: e.target.value as User['gender'] }))}
+                        required >
+                        <MenuItem value='Male' className='text-xl'>Male</MenuItem>
+                        <MenuItem value='Female' className='text-xl'>Female</MenuItem>
+                        <MenuItem value='Others' className='text-xl'>Others</MenuItem>
+                    </Select>
+                </FormControl>}
 
-                    <TextField id="outlined-basic" label="Email" variant="outlined"
-                        value={value.email}
-                        type='email'
+                {!isEdit && <FormControl fullWidth>
+                    <InputLabel id="user-role-label" className='text-2xl'>Select User Role</InputLabel>
+                    <Select
+                        labelId="user-role-label"
+                        id="user-role-input"
+                        disabled={loading}
                         className='*:text-xl'
-                        onChange={e => setValue(prev => ({ ...prev, email: e.target.value }))}
-                        required
-                    />
+                        label='Select User Role'
+                        value={value.userRole}
+                        onChange={(e) => e && setValue(prev => ({ ...prev, userRole: e.target.value as User['userRole'] }))}
+                        required >
+                        {userRole?.map((item) => (
+                            <MenuItem key={item} value={item} className='text-xl'>{item}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>}
 
-                    <MuiTelInput
-                        label='Primary Contact'
-                        defaultCountry='IN'
-                        className='*:text-xl'
-                        value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} />
+                <Button type='submit' className='bg-blue-500 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit User' : 'Add User')}</Button>
 
-                    {isEdit && <TextField id="outlined-basic" label="DOB" variant="outlined"
-                        value={moment(value.dob).format('YYYY-MM-DD')}
-                        type='date'
-                        className='*:text-xl'
-                        onChange={e => setValue(prev => ({ ...prev, dob: moment(e.target.value) }))}
-                        required
-                    />}
-
-                    {isEdit && <TextField id="outlined-basic" label="Address" variant="outlined"
-                        value={value.address}
-                        multiline
-                        className='*:text-xl'
-                        onChange={e => setValue(prev => ({ ...prev, address: e.target.value }))}
-                        required
-                    />}
-
-                    {isEdit && <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" className='text-2xl'>Select Gender</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            disabled={loading}
-                            className='*:text-xl'
-                            label='Select Gender'
-                            value={value.gender}
-                            onChange={(e) => e && setValue(prev => ({ ...prev, gender: e.target.value as User['gender'] }))}
-                            required >
-                            <MenuItem value='Male' className='text-xl'>Male</MenuItem>
-                            <MenuItem value='Female' className='text-xl'>Female</MenuItem>
-                            <MenuItem value='Others' className='text-xl'>Others</MenuItem>
-                        </Select>
-                    </FormControl>}
-
-                    {!isEdit && <FormControl fullWidth>
-                        <InputLabel id="user-role-label" className='text-2xl'>Select User Role</InputLabel>
-                        <Select
-                            labelId="user-role-label"
-                            id="user-role-input"
-                            disabled={loading}
-                            className='*:text-xl'
-                            label='Select User Role'
-                            value={value.userRole}
-                            onChange={(e) => e && setValue(prev => ({ ...prev, userRole: e.target.value as User['userRole'] }))}
-                            required >
-                            {userRole?.map((item) => (
-                                <MenuItem key={item} value={item} className='text-xl'>{item}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>}
-
-                    <Button type='submit' className='bg-blue-500 text-white py-5' disabled={loading} size='large'>{loading ? <CircularProgress size={15} color='inherit' /> : (isEdit ? 'Edit User' : 'Add User')}</Button>
-
-                </form>}
+            </form>
+            {/* } */}
 
         </>
     )

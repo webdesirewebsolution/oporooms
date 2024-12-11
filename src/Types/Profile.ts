@@ -1,10 +1,12 @@
 import { Moment } from "moment";
+import { ObjectId } from "mongodb";
 
 export interface User {
-    _id?: string,
+    _id?: string | ObjectId,
     username?: string,
     userRole: 'SADMIN' | 'CADMIN' | 'HR' | 'EMPLOYEE' | 'HotelOwner' | 'USER' | '',
     email: string,
+    wallet?: number,
     photo?: File | string,
     fullname?: string,
     countryCode?: string,

@@ -125,7 +125,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                     const formData: HotelTypes = {
                         ...value as HotelTypes,
                         photos: images,
-                        hotelOwnerId: hotelOwnerData?._id,
+                        hotelOwnerId: hotelOwnerData?._id as string,
                         rooms
                     }
 

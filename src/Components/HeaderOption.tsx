@@ -19,7 +19,7 @@ const HeaderOption = ({ user }: Props) => {
         <div className='relative'>
             <Button className='bg-slate-200 text-black gap-2 rounded-xl text-[1.2rem] font-semibold capitalize' size='large' onClick={() => setShow(prev => !prev)}>
                 <Avatar className='size-10'>
-                    {user.photo && <Image src={user.photo as string} alt='User' fill objectFit='cover'/>}
+                    {user.photo && <Image src={user.photo as string} alt='User' fill objectFit='cover' />}
                 </Avatar>
                 {user.fullname}
                 <div className={`${show ? 'rotate-180' : 'rotate-0'} transition-transform`}>
@@ -37,6 +37,9 @@ const HeaderOption = ({ user }: Props) => {
                         <p className='text-lg text-slate-700'>{user.email}</p>
                     </div>
                 </div>
+                {(user.userRole == 'CADMIN' || user.userRole == 'SADMIN' || user.userRole == 'HR' || user.userRole == 'HotelOwner') && <Link href="/Admin" passHref className='border-b'>
+                    <Button className='w-full py-5 text-red-500'>Dashboard</Button>
+                </Link>}
                 <Link href="/Profile" passHref className='border-b'>
                     <Button className='w-full py-5 text-red-500'>Profile</Button>
                 </Link>

@@ -77,7 +77,7 @@ export const SignIn = ({ setModal }: { setModal: React.Dispatch<React.SetStateAc
                 if (r.status == 200) {
                     if (r.data?.user?.userRole == 'HotelOwner') {
                         await signIn('credentials', {
-                            redirectTo: '/Admin',
+                            redirect: true,
                             contact1: newContact,
                             _id: r.data?.user?._id
                         })

@@ -34,7 +34,9 @@ export async function GET(req: NextRequest) {
 
     const user = session?.user?._id ? await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user?._id as string) }) : { _id: null, userRole: null }
 
-    if (user?.userRole != 'CADMIN' && user?.userRole != 'HR' && user?.userRole != 'HotelOwner' && user?.userRole != 'SADMIN') {
+    if (user?.userRole != 'SADMIN' 
+        // && user?.userRole != 'HR' && user?.userRole != 'HotelOwner' && user?.userRole != 'CADMIN'
+    ) {
         return NextResponse.json("User must be signed in as admin", { status: 400, statusText: 'User must be signed in as admin' });
     }
 

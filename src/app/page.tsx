@@ -1,3 +1,4 @@
+import Banner from '@/Components/Banner'
 import Footer from '@/Components/Footer'
 import Header from '@/Components/Header'
 import HotelSlider from '@/Components/HotelSlider'
@@ -63,19 +64,19 @@ const Home = async ({ searchParams }: Props) => {
   )
 }
 
-const Banner = () => {
-  return (
-    <div>
-      <div className='relative w-screen aspect-square md:aspect-video max-h-[578px] py-20 md:py-32 lg:px-36'>
-        <Image src='/Images/banner.jpg' alt='' fill objectFit='cover' />
-        <Container className='absolute flex flex-col gap-5 items-center md:items-start'>
-          <h1 className='text-white text-wrap text-2xl font-[700] md:font-bold text-center md:text-left md:text-7xl md:w-[44rem]'>Make your travel whishlist, we’ll do the rest</h1>
-          <h2 className='text-white text-wrap w-[24rem] md:w-[51rem] text-lg md:text-xl text-center md:text-left'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</h2>
-        </Container>
-      </div>
-    </div>
-  )
-}
+// const Banner = () => {
+//   return (
+//     <div>
+//       <div className='relative w-screen aspect-square md:aspect-video max-h-[578px] py-20 md:py-32 lg:px-36'>
+//         <Image src='/Images/banner.jpg' alt='' fill objectFit='cover' />
+//         <Container className='absolute flex flex-col gap-5 items-center md:items-start'>
+//           <h1 className='text-white text-wrap text-2xl font-[700] md:font-bold text-center md:text-left md:text-7xl md:w-[44rem]'>Make your travel whishlist, we’ll do the rest</h1>
+//           <h2 className='text-white text-wrap w-[24rem] md:w-[51rem] text-lg md:text-xl text-center md:text-left'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</h2>
+//         </Container>
+//       </div>
+//     </div>
+//   )
+// }
 
 const DreamVacation = () => {
 

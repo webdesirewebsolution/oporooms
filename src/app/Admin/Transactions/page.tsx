@@ -5,13 +5,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import { Context } from '@/Context/context'
-import { Button, Checkbox, FormControl, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material'
+import { Button, Checkbox, FormControl, InputLabel, Menu, MenuItem, Paper, Select, TextField } from '@mui/material'
 import { TransactionAction, TransactionType } from '@/Types/Transaction'
 import moment from 'moment'
 import Modal from '@/Components/Modal'
 import AddTransactions from '../Components/AddTransactions'
+import AddPay from '../Pay/page'
 
 const Transaction = () => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [data, setData] = useState<TransactionType[]>([])
     const [count, setCount] = useState(0)
     const [filter, setFilter] = useState<{
@@ -30,7 +32,8 @@ const Transaction = () => {
         'to': null
     })
     const [loading, setLoading] = useState(true)
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState<'Add balance' | 'Pay' | ''>('')
+    const open = Boolean(anchorEl);
 
     useEffect(() => {
         (async () => {
@@ -80,7 +83,28 @@ const Transaction = () => {
         <div className='flex flex-col gap-10'>
             <div className='flex items-center justify-between'>
                 <h1 className='text-3xl font-semibold'>Transactions</h1>
-                <Button className='bg-red-500 text-white' onClick={() => setShow(true)}>Add Transactions</Button>
+                <div>
+                    <Button className='bg-red-500 text-white'
+                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={(e) => setAnchorEl(e.currentTarget)}>
+                        Add Transactions
+                    </Button>
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={() => setAnchorEl(null)}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        <MenuItem className='text-xl' onClick={() => setShow('Add balance')}>Add balance to company wallet</MenuItem>
+                        <MenuItem className='text-xl' onClick={() => setShow('Pay')}>Pay to hotel owner</MenuItem>
+                        <MenuItem className='text-xl' onClick={() => setShow('Pay')}>Pay to company</MenuItem>
+                    </Menu>
+                </div>
             </div>
 
             <div className='flex gap-10'>
@@ -161,8 +185,12 @@ const Transaction = () => {
                 />
             </Paper>
 
-            <Modal open={show} setOpen={setShow}>
-                <AddTransactions setShowModal={setShow} />
+            <Modal open={show == 'Add balance'} setOpen={() => setShow('')} className='w-[40rem] max-w-full'>
+                <AddTransactions setShowModal={() => setShow('')} />
+            </Modal>
+
+            <Modal open={show == 'Pay'} setOpen={() => setShow('')} className='w-[40rem] max-w-full'>
+                <AddPay setShowModal={() => setShow('')} />
             </Modal>
         </div>
     )

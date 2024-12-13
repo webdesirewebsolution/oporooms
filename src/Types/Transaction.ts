@@ -1,17 +1,21 @@
+import { ObjectId } from "mongodb"
 import { Bookings } from "./Booking"
 import { User } from "./Profile"
 
 export interface TransactionType {
-    _id?: string,
+    _id?: string | ObjectId,
     booking_id?: string,
+    photo?: string | File,
     payer_id?: string,
     receiver_id?: string,
     amount: number,
     type?: "upi" | "cash" | "debit_card" | "credit_card" | string,
-    status: "pending" | "completed" | "cancelled",
+    status?: "pending" | "completed" | "cancelled",
+    transactionDate?: Date,
     created_at?: Date,
     updated_at?: Date,
     bookings?: Bookings,
+    utr?: string,
     payer?: User,
     receiver?: User
 }

@@ -12,12 +12,8 @@ type Props = {
     isEdit?: boolean,
 }
 
-const initialData: TransactionType = {
-    payer_id: '',
-    receiver_id: '',
-    amount: 0,
-    type: '',
-    status: "pending"
+const initialData: { amount: number } = {
+    amount: 0
 }
 
 const AddTransactions = ({ data, setShowModal, isEdit }: Props) => {
@@ -26,21 +22,15 @@ const AddTransactions = ({ data, setShowModal, isEdit }: Props) => {
     const [loading, setLoading] = useState(false)
     const [msg, setMsg] = useState('')
 
-    useEffect(() => {
-        if (isEdit) {
-            setValue(data as TransactionType)
-        }
-    }, [isEdit, data])
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
 
         try {
             if (isEdit) {
-                const formData: TransactionType = value
+                const formData: { amount: number } = value
 
-                await axios.put(`/api/transactions`, formData).then(r => {
+                await axios.put(`/api/user`, formData).then(r => {
                     if (r.status == 200) {
                         router.refresh()
                         setShowModal(false)
@@ -48,9 +38,9 @@ const AddTransactions = ({ data, setShowModal, isEdit }: Props) => {
                 }).finally(() => setLoading(false))
             } else {
 
-                const formData: TransactionType = value
+                const formData: { amount: number } = value
 
-                await axios.post(`/api/transactions`, formData).then(r => {
+                await axios.post(`/api/user`, formData).then(r => {
                     if (r.status == 200) {
                         router.refresh()
                         setShowModal(false)

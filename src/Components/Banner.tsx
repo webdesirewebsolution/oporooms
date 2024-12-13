@@ -9,11 +9,16 @@ type Props = {}
 
 const Banner = (props: Props) => {
     return (
-        <div className='relative w-screen aspect-square md:aspect-video max-h-[578px]'>
+        <div className='relative w-screen'>
             <Swiper className='w-full h-full' slidesPerView={1} autoplay loop modules={[Autoplay]}>
                 {Array(3).fill('')?.map((item, i) => (
                     <SwiperSlide key={i}>
-                        <Image src={`/Images/banners/banner${i + 1}.jpg`} alt='' fill objectFit='cover' />
+                        <Image src={`/Images/banners/banner${i + 1}.jpg`} alt='' objectFit='cover'
+                        width={0}
+                        height={0}
+                        sizes='100vw'
+                        className='w-full h-full'
+                        />
                     </SwiperSlide>
                 ))}
             </Swiper>

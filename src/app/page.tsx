@@ -27,7 +27,8 @@ const Home = async ({ searchParams }: Props) => {
       <Banner />
 
       <SearchBox />
-      <Container className='transition-all relative -top-60 md:-top-[20rem] -mb-40'>
+      
+      <Container className='transition-all relative'>
         <div className='mt-20 w-full'>
           <Rooms searchParams={searchParamsRes} />
         </div>
@@ -44,7 +45,7 @@ const Home = async ({ searchParams }: Props) => {
 
       </Container>
 
-      <div className='relative w-screen aspect-video max-h-[35.63rem] flex items-center px-14 lg:px-24'>
+      <div className='relative w-screen aspect-video max-h-[35.63rem] flex items-center px-14 lg:px-24 mt-28'>
         <Image src='/Images/banner2.jpg' alt='' fill objectFit='cover' />
         <div className='absolute z-10 flex flex-col gap-10'>
           <p className='text-white text-2xl lg:text-5xl text-bold w-[20rem] lg:w-[58rem]'>Download the mobile application for bonus coupons and travel <br /> codes</p>

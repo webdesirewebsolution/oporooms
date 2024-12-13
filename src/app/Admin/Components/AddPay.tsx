@@ -19,9 +19,9 @@ type Props = {
   isEdit?: boolean,
 }
 
-interface FormData extends TransactionType {
-  mobileNumber: string
-}
+// interface FormData extends TransactionType {
+//   mobileNumber: string
+// }
 
 const initialData: TransactionType = {
   amount: 0,
@@ -65,7 +65,7 @@ const AddPay = ({ data, setShowModal, isEdit }: Props) => {
       }
 
       if (isEdit) {
-        const formData: FormData = { ...value, payer_id: session?.user._id, photo: image, mobileNumber: newContact }
+        const formData = { ...value, payer_id: session?.user._id, photo: image, mobileNumber: newContact }
 
         await axios.put(`/api/transactions`, formData).then(r => {
           if (r.status == 200) {
@@ -75,7 +75,7 @@ const AddPay = ({ data, setShowModal, isEdit }: Props) => {
         }).finally(() => setLoading(false))
       } else {
 
-        const formData: FormData = { ...value, payer_id: session?.user._id, photo: image, mobileNumber: newContact }
+        const formData = { ...value, payer_id: session?.user._id, photo: image, mobileNumber: newContact }
 
         await axios.post(`/api/transactions`, formData).then(r => {
           if (r.status == 200) {

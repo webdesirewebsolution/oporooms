@@ -10,7 +10,7 @@ import { TransactionAction, TransactionType } from '@/Types/Transaction'
 import moment from 'moment'
 import Modal from '@/Components/Modal'
 import AddTransactions from '../Components/AddTransactions'
-import AddPay from '../Pay/page'
+import AddPay from '../Components/AddPay'
 
 const Transaction = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)

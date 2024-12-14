@@ -4,10 +4,11 @@ import { HotelTypes } from '@/Types/Hotels'
 import { Button } from '@mui/material'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { CiImageOff } from 'react-icons/ci'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay } from 'swiper/modules';
+import Description from './Description'
 
 type Props = {
     list: HotelTypes[],
@@ -16,12 +17,20 @@ type Props = {
 
 const HotelSlider = ({ list, params }: Props) => {
     return (
-        <Swiper slidesPerView={3}
+        <Swiper slidesPerView={1}
+            breakpoints={{
+                '320': {
+                    slidesPerView: 2
+                },
+                '640': {
+                    slidesPerView: 3
+                }
+            }}
             loop
             autoplay
             // speed={5000}
-            modules={[Autoplay]} 
-            spaceBetween={20} 
+            modules={[Autoplay]}
+            spaceBetween={20}
             className='w-full'>
             {list?.map((item, i) => (
                 <SwiperSlide key={i} className='h-full'>
@@ -35,7 +44,8 @@ const HotelSlider = ({ list, params }: Props) => {
                         </div>
                         <div className='p-5 flex flex-col gap-4'>
                             <p className='text-4xl font-semibold'>{item.name}</p>
-                            <p className='text-[1.2rem] w-96 text-slate-700'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s</p>
+                            <Description text={item.desc} />
+
                             <p className='font-semibold'>
                                 &#8377;{item.rooms?.[0]?.price} Per Night</p>
                             <Link href={`/Hotels/${item._id}?${params}`}>

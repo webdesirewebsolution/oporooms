@@ -8,6 +8,7 @@ import TestimonialSlider from '@/Components/TestimonialSlider'
 import { HotelTypes } from '@/Types/Hotels'
 import { Button, Container } from '@mui/material'
 import axios from 'axios'
+import moment from 'moment'
 import { SearchParams } from 'next/dist/server/request/search-params'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -25,13 +26,15 @@ const Home = async ({ searchParams }: Props) => {
     <>
       <Header />
 
-      <div className='flex flex-col-reverse lg:flex-col'>
+      <SearchBox />
+      <Banner />
+
+      {/* <div className='block lg:hidden'>
         <SearchBox />
-        <Banner />
-      </div>
+      </div> */}
 
 
-      <Container className='transition-all relative'>
+      <Container className='transition-all relative z-20'>
         <div className='mt-20 w-full'>
           <Rooms searchParams={searchParamsRes} />
         </div>
@@ -87,18 +90,22 @@ const DreamVacation = () => {
   const data = [
     {
       title: 'Kashmir',
+      placeId: 'ChIJ_dw6eXsqGzkRXgM3DlD1ZV4',
       image: '/Images/trips/kashmir.jpg'
     },
     {
       title: 'Goa',
+      placeId: 'ChIJQbc2YxC6vzsRkkDzYv-H-Oo',
       image: '/Images/trips/goa.webp'
     },
     {
       title: 'Manali',
+      placeId: 'ChIJP9A_FgiHBDkRzXZQvg6oKYE',
       image: '/Images/trips/manali.webp'
     },
     {
       title: 'Shimla',
+      placeId: 'ChIJZ25d4-N4BTkRt1Sf__Z_fh8',
       image: '/Images/trips/shimla.jpg'
     },
   ]
@@ -110,13 +117,24 @@ const DreamVacation = () => {
 
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
         {data?.map((item, i) => (
-          <div key={i} className='w-full flex flex-col gap-3'>
+          <Link href={{
+            pathname: '/Hotel',
+            query: {
+              placeId: item.placeId,
+              city: item.title,
+              checkIn: moment(Date.now()).valueOf(),
+              checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
+              rooms: 1,
+              adults: 1,
+              childrens: 0
+            }
+          }} key={i} className='w-full flex flex-col gap-3'>
             <div className='w-full aspect-video relative'>
               <Image src={item.image} alt='' objectFit='cover' fill className='rounded-lg w-full' />
             </div>
             <p className='text-3xl font-semibold'>{item.title}</p>
             {/* <p className='text-lg'>23456 properties</p> */}
-          </div>
+          </Link>
         ))}
       </div>
     </div>

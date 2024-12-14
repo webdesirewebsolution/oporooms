@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { FaStar } from 'react-icons/fa6';
 import moment from 'moment';
 import { IoMdClose } from 'react-icons/io';
+import Expandable from './Expandable';
 
 const CheckoutComponent = () => {
     return (
@@ -88,13 +89,15 @@ export const Details = () => {
                         </div>
                     </div>
 
-                    <div className='flex flex-wrap gap-5'>
-                        {bookingData?.details?.amenities?.map((am) => (
-                            <div key={am} className='text-lg'>
-                                {am}
-                            </div>
-                        ))}
-                    </div>
+                    <Expandable>
+                        <div className='flex flex-wrap gap-5 w-96'>
+                            {bookingData?.details?.amenities?.map((am) => (
+                                <div key={am} className='text-lg'>
+                                    {am}
+                                </div>
+                            ))}
+                        </div>
+                    </Expandable>
                 </div>
             </div>
 
@@ -153,7 +156,7 @@ export const CompleteBooking = () => {
     const handleBooking = async () => {
         if (bookingData.paymentMode != 'Online Pay') {
             setBookingSubmitLoading(true)
-            await axios.post(`/api/bookings`, {...bookingData, status: (bookingData.paymentMode== 'Pay at hotel') ? 'booked' : 'pending'}).then(() => {
+            await axios.post(`/api/bookings`, { ...bookingData, status: (bookingData.paymentMode == 'Pay at hotel') ? 'booked' : 'pending' }).then(() => {
                 setShowModal(true)
             }).finally(() => setBookingSubmitLoading(false))
         }

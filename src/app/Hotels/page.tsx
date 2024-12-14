@@ -14,6 +14,7 @@ import Link from 'next/link';
 import BookRoom from '@/Components/BookRoom';
 import SliderImage from './SliderImage';
 import SearchInput, { Filter } from './SearchInput';
+import Description from '@/Components/Description';
 
 type Props = {
     searchParams: Promise<SearchParams>
@@ -92,9 +93,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                             <p className='text-slate-700 text-xl mt-1'>4.5 (1200 Reviews)</p>
                                         </div>
 
-                                        <p className='text-xl text-slate-700 lg:w-[40rem]'>
-                                            {item?.desc || 'Live a little and celbrate with champagne. Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies'}
-                                        </p>
+                                        <Description text={item.desc} className='lg:w-[40rem]'/>
                                     </div>
 
                                     <div className='flex gap-2 items-center my-5'>

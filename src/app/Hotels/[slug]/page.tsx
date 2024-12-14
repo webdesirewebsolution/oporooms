@@ -13,6 +13,8 @@ import { FaStar } from 'react-icons/fa6';
 import { IoLocationSharp } from "react-icons/io5";
 import client from "@/Lib/mongo";
 import { Collection, ObjectId } from 'mongodb';
+import Description from '@/Components/Description';
+import Expandable from '@/Components/Expandable';
 
 type Props = {
     params: Promise<Params>,
@@ -35,7 +37,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
     const checkOut = query?.checkOut && Number(query.checkOut)
     const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 0
 
-    if(!item){
+    if (!item) {
         return (<></>)
     }
 
@@ -78,10 +80,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
                                 <IoLocationSharp /> {item?.address?.City}
                             </div>
                             <h2 className='font-semibold'>Overview</h2>
-                            <p>Radisson Collection is a unique collection of iconic properties. While the character of each hotel feels authentic to its locality, all offer the ultimate template for contemporary living; united by bespoke design and exceptional experiences across dining, fitness, wellness and sustainability.
-
-                                Radisson Collection is a unique collection of iconic properties. While the character of each hotel feels authentic to its locality, all offer the ultimate template for contemporary living; united by bespoke design and exceptional experiences across dining, fitness, wellness and sustainability.
-                            </p>
+                            <Description text={item.desc} className='w-full' />
                         </div>
 
                         <div className='flex flex-col flex-[.3] gap-5'>
@@ -109,13 +108,15 @@ const Hotel = async ({ params, searchParams }: Props) => {
                     </div>
 
                     <h2 className='text-4xl font-semibold'>Amenities</h2>
-                    <div className='flex flex-wrap gap-10'>
-                        {item?.amenities?.map((am) => (
-                            <div key={am} className='bg-white px-10 py-4 text-lg rounded-lg'>
-                                {am}
-                            </div>
-                        ))}
-                    </div>
+                    <Expandable>
+                        <div className='flex flex-wrap gap-10'>
+                            {item?.amenities?.map((am) => (
+                                <div key={am} className='bg-white px-10 py-4 text-lg rounded-lg'>
+                                    {am}
+                                </div>
+                            ))}
+                        </div>
+                    </Expandable>
 
 
                     {item?.rooms && item?.rooms?.length > 0 && (

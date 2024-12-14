@@ -1,10 +1,17 @@
+import moment from 'moment'
 import Link from 'next/link'
 import React from 'react'
 
 type Props = {
     item: {
         title: string,
-        subCities: string[]
+        subCities: {
+            name: string,
+            placeId: string,
+            latitude: number,
+            longitude: number,
+            city: string,
+        }[]
     },
     children: React.ReactNode
 }
@@ -19,8 +26,19 @@ const Cities = ({ item, children }: Props) => {
             {item?.subCities?.length > 0 && <ul className='absolute bg-white px-14 left-0 py-10 hidden flex-col group-hover:flex top-[3.31rem] gap-7'>
                 <p className='font-semibold'>Popular Localities</p>
                 {item?.subCities?.map((subItem) => (
-                    <Link href='/' key={subItem} className='text-nowrap'>
-                        {subItem}
+                    <Link href={{
+                        pathname: 'Hotels',
+                        query: {
+                            placeId: subItem.placeId,
+                            city: subItem.city,
+                            checkIn: moment(Date.now()).valueOf(),
+                            checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
+                            rooms: 1,
+                            adults: 1,
+                            childrens: 0
+                        }
+                    }} key={subItem.name} className='text-nowrap'>
+                        {subItem.name}
                     </Link>
                 ))}
             </ul>}

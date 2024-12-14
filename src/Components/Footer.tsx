@@ -5,9 +5,6 @@ import Link from 'next/link'
 import React from 'react'
 
 const Footer = () => {
-
-    // const cities = ["Hotels near me", "Hotels in Goa", "Hotels in Puri", "Hotels in Mahabaleshwar", "Hotels in Jaipur", "Hotels in Shimla", "Hotels in Manali", "Hotels in Udaipur", "Hotels in Mussoorie", "Hotels in Pondicherry", "Hotels in Delhi", "Hotels in Mumbai", "Hotels in Nainital", "Hotels in Lonavala", "Hotels in Bangalore", "Hotels in Mysore", "Hotels in Darjeeling", "Hotels in Mount Abu", "Hotels in Kodaikanal", "Hotels in Hyderabad", "Hotels in Pune", "Hotels in Chandigarh", "Hotels in Shirdi", "Hotels in Agra", "Hotels in Gangtok", "Hotels in Chennai", "Hotels in Tirupati", "Hotels in Dalhousie", "Hotels in Haridwar", "Hotels in Kolkata", "Hotels in Ahmedabad", "Hotels in Shillong", "Hotels in Rishikesh", "Hotels in Varanasi", "Hotels in Gurgaon", "Hotels in Mandarmoni", "Hotels in Daman", "Hotels in Amritsar", "Hotels in Madurai", "Hotels in Coimbatore", "Hotels in Kasauli", "Hotels in Dehradun"]
-
     const hotels = [
         { title: "Hotels near me", placeId: "", lat: "", lng: "" },
         { title: "Hotels in Goa", placeId: "ChIJv90m7-u4jzsR37q8v8h5q0", lat: 15.299326, lng: 73.854945 },

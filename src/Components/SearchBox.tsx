@@ -28,7 +28,7 @@ const SearchBox = ({ }) => {
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         console.log(latest)
-        if (latest >= 800.8) {
+        if (latest >= 100.8) {
             setScrolled(true)
         } else {
             setScrolled(false)
@@ -58,8 +58,8 @@ const SearchBox = ({ }) => {
 
     return (
         <>
-            <div className={`lg:sticky lg:top-[16rem] z-50`}>
-                <Container maxWidth={isScrolledOnDesktop ? 'xl' : 'lg'} className={`relative top-5 lg:-top-60 transition-all`}>
+            <div className={`lg:sticky lg:-top-[2rem] z-50`}>
+                <Container maxWidth={isScrolledOnDesktop ? 'xl' : 'lg'} className={`relative top-5 lg:top-12 transition-all`}>
                     <div className={`bg-white shadow rounded-xl p-10 w-full flex flex-col gap-5`}>
                         <div className='flex'>
                             {tabs?.map((tab) => (
@@ -80,7 +80,7 @@ const SearchBox = ({ }) => {
                     </div>
                 </Container>
             </div>
-            <div className={isScrolledOnDesktop ? 'lg:-mb-[15rem]' : 'lg:-mb-[15rem]'} />
+            <div className={isScrolledOnDesktop ? 'lg:-mb-[15rem]' : 'lg:-mb-[20rem]'} />
         </>
     )
 }

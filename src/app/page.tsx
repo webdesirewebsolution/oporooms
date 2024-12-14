@@ -24,10 +24,13 @@ const Home = async ({ searchParams }: Props) => {
   return (
     <>
       <Header />
-      <Banner />
 
-      <SearchBox />
-      
+      <div className='flex flex-col-reverse lg:flex-col'>
+        <SearchBox />
+        <Banner />
+      </div>
+
+
       <Container className='transition-all relative'>
         <div className='mt-20 w-full'>
           <Rooms searchParams={searchParamsRes} />
@@ -189,7 +192,7 @@ const Testimonials = async () => {
         <div className='w-20 border border-black' />
       </div>
       <div className='text-5xl font-bold'>What <span className='text-red-500 text-5xl font-bold uppercase'>Users </span>
-      {" "}say</div> 
+        {" "}say</div>
 
       {/* <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'> */}
       <TestimonialSlider list={list} />

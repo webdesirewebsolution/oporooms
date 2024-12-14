@@ -26,7 +26,7 @@ const DesktopHeader = () => {
             <div className='flex gap-5 px-5 h-full items-center'>
                     <FaPhoneAlt size={22}/>
                 <div className='flex flex-col items-center'>
-                    <p className='text-[#212121] font-medium'>7007498505</p>
+                    <p className='text-[#212121] font-medium'>+919650960716</p>
                     <p className='text-[rgba(0,0,0,0.54)] text-lg'>Call us to Book now</p>
                 </div>
             </div>

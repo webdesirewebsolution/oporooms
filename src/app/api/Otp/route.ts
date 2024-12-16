@@ -2,10 +2,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 const myColl = client.collection("Otp");
+const IpColl = client.collection("Ip");
 const UserColl = client.collection("Users");
 import { ObjectId } from "mongodb";
 import generateCode from "@/Functions/generateCode";
 import axios from "axios";
+import ip from 'ip'
+import moment from "moment";
 
 export async function POST(req: NextRequest) {
     const { contact1, code } = await req.json();
@@ -46,6 +49,9 @@ export async function PUT(req: NextRequest) {
     const newContact = contact1?.split(' ').join('').split('+')[1]
 
     const findUser = await UserColl.findOne({ contact1: newContact })
+    const userIp = ip.address()
+    const maxCount = await IpColl.findOne({ contact1: newContact, userIp })
+    const diffInMs = maxCount?.date && moment().diff(new Date(maxCount.date))
 
     if (type == 'register' && findUser) {
         return NextResponse.json({
@@ -59,13 +65,33 @@ export async function PUT(req: NextRequest) {
         }, {
             status: 400,
         });
+    } else if (type !== 'register' && maxCount?.otpCount >= 3 && maxCount?.date && (diffInMs / (1000 * 60 * 60)) <= 1) {
+        return NextResponse.json({
+            error: 'Max Count reached'
+        }, {
+            status: 400,
+        });
     }
+
+    await IpColl.updateOne(
+        { contact1: newContact, userIp: userIp },
+        {
+            $set: {
+                contact1: newContact,
+                userIp,
+                date: new Date(),
+            },
+            $inc: {
+                otpCount: Number(maxCount?.otpCount) == 3 ? -2 : 1
+            },
+        }, {
+        upsert: true
+    }
+    );
 
     const randomCode = generateCode()
 
     const data = await axios.get(`http://136.243.171.112/api/sendhttp.php?authkey=37336b756d617232383803&mobiles=${newContact}&message=Dear User, Your OTP for Login is ${randomCode}. Please do not share it. With Regards LOOMSTAY.&sender=LMSTAY&route=2&country=91&DLT_TE_ID=1707169925261685090`)
-
-    console.log(data.data)
 
     try {
         await myColl.updateOne(

@@ -9,7 +9,7 @@ type Props = {}
 
 const Banner = (props: Props) => {
     return (
-        <div className='relative w-screen -mb-[15rem]'>
+        <div className='relative w-screen'>
             <Swiper className='w-full h-full' slidesPerView={1} autoplay loop modules={[Autoplay]}>
                 {Array(3).fill('')?.map((item, i) => (
                     <SwiperSlide key={i}>
@@ -22,7 +22,7 @@ const Banner = (props: Props) => {
                     </SwiperSlide>
                 ))}
             </Swiper>
-            <div className='w-full h-[15rem] bg-[#f2f2f2] z-10 absolute bottom-0'></div>
+            <div className='lg:w-full lg:h-[15rem] lg:bg-[#f2f2f2] lg:z-10 lg:absolute lg:bottom-0'></div>
         </div>
     )
 }

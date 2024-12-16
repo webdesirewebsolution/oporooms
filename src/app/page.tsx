@@ -13,7 +13,6 @@ import { SearchParams } from 'next/dist/server/request/search-params'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import { CiImageOff } from 'react-icons/ci'
 
 type Props = {
   searchParams: Promise<SearchParams>
@@ -26,13 +25,8 @@ const Home = async ({ searchParams }: Props) => {
     <>
       <Header />
 
-      <SearchBox />
       <Banner />
-
-      {/* <div className='block lg:hidden'>
-        <SearchBox />
-      </div> */}
-
+      <SearchBox />
 
       <Container className='transition-all relative z-20'>
         <div className='mt-20 w-full'>

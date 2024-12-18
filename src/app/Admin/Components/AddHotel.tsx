@@ -187,6 +187,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
         "Game Room",
         "Library"]
 
+
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
 
@@ -267,7 +268,7 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                 labelledBy="Select Hotel Amenities"
 
                 options={amenities?.map((item) => ({ label: item, value: item }))}
-                value={value?.amenities?.map((item) => ({ label: item, value: item }))}
+                value={typeof value?.amenities !== 'undefined' ? value?.amenities?.map((item) => ({ label: item, value: item })): []}
                 onChange={(e: { label: string, value: string }[]) => {
                     setValue(prev => ({ ...prev, amenities: e?.map(it => it.value) }))
                 }} />

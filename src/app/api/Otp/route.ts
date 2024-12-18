@@ -67,7 +67,7 @@ export async function PUT(req: NextRequest) {
         });
     } else if (type !== 'register' && maxCount?.otpCount >= 3 && maxCount?.date && (diffInMs / (1000 * 60 * 60)) <= 1) {
         return NextResponse.json({
-            error: 'Max Count reached'
+            error: 'Maximum attempt reached.'
         }, {
             status: 400,
         });

@@ -9,6 +9,7 @@ import AddUser from './AddUser'
 import OTPInput from 'react-otp-input'
 import { MuiTelInput } from 'mui-tel-input'
 import { Context } from '@/Context/context'
+import { MuiPhone } from './MuiPhone'
 
 const AuthButtons = () => {
     const { status } = useSession()
@@ -152,12 +153,17 @@ export const SignIn = ({ setModal }: { setModal: React.Dispatch<React.SetStateAc
                             required
                             disabled={isLoading}
                         /> */}
-                        <MuiTelInput
+                        {/* <MuiTelInput
                             label='Primary Contact'
                             defaultCountry='IN'
                             className='*:text-xl'
                             value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))}
                             required
+                        /> */}
+
+                        <MuiPhone
+                            value={value.contact1}
+                            onChange={(phone) => setValue(prev => ({ ...prev, contact1: phone }))}
                         />
 
                     </div>

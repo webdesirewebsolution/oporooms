@@ -49,6 +49,11 @@ const Transaction = () => {
                 }
             })
 
+            if (filter.from && filter.to && filter.from == filter.to) {
+                params.delete('from')
+                params.delete('to')
+            }
+
             await axios.get(`/api/transactions?${params.toString()}`).then(r => {
                 if (r.status == 200) {
                     setData(r.data?.list)

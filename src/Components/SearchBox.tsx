@@ -60,7 +60,7 @@ const SearchBox = ({ }) => {
         <>
             <div className={
                 // `lg:sticky lg:-top-[2rem] z-50`
-                `${width > 720 && (scrolled ? 'fixed -top-[2rem]': 'fixed top-[12rem]')} w-full z-50`
+                `${(scrolled ? 'lg:fixed -top-[2rem]': 'lg:fixed top-[12rem]')} w-full z-50`
             }>
                 <Container maxWidth={isScrolledOnDesktop ? 'xl' : 'lg'} className={`relative top-5 lg:top-12 transition-all`}>
                     <div className={`bg-white shadow rounded-xl p-10 w-full flex flex-col gap-5`}>

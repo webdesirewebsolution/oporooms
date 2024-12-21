@@ -11,6 +11,8 @@ import { useSearchParams } from 'next/navigation'
 
 type SearchProps = {
     city: string,
+    lat: number,
+    lng: number,
     checkIn: Moment,
     checkOut: Moment,
     rooms: number,
@@ -26,6 +28,8 @@ const SearchHotel = ({ }) => {
     const [placeId, setPlaceId] = useState('ChIJQbc2YxC6vzsRkkDzYv-H-Oo')
     const [value, setValue] = useState<SearchProps>({
         city: 'Goa, India',
+        lat: Number(searchParams.get('lat')),
+        lng: Number(searchParams.get('lng')),
         checkIn: moment(new Date(Number(searchParams.get('checkIn')))),
         checkOut: moment(new Date(Number(searchParams.get('checkOut')))).add(1, 'days'),
         rooms: Number(searchParams.get('rooms')) || 1,
@@ -36,7 +40,7 @@ const SearchHotel = ({ }) => {
     })
     const [selectRoom, setSelectRoom] = useState(false)
 
-   
+
 
     return (
         <div className='py-20 px-10 md:px-0'>
@@ -47,7 +51,22 @@ const SearchHotel = ({ }) => {
                             defaultValue: { label: value.city, value: value.city },
                             value: { label: value.city, value: value.city },
                             onChange: (e) => {
-                                setValue(prev => ({ ...prev, city: e?.value?.description }))
+                                if (typeof window !== 'undefined') {
+                                    const geocoder = new google.maps.Geocoder()
+
+                                    geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
+                                        if (status == google.maps.GeocoderStatus.OK) {
+                                            const location = results?.[0]?.geometry?.location?.toJSON()
+
+                                            setValue(prev => ({
+                                                ...prev,
+                                                lat: location?.lat as number,
+                                                lng: location?.lng as number,
+                                                city: e?.value?.description,
+                                            }))
+                                        }
+                                    })
+                                }
                                 setPlaceId(e?.value?.place_id)
                             },
                             classNames: {
@@ -92,6 +111,8 @@ const SearchHotel = ({ }) => {
                     query: {
                         placeId: placeId,
                         city: value.city,
+                        lat: value.lat,
+                        lng: value.lng,
                         checkIn: moment(value.checkIn).format('x'),
                         checkOut: moment(value.checkOut).format('x'),
                         rooms: value.rooms,

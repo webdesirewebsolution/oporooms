@@ -60,7 +60,7 @@ const SearchBox = ({ }) => {
         <>
             <div className={
                 // `lg:sticky lg:-top-[2rem] z-50`
-                `${(scrolled ? 'lg:fixed -top-[2rem]': 'lg:fixed top-[12rem]')} w-full z-50`
+                `${(scrolled ? 'lg:fixed -top-[2rem]' : 'lg:fixed top-[12rem]')} w-full z-50`
             }>
                 <Container maxWidth={isScrolledOnDesktop ? 'xl' : 'lg'} className={`relative top-5 lg:top-12 transition-all`}>
                     <div className={`bg-white shadow rounded-xl p-10 w-full flex flex-col gap-5`}>
@@ -90,6 +90,8 @@ const SearchBox = ({ }) => {
 
 type SearchProps = {
     city: string,
+    lat?: number,
+    lng?: number
     checkIn: Moment,
     checkOut: Moment,
     rooms: number,
@@ -101,6 +103,8 @@ type SearchProps = {
 
 const initialData: SearchProps = {
     city: 'Goa, India',
+    lat: 0,
+    lng: 0,
     checkIn: moment(new Date()),
     checkOut: moment(new Date()).add(1, 'days'),
     rooms: 1,
@@ -142,7 +146,24 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                             defaultValue: { label: value.city, value: value.city },
                             value: { label: value.city, value: value.city },
                             onChange: (e) => {
-                                setValue(prev => ({ ...prev, city: e?.value?.description }))
+                                if (typeof window !== 'undefined') {
+                                    const geocoder = new google.maps.Geocoder()
+
+                                    geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
+                                        if (status == google.maps.GeocoderStatus.OK) {
+                                            const location = results?.[0]?.geometry?.location?.toJSON()
+                                            console.log(results?.[0])
+
+                                            setValue(prev => ({
+                                                ...prev,
+                                                lat: location?.lat as number,
+                                                lng: location?.lng as number,
+                                                city: e?.value?.description,
+                                            }))
+                                        }
+                                    })
+                                }
+
                                 setPlaceId(e?.value?.place_id)
                             },
                             classNames: {
@@ -189,6 +210,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                 query: {
                     placeId: placeId,
                     city: value.city,
+                    lat: value.lat,
+                    lng: value.lng,
                     checkIn: moment(value.checkIn).valueOf(),
                     checkOut: moment(value.checkOut).valueOf(),
                     rooms: value.rooms,

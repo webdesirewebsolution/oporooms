@@ -43,11 +43,44 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
     if (searchParams?.min && searchParams?.max) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min), $lte: Number(searchParams.max) }
 
     if (searchParams?.min) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min) }
-
     if (searchParams?.name) searchKeys['name'] = new RegExp(String(searchParams.name), 'i')
 
-    const data = await hotelColl.find(searchKeys).limit(limit).skip(0).toArray()
-    const count = await hotelColl.countDocuments(searchKeys)
+    const data = await hotelColl.aggregate([
+        {
+            $geoNear: {
+                near: { type: "Point", coordinates: [Number(searchParams?.lng), Number(searchParams?.lat)] },
+                distanceField: "dist.calculated",
+                includeLocs: "location",
+                spherical: true,
+                minDistance: 1000,
+                maxDistance: 5000,
+            },
+        },
+        {
+            $match: searchKeys
+        },
+    ]).limit(limit).skip(0).toArray()
+
+    const counts =  await hotelColl.aggregate([
+        {
+            $geoNear: {
+                near: { type: "Point", coordinates: [Number(searchParams?.lng), Number(searchParams?.lat)] },
+                distanceField: "dist.calculated",
+                includeLocs: "location",
+                spherical: true,
+                minDistance: 1000,
+                maxDistance: 5000,
+            },
+        },
+        {
+            $match: searchKeys
+        },
+        {
+          $count: 'count'
+        }
+    ]).limit(limit).skip(0).toArray()
+
+    const count = counts[0]?.count
 
     const rooms = searchParams?.rooms ? Number(searchParams?.rooms) : 0
     const checkIn = searchParams?.checkIn && Number(searchParams.checkIn)
@@ -93,7 +126,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                             <p className='text-slate-700 text-xl mt-1'>4.5 (1200 Reviews)</p>
                                         </div>
 
-                                        <Description text={item.desc} className='lg:w-[40rem]'/>
+                                        <Description text={item.desc} className='lg:w-[40rem]' />
                                     </div>
 
                                     <div className='flex gap-2 items-center my-5'>

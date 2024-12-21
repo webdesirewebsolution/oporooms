@@ -52,8 +52,8 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                 distanceField: "dist.calculated",
                 includeLocs: "location",
                 spherical: true,
-                minDistance: 1000,
-                maxDistance: 5000,
+                minDistance: 0,
+                maxDistance: 10000,
             },
         },
         {
@@ -68,8 +68,8 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                 distanceField: "dist.calculated",
                 includeLocs: "location",
                 spherical: true,
-                minDistance: 1000,
-                maxDistance: 5000,
+                minDistance: 0,
+                maxDistance: 10000,
             },
         },
         {

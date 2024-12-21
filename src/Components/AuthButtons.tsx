@@ -74,7 +74,6 @@ export const SignIn = ({ setModal }: { setModal: React.Dispatch<React.SetStateAc
 
             setIsLoading(true)
             await axios.get(`/api/LoginWithOtp?contact1=${newContact}&otp=${code}`).then(async (r) => {
-                console.log(r.data)
                 if (r.status == 200) {
                     if (r.data?.user?.userRole == 'HotelOwner') {
                         await signIn('credentials', {

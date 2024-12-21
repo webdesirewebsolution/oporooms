@@ -132,6 +132,8 @@ const Footer = () => {
                                     query: {
                                         placeId: item.placeId,
                                         city: item.title,
+                                        lat: item.lat,
+                                        lng: item.lng,
                                         checkIn: moment(Date.now()).valueOf(),
                                         checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
                                         rooms: 1,

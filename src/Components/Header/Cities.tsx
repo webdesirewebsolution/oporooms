@@ -31,6 +31,8 @@ const Cities = ({ item, children }: Props) => {
                         query: {
                             placeId: subItem.placeId,
                             city: subItem.city,
+                            lat: subItem.latitude,
+                            lng: subItem.longitude,
                             checkIn: moment(Date.now()).valueOf(),
                             checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
                             rooms: 1,

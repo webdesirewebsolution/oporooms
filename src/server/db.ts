@@ -6,9 +6,10 @@ import { RoomVarietyTypes } from "@/Types/Rooms";
 import { Collection } from "mongodb";
 import { SearchParams } from "next/dist/server/request/search-params";
 
-export const getHotels = async ({ searchParams }: { searchParams: SearchParams }): Promise<{ data: HotelTypes[], count: number, roomData: { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] } }> => {
+export const getHotels = async ({ searchParams }: { searchParams: SearchParams }): Promise<{ data: HotelTypes[], count: number }> => {
     const hotelColl: Collection<HotelTypes> = client.collection('Hotels')
     const limit = searchParams?.limit ? Number(searchParams?.limit) : 10
+    const skip = searchParams?.skip ? Number(searchParams?.skip) : 0
     const searchKeys: { [key: string]: unknown } = {}
 
     if (searchParams?.min && searchParams?.max) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min), $lte: Number(searchParams.max) }
@@ -48,7 +49,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
                 roomCount: { $gt: 0 }
             }
         },
-    ]).limit(limit).skip(0).toArray()
+    ]).limit(limit).skip(skip).toArray()
 
     const counts = searchParams?.lng ? await hotelColl.aggregate([
         {
@@ -84,21 +85,37 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
         {
             $count: 'count'
         },
-    ]).limit(limit).skip(0).toArray() : []
+    ]).limit(limit).skip(skip).toArray() : []
 
-    let roomData = {}
+    let roomData = []
 
     if (data) {
         for (const item of data) {
             for (const room of item.rooms) {
-                roomData = await getRooms({ type: room.type })
+                let d = await getRooms({ type: room.type }).then(res => {
+                    return res
+                })
+                roomData.push({
+                    hotelId: item._id,
+                    data: d
+                })
             }
         }
     }
 
+    (data as HotelTypes[])?.forEach((item, index) => {
+        item.rooms.forEach((room, index) => {
+            roomData.forEach((roomItem, index) => {
+                if (roomItem.hotelId === item._id) {
+                    item.size = roomItem.data
+                }
+            })
+        })
+    })
+
     const count = counts[0]?.count
 
-    return ({ data, count, roomData }) as { data: HotelTypes[], count: number, roomData: { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] } };
+    return ({ data, count }) as { data: HotelTypes[], count: number };
 }
 
 export const getRooms = async ({ type }: { type: RoomVarietyTypes['type'] }) => {
@@ -187,5 +204,5 @@ export const getRooms = async ({ type }: { type: RoomVarietyTypes['type'] }) => 
         },
     ]).toArray()
 
-    return { totalSize, bookingSize } as { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] }
+    return ({ totalSize, bookingSize }) as { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] }
 }

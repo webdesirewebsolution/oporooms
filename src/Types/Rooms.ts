@@ -23,7 +23,7 @@ export interface RoomVarietyTypes {
     timing?: string,
     photos: string[],
     fee: string | number,
-    amenities: string[]
+    amenities: string[],
 }
 
 export interface RoomActions extends RoomsTypes {

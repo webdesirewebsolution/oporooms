@@ -20,7 +20,8 @@ export interface HotelTypes {
     customAddress: string,
     rooms: RoomVarietyTypes[],
     status: 'approved' | 'pending' | 'declined',
-    amenities: string[]
+    amenities: string[],
+    size: { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] }
 }
 
 export interface HotelActions extends HotelTypes {

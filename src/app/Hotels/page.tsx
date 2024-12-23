@@ -35,7 +35,7 @@ const HotelList = async ({ searchParams }: Props) => {
 }
 
 const HotelListClient = async ({ searchParams }: { searchParams: SearchParams }) => {
-    const { data, count, roomData } = await getHotels({ searchParams })
+    const { data, count } = await getHotels({ searchParams })
 
     const limit = searchParams?.limit ? Number(searchParams?.limit) : 0
     const rooms = searchParams?.rooms ? Number(searchParams?.rooms) : 0
@@ -95,14 +95,14 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                                 View Details
                                             </Button>
                                         </Link>
-                                        {roomData?.totalSize[0]?.TotalSize != roomData?.bookingSize?.[0]?.BookingSize &&
+                                        {item?.size?.totalSize[0]?.TotalSize != item?.size?.bookingSize?.[0]?.BookingSize &&
                                         <BookRoom hotelId={item?._id as string} />}
                                     </div>
                                 </div>
 
                             </div>
                             <div className='absolute right-10 top-0'>
-                                {roomData?.totalSize[0]?.TotalSize == roomData?.bookingSize?.[0]?.BookingSize &&
+                                {item?.size?.totalSize[0]?.TotalSize == item?.size?.bookingSize?.[0]?.BookingSize &&
                                     <div>
                                         <Image src='/Images/soldout.png' alt=''
                                             width={0}

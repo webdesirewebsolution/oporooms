@@ -16,12 +16,12 @@ const BookingsDetails = () => {
     const [data, setData] = useState<BookingTypes[]>([])
 
     useEffect(() => {
-        (async () => await axios.get(`/api/bookings`).then(r => {
+        (async () => await axios.get(`/api/bookings?userId=${user?._id}`).then(r => {
             if (r.status == 200) {
                 setData(r.data?.list)
             }
         }))()
-    }, [])
+    }, [user?._id])
 
     if (data?.length == 0) {
         return (
@@ -115,8 +115,8 @@ const BookingsDetails = () => {
                                             </div>
 
                                             <div className='flex flex-col items-end'>
-                                                <p className='text-4xl font-semibold'>Rs. {item?.roomDetails?.roomData?.price}</p>
-                                                <p className='text-slate-700 text-lg'>Rs. {item?.roomDetails?.roomData?.fee} taxes and fees</p>
+                                                <p className='text-4xl font-semibold'>&#8377;{item?.roomDetails?.roomData?.price}</p>
+                                                <p className='text-slate-700 text-lg'>Included taxes and fees</p>
                                             </div>
                                         </div>
                                     </div>

@@ -47,9 +47,10 @@ export async function GET(req: NextRequest) {
 
         case 'HotelOwner':
             searchKeys['hotelOwnerId'] = user?._id?.toString();
-            searchKeys['bookingStatus'] = 'approved';
+            searchKeys['status'] = 'booked';
             break;
     }
+
 
     for (const [keys, values] of searchParamsKeys) {
         if (ObjectId.isValid(values) && keys !== 'page' && keys !== 'pageSize' && keys != 'userId' && keys != 'companyId' && keys !== 'hotelOwnerId' && keys !== 'userDetails.companyId') {

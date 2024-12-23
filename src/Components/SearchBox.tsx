@@ -27,7 +27,6 @@ const SearchBox = ({ }) => {
     const [activeTab, setActiveTab] = useState<tabsTypes['title']>('Hotels')
 
     useMotionValueEvent(scrollY, "change", (latest) => {
-        console.log(latest)
         if (latest >= 180.8) {
             setScrolled(true)
         } else {
@@ -90,8 +89,8 @@ const SearchBox = ({ }) => {
 
 type SearchProps = {
     city: string,
-    lat?: number,
-    lng?: number
+    lat: number,
+    lng: number
     checkIn: Moment,
     checkOut: Moment,
     rooms: number,
@@ -102,9 +101,9 @@ type SearchProps = {
 }
 
 const initialData: SearchProps = {
-    city: 'Goa, India',
-    lat: 0,
-    lng: 0,
+    city: 'Gurgaon, Haryana, India',
+    lat: 28.4594965,
+    lng: 77.0266383,
     checkIn: moment(new Date()),
     checkOut: moment(new Date()).add(1, 'days'),
     rooms: 1,
@@ -117,7 +116,7 @@ const initialData: SearchProps = {
 const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean }) => {
     const pathname = usePathname()
     const router = useRouter()
-    const [placeId, setPlaceId] = useState('ChIJQbc2YxC6vzsRkkDzYv-H-Oo')
+    const [placeId, setPlaceId] = useState('ChIJWYjjgtUZDTkRHkvG5ehfzwI')
     const [value, setValue] = useState(initialData)
     const [selectRoom, setSelectRoom] = useState(false)
 
@@ -126,6 +125,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
             const params = new URLSearchParams()
             params.set('placeId', placeId)
             params.set('city', value.city)
+            params.set('lat', value.lat.toString())
+            params.set('lng', value.lng.toString())
             params.set('checkIn', moment(value.checkIn).format('x'))
             params.set('checkOut', moment(value.checkOut).format('x'))
             params.set('rooms', value.rooms.toString())

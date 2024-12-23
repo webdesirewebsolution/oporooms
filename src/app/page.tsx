@@ -5,9 +5,8 @@ import HotelSlider from '@/Components/HotelSlider'
 import SearchBox from '@/Components/SearchBox'
 import ServicesComp from '@/Components/ServicesComp'
 import TestimonialSlider from '@/Components/TestimonialSlider'
-import { HotelTypes } from '@/Types/Hotels'
+import { getHotels } from '@/server/db'
 import { Button, Container } from '@mui/material'
-import axios from 'axios'
 import moment from 'moment'
 import { SearchParams } from 'next/dist/server/request/search-params'
 import Image from 'next/image'
@@ -127,7 +126,6 @@ const DreamVacation = () => {
               <Image src={item.image} alt='' objectFit='cover' fill className='rounded-lg w-full' />
             </div>
             <p className='text-3xl font-semibold'>{item.title}</p>
-            {/* <p className='text-lg'>23456 properties</p> */}
           </Link>
         ))}
       </div>
@@ -136,9 +134,7 @@ const DreamVacation = () => {
 }
 
 const Rooms = async ({ searchParams }: { searchParams: any }) => {
-  const data = await axios.get(`${process.env.SERVERURL}/api/Hotels?page=0&pageSize=10`)
-
-  const list: HotelTypes[] = data.data?.list
+  const {data} = await getHotels({ searchParams })
   const params = new URLSearchParams(searchParams)
 
   return (
@@ -150,8 +146,7 @@ const Rooms = async ({ searchParams }: { searchParams: any }) => {
       </div>
       <div className='text-5xl font-bold'>Explore Our <span className='text-red-500 text-5xl font-bold uppercase'>Hotels</span></div>
 
-      {/* <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'> */}
-      <HotelSlider list={list} params={params.toString()} />
+      <HotelSlider list={data} params={params.toString()} />
     </div>
   )
 }
@@ -206,7 +201,6 @@ const Testimonials = async () => {
       <div className='text-5xl font-bold'>What <span className='text-red-500 text-5xl font-bold uppercase'>Users </span>
         {" "}say</div>
 
-      {/* <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full'> */}
       <TestimonialSlider list={list} />
     </div>
   )

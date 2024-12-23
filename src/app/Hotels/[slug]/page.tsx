@@ -15,6 +15,7 @@ import client from "@/Lib/mongo";
 import { Collection, ObjectId } from 'mongodb';
 import Description from '@/Components/Description';
 import Expandable from '@/Components/Expandable';
+import { getRooms } from '@/server/db';
 
 type Props = {
     params: Promise<Params>,
@@ -139,90 +140,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
 }
 
 const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVarietyTypes }) => {
-    const roomsColl = client.collection("Rooms");
-
-    const totalSize = await roomsColl.aggregate([
-        {
-            $match: {
-                type: room.type
-            }
-        },
-        {
-            '$addFields': {
-                'id': {
-                    '$toString': '$_id'
-                }
-            }
-        }, {
-            '$lookup': {
-                'from': 'Bookings',
-                'localField': 'id',
-                'foreignField': 'assignedRooms._id',
-                'as': 'BookingsData'
-            }
-        }, {
-            '$lookup': {
-                'from': 'Hotels',
-                'localField': 'hotelId',
-                'foreignField': '_id',
-                'as': 'HotelData'
-            }
-        },
-        {
-            '$addFields': {
-                'BookingsSize': {
-                    '$size': '$BookingsData'
-                }
-            }
-        },
-        {
-            $count: "TotalSize"
-        },
-    ]).toArray()
-
-    const bookingSize = await roomsColl.aggregate([
-        {
-            $match: {
-                type: room.type
-            }
-        },
-        {
-            '$addFields': {
-                'id': {
-                    '$toString': '$_id'
-                }
-            }
-        }, {
-            '$lookup': {
-                'from': 'Bookings',
-                'localField': 'id',
-                'foreignField': 'assignedRooms._id',
-                'as': 'BookingsData'
-            }
-        }, {
-            '$lookup': {
-                'from': 'Hotels',
-                'localField': 'hotelId',
-                'foreignField': '_id',
-                'as': 'HotelData'
-            }
-        },
-        {
-            '$addFields': {
-                'BookingsSize': {
-                    '$size': '$BookingsData'
-                }
-            }
-        },
-        {
-            $match: {
-                'BookingsSize': { $gt: 0 }
-            }
-        },
-        {
-            $count: "BookingSize"
-        },
-    ]).toArray()
+    const {totalSize, bookingSize} = await getRooms({ type: room.type })
 
     if (totalSize.length == 0) {
         return (<></>)
@@ -247,7 +165,7 @@ const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVar
                 </div>
                 <div className='flex flex-col-reverse lg:flex-col flex-1 gap-5 md:gap-0 lg:items-end justify-between mt-10 lg:mt-0'>
                     <div>
-                        {totalSize?.[0]?.TotalSize == bookingSize?.[0]?.BookingSize ?
+                        {totalSize[0]?.TotalSize == bookingSize?.[0]?.BookingSize ?
                             <div>
                                 {/* <p className='text-3xl text-red-500 font-semibold'>Sold Out</p> */}
                                 <Image src='/Images/soldout.png' alt=''

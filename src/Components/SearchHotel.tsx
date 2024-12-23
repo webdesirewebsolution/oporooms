@@ -27,7 +27,7 @@ const SearchHotel = ({ }) => {
     const searchParams = useSearchParams()
     const [placeId, setPlaceId] = useState('ChIJQbc2YxC6vzsRkkDzYv-H-Oo')
     const [value, setValue] = useState<SearchProps>({
-        city: 'Goa, India',
+        city: searchParams.get('city')?.split("%20").join(' ') ? searchParams.get('city') as string : 'Gurgaon, Haryana, India',
         lat: Number(searchParams.get('lat')),
         lng: Number(searchParams.get('lng')),
         checkIn: moment(new Date(Number(searchParams.get('checkIn')))),
@@ -39,7 +39,6 @@ const SearchHotel = ({ }) => {
         }
     })
     const [selectRoom, setSelectRoom] = useState(false)
-
 
 
     return (

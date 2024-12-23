@@ -5,9 +5,6 @@ import Footer from '@/Components/Footer';
 import { SearchParams } from 'next/dist/server/request/search-params';
 import moment from 'moment';
 import { Button, Container } from '@mui/material';
-import { Collection } from 'mongodb';
-import { HotelTypes } from '@/Types/Hotels';
-import client from "@/Lib/mongo";
 import { FaStar } from 'react-icons/fa6';
 import { IoLocation } from 'react-icons/io5';
 import Link from 'next/link';
@@ -15,6 +12,8 @@ import BookRoom from '@/Components/BookRoom';
 import SliderImage from './SliderImage';
 import SearchInput, { Filter } from './SearchInput';
 import Description from '@/Components/Description';
+import { getHotels } from '@/server/db';
+import Image from 'next/image';
 
 type Props = {
     searchParams: Promise<SearchParams>
@@ -36,57 +35,13 @@ const HotelList = async ({ searchParams }: Props) => {
 }
 
 const HotelListClient = async ({ searchParams }: { searchParams: SearchParams }) => {
-    const hotelColl: Collection<HotelTypes> = client.collection('Hotels')
-    const limit = searchParams?.limit ? Number(searchParams?.limit) : 10
-    const searchKeys: { [key: string]: unknown } = {}
+    const { data, count, roomData } = await getHotels({ searchParams })
 
-    if (searchParams?.min && searchParams?.max) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min), $lte: Number(searchParams.max) }
-
-    if (searchParams?.min) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min) }
-    if (searchParams?.name) searchKeys['name'] = new RegExp(String(searchParams.name), 'i')
-
-    const data = await hotelColl.aggregate([
-        {
-            $geoNear: {
-                near: { type: "Point", coordinates: [Number(searchParams?.lng), Number(searchParams?.lat)] },
-                distanceField: "dist.calculated",
-                includeLocs: "location",
-                spherical: true,
-                minDistance: 0,
-                maxDistance: 10000,
-            },
-        },
-        {
-            $match: searchKeys
-        },
-    ]).limit(limit).skip(0).toArray()
-
-    const counts =  await hotelColl.aggregate([
-        {
-            $geoNear: {
-                near: { type: "Point", coordinates: [Number(searchParams?.lng), Number(searchParams?.lat)] },
-                distanceField: "dist.calculated",
-                includeLocs: "location",
-                spherical: true,
-                minDistance: 0,
-                maxDistance: 10000,
-            },
-        },
-        {
-            $match: searchKeys
-        },
-        {
-          $count: 'count'
-        }
-    ]).limit(limit).skip(0).toArray()
-
-    const count = counts[0]?.count
-
+    const limit = searchParams?.limit ? Number(searchParams?.limit) : 0
     const rooms = searchParams?.rooms ? Number(searchParams?.rooms) : 0
     const checkIn = searchParams?.checkIn && Number(searchParams.checkIn)
     const checkOut = searchParams?.checkOut && Number(searchParams.checkOut)
     const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 0
-
 
     return (
         <Container className='pb-20'>
@@ -112,7 +67,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
 
                 <div className='flex flex-col gap-10 w-full'>
                     {data && data?.map((item) => (
-                        <div key={item?._id as string} className='bg-white p-6 rounded-md flex flex-col lg:flex-row gap-10 justify-between'>
+                        <div key={item?._id as string} className='bg-white p-6 rounded-md flex flex-col lg:flex-row gap-10 justify-between relative'>
                             <div className='flex flex-col lg:flex-row gap-10'>
                                 {item?.photos && <SliderImage photos={item.photos} />}
 
@@ -140,11 +95,22 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                                 View Details
                                             </Button>
                                         </Link>
-
-                                        <BookRoom hotelId={item?._id as string} />
+                                        {roomData?.totalSize[0]?.TotalSize != roomData?.bookingSize?.[0]?.BookingSize &&
+                                        <BookRoom hotelId={item?._id as string} />}
                                     </div>
                                 </div>
 
+                            </div>
+                            <div className='absolute right-10 top-0'>
+                                {roomData?.totalSize[0]?.TotalSize == roomData?.bookingSize?.[0]?.BookingSize &&
+                                    <div>
+                                        <Image src='/Images/soldout.png' alt=''
+                                            width={0}
+                                            height={0}
+                                            sizes='100vw'
+                                            className='w-28'
+                                        />
+                                    </div>}
                             </div>
 
                             <div className='flex flex-col items-end justify-between gap-5 lg:py-5'>
@@ -171,10 +137,8 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                             ...searchParams,
                             limit: limit + 20,
                         },
-                        // hash: String(limit + 10)
                     }}>
                         <Button
-                            // onClick={() => { setFilter(prev => ({ ...prev, page: Number(prev?.page) + 1, pageSize: Number(prev?.pageSize) + 1 })); setIsLoadMore(true) }}
                             className='bg-[rgba(254,82,82,0.21)] text-red-500 font-extrabold px-10 py-5 capitalize text-xl' size='large'>
                             Load more results
                         </Button>

@@ -6,7 +6,18 @@ import { RoomVarietyTypes } from "@/Types/Rooms";
 import { Collection } from "mongodb";
 import { SearchParams } from "next/dist/server/request/search-params";
 
-export const getHotels = async ({ searchParams }: { searchParams: SearchParams }): Promise<{ data: HotelTypes[], count: number }> => {
+type RoomData = {
+    hotelId: string, data: {
+        totalSize: [] | [{
+            TotalSize: 0;
+        }];
+        bookingSize: [] | [{
+            BookingSize: 0;
+        }];
+    }
+}
+
+export const getHotels = async ({ searchParams }: { searchParams: SearchParams }): Promise<{ data: HotelTypes[], count: number, roomData: RoomData[] }> => {
     const hotelColl: Collection<HotelTypes> = client.collection('Hotels')
     const limit = searchParams?.limit ? Number(searchParams?.limit) : 10
     const skip = searchParams?.skip ? Number(searchParams?.skip) : 0
@@ -84,16 +95,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
         },
     ]).toArray() : []
 
-    const roomData: {
-        hotelId: string, data: {
-            totalSize: [] | [{
-                TotalSize: 0;
-            }];
-            bookingSize: [] | [{
-                BookingSize: 0;
-            }];
-        }
-    }[] = []
+    const roomData: RoomData[] = []
 
     if (data) {
         for (const item of data) {
@@ -151,7 +153,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
         } else false
     })
 
-    return ({ data: newData, count: newCount.length }) as { data: HotelTypes[], count: number };
+    return ({ data: newData, count: newCount.length, roomData }) as { data: HotelTypes[], count: number, roomData: RoomData[] };
 }
 
 export const getRooms = async ({ type }: { type: RoomVarietyTypes['type'] }) => {

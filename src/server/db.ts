@@ -84,12 +84,21 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
         },
     ]).toArray() : []
 
-    let roomData = []
+    const roomData: {
+        hotelId: string, data: {
+            totalSize: [] | [{
+                TotalSize: 0;
+            }];
+            bookingSize: [] | [{
+                BookingSize: 0;
+            }];
+        }
+    }[] = []
 
     if (data) {
         for (const item of data) {
             for (const room of item.rooms) {
-                let d = await getRooms({ type: room.type }).then(res => {
+                const d = await getRooms({ type: room.type }).then(res => {
                     return res
                 })
                 roomData.push({

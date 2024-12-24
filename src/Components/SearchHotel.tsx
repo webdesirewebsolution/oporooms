@@ -31,7 +31,7 @@ const SearchHotel = ({ }) => {
         lat: Number(searchParams.get('lat')),
         lng: Number(searchParams.get('lng')),
         checkIn: moment(new Date(Number(searchParams.get('checkIn')))),
-        checkOut: moment(new Date(Number(searchParams.get('checkOut')))).add(1, 'days'),
+        checkOut: moment(new Date(Number(searchParams.get('checkOut')))),
         rooms: Number(searchParams.get('rooms')) || 1,
         guests: {
             adults: Number(searchParams.get('adults')) || 2,
@@ -95,7 +95,7 @@ const SearchHotel = ({ }) => {
                     placeholder="CHECK-OUT"
                     type='date'
                     className='bg-gray-50 border-gray-100 rounded-lg'
-                    min={moment(value.checkIn).add(1, 'days').format('YYYY-MM-DD')}
+                    min={moment(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
                     value={moment(value.checkOut).format('YYYY-MM-DD')}
                     onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
                 />
@@ -113,7 +113,7 @@ const SearchHotel = ({ }) => {
                         lat: value.lat,
                         lng: value.lng,
                         checkIn: moment(value.checkIn).format('x'),
-                        checkOut: moment(value.checkOut).format('x'),
+                        checkOut: moment(value.checkOut).add(1, 'day').format('x'),
                         rooms: value.rooms,
                         adults: value.guests.adults,
                         childrens: value.guests.children

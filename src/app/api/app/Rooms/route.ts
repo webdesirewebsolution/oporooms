@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const { totalSize, bookingSize } = await getRooms({ type: searchParams.type })
+        const { totalSize, bookingSize } = await getRooms({ type: searchParams.type, hotelId: searchParams.hotelId })
         return NextResponse.json({ totalSize, bookingSize }, { status: 200 })
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 })

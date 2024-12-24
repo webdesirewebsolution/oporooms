@@ -105,7 +105,7 @@ const initialData: SearchProps = {
     lat: 28.4594965,
     lng: 77.0266383,
     checkIn: moment(new Date()),
-    checkOut: moment(new Date()).add(1, 'days'),
+    checkOut: moment(new Date()).add(1, 'day'),
     rooms: 1,
     guests: {
         adults: 2,
@@ -137,6 +137,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
 
         }
     }, [value, placeId, pathname])
+
+    console.log(moment(value.checkOut).diff(value.checkIn, 'days'))
 
     return (
         <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} w-full gap-5 items-end transition-all`}>
@@ -213,8 +215,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                     city: value.city,
                     lat: value.lat,
                     lng: value.lng,
-                    checkIn: moment(value.checkIn).valueOf(),
-                    checkOut: moment(value.checkOut).valueOf(),
+                    checkIn: moment(value.checkIn).format('x'),
+                    checkOut: moment(value.checkOut).format('x'),
                     rooms: value.rooms,
                     adults: value.guests.adults,
                     childrens: value.guests.children

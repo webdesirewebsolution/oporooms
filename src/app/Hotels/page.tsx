@@ -86,7 +86,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
 
                                     <div className='flex gap-2 items-center my-5'>
                                         <IoLocation />
-                                        <p className='text-lg w-[40rem]'>{item?.address?.City}</p>
+                                        <p className='text-lg w-[40rem]'>{item?.address?.Locality}, {item?.address?.City}</p>
                                     </div>
 
                                     <div className='flex gap-10'>
@@ -96,7 +96,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                             </Button>
                                         </Link>
                                         {item?.size?.totalSize[0]?.TotalSize != item?.size?.bookingSize?.[0]?.BookingSize &&
-                                        <BookRoom hotelId={item?._id as string} />}
+                                            <BookRoom hotelId={item?._id as string} />}
                                     </div>
                                 </div>
 
@@ -121,7 +121,8 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                         {searchParams?.rooms && <span className='text-xl'>{rooms} room{rooms > 1 && 's'}</span>}
                                         {searchParams?.checkIn && searchParams?.checkOut && <span className='text-xl'>{totalDays} day{totalDays > 1 && 's'}</span>}
                                     </div>
-                                    <p className='text-4xl font-semibold'>&#8377;{Number(item?.rooms?.[0]?.price) * totalDays}</p>
+                                    <p className='text-4xl font-semibold'>&#8377;{Number(item?.rooms?.[0]?.price)}</p>
+                                    <p className='text-slate-700 text-lg'>Per Night</p>
                                     <p className='text-slate-700 text-lg'>Includes taxes and fees</p>
                                 </div>
                             </div>

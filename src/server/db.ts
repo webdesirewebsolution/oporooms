@@ -3,7 +3,8 @@
 import client from "@/Lib/mongo";
 import { HotelTypes } from "@/Types/Hotels";
 import { RoomVarietyTypes } from "@/Types/Rooms";
-import { Collection } from "mongodb";
+import moment from "moment";
+import { Collection, ObjectId } from "mongodb";
 import { SearchParams } from "next/dist/server/request/search-params";
 
 type RoomData = {
@@ -22,10 +23,13 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
     const limit = searchParams?.limit ? Number(searchParams?.limit) : 10
     const skip = searchParams?.skip ? Number(searchParams?.skip) : 0
     const searchKeys: { [key: string]: unknown } = {}
+    if (searchParams?.min) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min) }
+    const checkIn = searchParams?.checkIn && Number(searchParams.checkIn)
+    const checkOut = searchParams?.checkOut && Number(searchParams.checkOut)
+    const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 1
 
     if (searchParams?.min && searchParams?.max) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min), $lte: Number(searchParams.max) }
 
-    if (searchParams?.min) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min) }
     if (searchParams?.name) searchKeys['name'] = new RegExp(String(searchParams.name), 'i')
 
     const data = searchParams?.lng && await hotelColl.aggregate([
@@ -98,18 +102,19 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
     const roomData: RoomData[] = []
 
     if (data) {
-        for (const item of data) {
+        for (const item of (data as HotelTypes[])) {
             for (const room of item.rooms) {
-                const d = await getRooms({ type: room.type }).then(res => {
+                const d = await getRooms({ type: room.type, hotelId: item._id as ObjectId }).then(res => {
                     return res
                 })
                 roomData.push({
-                    hotelId: item._id,
+                    hotelId: item._id as string,
                     data: d
                 })
             }
         }
     }
+
 
     (data as HotelTypes[])?.forEach((item, index) => {
         item.rooms.forEach((room, index) => {
@@ -129,7 +134,6 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
         item.rooms.forEach((room, index) => {
             roomData.forEach((roomItem, index) => {
                 if (String(roomItem.hotelId) === String(item._id)) {
-                    console.log(roomItem.data)
                     const totalSize = roomItem.data.totalSize[0]?.TotalSize || 0
                     const bookingSize = roomItem.data.bookingSize[0]?.BookingSize || 0
                     const remainingSize = totalSize - bookingSize
@@ -142,13 +146,13 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
     });
 
     const newData = (data as HotelTypes[])?.filter((item, index) => {
-        if (searchParams?.rooms && Number(searchParams?.rooms) <= (item.remainingSize as number)) {
+        if (searchParams?.rooms && (Number(searchParams?.rooms) <= (item.remainingSize as number))) {
             return true
         } else false
     })
 
     const newCount = (counts as HotelTypes[])?.filter((item, index) => {
-        if (searchParams?.rooms && Number(searchParams?.rooms) <= (item.remainingSize as number)) {
+        if (searchParams?.rooms && (Number(searchParams?.rooms) <= (item.remainingSize as number) || (item.size?.totalSize?.[0] && Number(searchParams?.rooms) <= item.size?.totalSize?.[0]?.TotalSize))) {
             return true
         } else false
     })
@@ -156,13 +160,14 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
     return ({ data: newData, count: newCount.length, roomData }) as { data: HotelTypes[], count: number, roomData: RoomData[] };
 }
 
-export const getRooms = async ({ type }: { type: RoomVarietyTypes['type'] }) => {
+export const getRooms = async ({ type, hotelId }: { type: RoomVarietyTypes['type'], hotelId: ObjectId }) => {
     const roomsColl = client.collection("Rooms");
 
     const totalSize = await roomsColl.aggregate([
         {
             $match: {
-                type
+                type,
+                hotelId: new ObjectId(hotelId)
             }
         },
         {
@@ -182,7 +187,7 @@ export const getRooms = async ({ type }: { type: RoomVarietyTypes['type'] }) => 
             '$lookup': {
                 'from': 'Hotels',
                 'localField': 'hotelId',
-                'foreignField': '_id',
+                'foreignField': '_i d',
                 'as': 'HotelData'
             }
         },

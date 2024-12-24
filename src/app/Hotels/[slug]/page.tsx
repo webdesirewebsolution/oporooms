@@ -140,7 +140,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
 }
 
 const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVarietyTypes }) => {
-    const {totalSize, bookingSize} = await getRooms({ type: room.type })
+    const {totalSize, bookingSize} = await getRooms({ type: room.type, hotelId: hotelData._id as ObjectId })
 
     if (totalSize.length == 0) {
         return (<></>)
@@ -179,7 +179,7 @@ const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVar
                     </div>
                     <div className='flex flex-col lg:items-end'>
                         <p className='text-4xl font-bold text-green-400'>&#8377;{room?.price}</p>
-                        <p className='text-xl'>+ &#8377;{room?.fee} taxes & fees</p>
+                        <p className='text-xl'>Included taxes & fees</p>
                     </div>
                 </div>
             </div>

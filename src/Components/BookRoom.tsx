@@ -21,9 +21,8 @@ const BookRoom = ({ hotelId }: Props) => {
     const { user } = useContext(Context)
 
     const handleSubmit = async () => {
-        console.log(hotelId)
-        const hotelData = await axios.get(`/api/Hotels?_id=${hotelId}`).then(r => {
-            if (r.status == 200) return r.data?.list?.[0]
+        const hotelData = await axios.get(`/api/app/SingleHotel?_id=${hotelId}`).then(r => {
+            if (r.status == 200) return r.data?.data
         })
 
         const roomData = hotelData?.rooms?.[0]

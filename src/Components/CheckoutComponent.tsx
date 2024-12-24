@@ -59,6 +59,8 @@ export const FillingDetails = () => {
 export const Details = () => {
     const { bookingData } = useContext(Context)
 
+    console.log(bookingData)
+
     const rooms = bookingData ? Number(bookingData?.roomDetails?.rooms) : 0
     const adults = bookingData ? Number(bookingData?.roomDetails?.adults) : 0
     const childrens = bookingData ? Number(bookingData?.roomDetails?.childrens) : 0
@@ -89,7 +91,7 @@ export const Details = () => {
                         </div>
                     </div>
 
-                    <Expandable>
+                    {bookingData?.details?.amenities?.length > 0 && <Expandable>
                         <div className='flex flex-wrap gap-5 w-96'>
                             {bookingData?.details?.amenities?.map((am) => (
                                 <div key={am} className='text-lg'>
@@ -97,7 +99,7 @@ export const Details = () => {
                                 </div>
                             ))}
                         </div>
-                    </Expandable>
+                    </Expandable>}
                 </div>
             </div>
 

@@ -8,8 +8,11 @@ import { Session } from 'next-auth'
 import DesktopHeader from './Header/DesktopHeader'
 import Cities from './Header/Cities'
 import Link from 'next/link'
+import { headers } from 'next/headers'
 
 const Header = async ({ }) => {
+    const headersList = headers();
+    console.log(headersList)
     const session = await auth()
     const user = await getUser(session as Session)
 

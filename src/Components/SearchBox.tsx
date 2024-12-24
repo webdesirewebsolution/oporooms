@@ -263,13 +263,13 @@ const SelectRooms = ({ value, setValue, setSelectRoom }: SelectRoomsProps) => {
                 <li className='flex justify-between items-center w-full gap-10'>
                     <p className='font-semibold text-slate-700'>Adults</p>
                     <Input value={val.guests.adults} onChange={e => setVal(prev => ({ ...prev, guests: { ...prev.guests, adults: Number(e.target.value) } }))}
-                        className='font-semibold' type='number' min={val.rooms} max={40} />
+                        className='font-semibold' type='number' min={val.rooms} max={val.rooms * 3} />
                 </li>
 
                 <li className='flex justify-between items-center w-full gap-10'>
                     <p className='font-semibold text-slate-700'>Children</p>
                     <Input value={val.guests.children} onChange={e => setVal(prev => ({ ...prev, guests: { ...prev.guests, children: Number(e.target.value) } }))}
-                        className='font-semibold' type='number' min={0} max={40} />
+                        className='font-semibold' type='number' min={0} max={20} />
                 </li>
             </ul>
             <Button className='bg-blue-500 text-white w-full py-5' onClick={handleSubmit} size='large'>

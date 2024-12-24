@@ -82,10 +82,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
                 roomCount: { $gt: 0 }
             }
         },
-        {
-            $count: 'count'
-        },
-    ]).limit(limit).skip(skip).toArray() : []
+    ]).toArray() : []
 
     let roomData = []
 
@@ -106,16 +103,46 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
     (data as HotelTypes[])?.forEach((item, index) => {
         item.rooms.forEach((room, index) => {
             roomData.forEach((roomItem, index) => {
-                if (roomItem.hotelId === item._id) {
+                if (String(roomItem.hotelId) === String(item._id)) {
+                    const totalSize = roomItem.data.totalSize[0]?.TotalSize || 0
+                    const bookingSize = roomItem.data.bookingSize[0]?.BookingSize || 0
+                    const remainingSize = totalSize - bookingSize
                     item.size = roomItem.data
+                    item.remainingSize = remainingSize
                 }
             })
         })
+    });
+
+    (counts as HotelTypes[])?.forEach((item, index) => {
+        item.rooms.forEach((room, index) => {
+            roomData.forEach((roomItem, index) => {
+                if (String(roomItem.hotelId) === String(item._id)) {
+                    console.log(roomItem.data)
+                    const totalSize = roomItem.data.totalSize[0]?.TotalSize || 0
+                    const bookingSize = roomItem.data.bookingSize[0]?.BookingSize || 0
+                    const remainingSize = totalSize - bookingSize
+
+                    item.size = roomItem.data
+                    item.remainingSize = remainingSize
+                }
+            })
+        })
+    });
+
+    const newData = (data as HotelTypes[])?.filter((item, index) => {
+        if (searchParams?.rooms && Number(searchParams?.rooms) <= (item.remainingSize as number)) {
+            return true
+        } else false
     })
 
-    const count = counts[0]?.count
+    const newCount = (counts as HotelTypes[])?.filter((item, index) => {
+        if (searchParams?.rooms && Number(searchParams?.rooms) <= (item.remainingSize as number)) {
+            return true
+        } else false
+    })
 
-    return ({ data, count }) as { data: HotelTypes[], count: number };
+    return ({ data: newData, count: newCount.length }) as { data: HotelTypes[], count: number };
 }
 
 export const getRooms = async ({ type }: { type: RoomVarietyTypes['type'] }) => {

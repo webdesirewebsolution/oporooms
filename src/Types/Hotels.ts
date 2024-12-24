@@ -22,6 +22,7 @@ export interface HotelTypes {
     status: 'approved' | 'pending' | 'declined',
     amenities: string[],
     size: { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] }
+    remainingSize?: number,
 }
 
 export interface HotelActions extends HotelTypes {

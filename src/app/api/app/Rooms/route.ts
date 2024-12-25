@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
     for (const [key, value] of req.nextUrl.searchParams.entries()) {
         searchParams[key] = value
-    }
+    } 
 
     try {
         const { totalSize, bookingSize } = await getRooms({ type: searchParams.type, hotelId: searchParams.hotelId })

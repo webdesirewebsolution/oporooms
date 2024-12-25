@@ -1,21 +1,27 @@
 "use server";
-import { ObjectId } from "mongodb";
+import { Collection, ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/Lib/mongo";
 import { auth } from "@/auth";
-const myColl = client.collection("Hotels");
+import { HotelTypes } from "@/Types/Hotels";
+const myColl: Collection<HotelTypes> = client.collection("Hotels");
 const UserColl = client.collection("Users");
 
 export async function POST(req: NextRequest) {
-    const { hotelOwnerId, ...rest } = await req.json();
+    const body: HotelTypes = await req.json();
+    const { hotelOwnerId, ...rest } = body;
 
     try {
         const count = await myColl.countDocuments();
         const hotelUId = `OPO${10000 + Number(count)}`
 
         await myColl.insertOne({
-            hotelOwnerId: ObjectId.createFromHexString(hotelOwnerId),
+            hotelOwnerId: ObjectId.createFromHexString(hotelOwnerId as string),
             hotelUId,
+            location: {
+                type: 'Point',
+                coordinates: [rest.address.lat, rest.address.lng]
+            },
             ...rest
         });
 

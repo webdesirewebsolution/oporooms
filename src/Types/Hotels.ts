@@ -12,7 +12,7 @@ export interface AddressTypes {
 export interface HotelTypes {
     _id?: string | ObjectId,
     hotelUId?: string,
-    hotelOwnerId?: string,
+    hotelOwnerId?: string | ObjectId,
     photos: string[],
     name: string,
     address: AddressTypes,
@@ -23,6 +23,10 @@ export interface HotelTypes {
     amenities: string[],
     size: { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] }
     remainingSize?: number,
+    location?: {
+        type: string,
+        coordinates: number[]
+    }
 }
 
 export interface HotelActions extends HotelTypes {

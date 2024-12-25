@@ -5,6 +5,7 @@ import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { User } from "../Types/Profile";
 import { Session } from "next-auth";
+import client from '@/Lib/mongo'
 
 export async function loginUser(prevState: unknown, formData: FormData) {
     const email = formData.get('email');
@@ -30,6 +31,29 @@ export async function loginUser(prevState: unknown, formData: FormData) {
     }
 
     revalidatePath('/Admin', 'layout')
+
+}
+
+export async function handleUserEnquiry(prevState: { message: string, status: number }, formData: FormData): Promise<{ message: string, status: number }> {
+    const userEnquiryColl = client.collection('UserEnquiry')
+
+    const email = formData.get('email');
+    const name = formData.get('name');
+    const phone = formData.get('phone') as string;
+    const checkin = formData.get('checkin');
+    const checkout = formData.get('checkout');
+
+    if (email !== '' && name !== '' && phone?.length >= 10) {
+        try {
+            await userEnquiryColl.insertOne({ email, name, phone, checkin, checkout })
+            revalidatePath('/', 'layout')
+            return { message: 'Submitted', status: 200 }
+        } catch {
+            return { message: 'Something error2', status: 400 }
+        }
+    }
+
+    return { message: 'Something error', status: 400 }
 
 }
 

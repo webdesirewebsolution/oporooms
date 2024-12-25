@@ -12,7 +12,6 @@ const initialState = {
 
 const SignIn = () => {
     const [state, formAction, isPending] = useActionState(loginUser, initialState)
-    console.log(state)
 
     return (
         <div className="w-full min-h-screen flex flex-col items-center justify-center text-center gap-8 px-5">

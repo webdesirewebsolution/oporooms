@@ -250,7 +250,6 @@ const SelectRooms = ({ value, setValue, setSelectRoom }: SelectRoomsProps) => {
         setSelectRoom(false)
     }
 
-
     return (
         <div>
             <ul className='w-full flex flex-col gap-5 mb-10'>
@@ -265,7 +264,7 @@ const SelectRooms = ({ value, setValue, setSelectRoom }: SelectRoomsProps) => {
                 <li className='flex justify-between items-center w-full gap-10'>
                     <p className='font-semibold text-slate-700'>Adults</p>
                     <Input value={val.guests.adults} onChange={e => setVal(prev => ({ ...prev, guests: { ...prev.guests, adults: Number(e.target.value) } }))}
-                        className='font-semibold' type='number' min={val.rooms} max={val.rooms * 3} />
+                        className='font-semibold' type='number' min={val.rooms} max={val.rooms * 2} />
                 </li>
 
                 <li className='flex justify-between items-center w-full gap-10'>

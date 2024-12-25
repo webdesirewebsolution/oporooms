@@ -21,10 +21,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Installing Corepack
-      run: brew install corepack
-    - name: Enable Corepack
-      run: corepack enable
+    - name: Install yarn
+      run: npm install -g yarn
     - name: Use Node.js 20.x
       uses: actions/setup-node@v4
       with:

@@ -1,7 +1,7 @@
 'use client'
 
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import { Button, FormControl, InputLabel, Menu, MenuItem, Paper, Select, TextField } from '@mui/material'
@@ -10,6 +10,8 @@ import moment from 'moment'
 import Modal from '@/Components/Modal'
 import AddTransactions from '../Components/AddTransactions'
 import AddPay from '../Components/AddPay'
+import { FaWallet } from 'react-icons/fa6'
+import { Context } from '@/Context/context'
 
 const Transaction = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -33,6 +35,7 @@ const Transaction = () => {
     const [loading, setLoading] = useState(true)
     const [show, setShow] = useState<'Add balance' | 'Pay' | ''>('')
     const open = Boolean(anchorEl);
+    const { user } = useContext(Context)
 
     useEffect(() => {
         (async () => {
@@ -109,6 +112,29 @@ const Transaction = () => {
                         <MenuItem className='text-xl' onClick={() => setShow('Pay')}>Pay to company</MenuItem>
                     </Menu>
                 </div>
+            </div>
+
+            <div className='flex gap-10 flex-wrap'>
+                <div className='shadow p-10 w-[30rem] max-w-full flex flex-col gap-5 rounded-2xl'>
+                    <div className='flex items-center justify-between'>
+                        <div className='flex items-center gap-2'>
+                        <div className='bg-red-100 p-4 rounded-xl'>
+                            <FaWallet color='red' size={20} />
+                        </div>
+                        <h1 className='text-3xl'>Wallet Balance</h1>
+                        </div>
+                        <p className='text-4xl font-semibold'>&#8377;{user?.wallet}</p>
+                    </div>
+                </div>
+                {/* <div className='shadow p-10 w-[30rem] max-w-full flex flex-col gap-5 rounded-2xl'>
+                    <div className='flex items-center justify-between'>
+                        <h1 className='text-3xl'>Recent Transaction</h1>
+                        <div className='bg-red-100 p-4 rounded-xl'>
+                            <FaWallet color='red' size={20} />
+                        </div>
+                    </div>
+                    <p className='text-4xl font-semibold'>&#8377;{"12345"}</p>
+                </div> */}
             </div>
 
             <div className='flex gap-10'>

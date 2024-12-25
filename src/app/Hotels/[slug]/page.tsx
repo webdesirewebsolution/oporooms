@@ -42,6 +42,8 @@ const Hotel = async ({ params, searchParams }: Props) => {
         return (<></>)
     }
 
+    console.log(item?.photos)
+
     return (
         <>
             <Header />
@@ -53,13 +55,13 @@ const Hotel = async ({ params, searchParams }: Props) => {
                             <div className='relative w-[100%] aspect-video max-w-full'>
                                 <Image src={item.photos?.[0]} alt='' fill />
                             </div>
-                            {item?.photos?.length > 0 &&
+                            {item?.photos?.length > 1 &&
                                 <div className='flex flex-row lg:flex-col gap-5 w-full lg:w-[49%]'>
                                     <div className='relative w-[100%] aspect-video max-w-full'>
-                                        <Image src={item.photos?.[0]} alt='' fill />
+                                        <Image src={item.photos?.[1]} alt='' fill />
                                     </div>
                                     <div className='relative w-[100%] aspect-video max-w-full'>
-                                        <Image src={item.photos?.[0]} alt='' fill />
+                                        <Image src={item.photos?.[2]} alt='' fill />
                                     </div>
                                 </div>}
                         </div>
@@ -108,16 +110,19 @@ const Hotel = async ({ params, searchParams }: Props) => {
                         </div>
                     </div>
 
-                    <h2 className='text-4xl font-semibold'>Amenities</h2>
-                    <Expandable>
-                        <div className='flex flex-wrap gap-10'>
-                            {item?.amenities?.map((am) => (
-                                <div key={am} className='bg-white px-10 py-4 text-lg rounded-lg'>
-                                    {am}
+                    {item?.amenities?.length > 0 &&
+                        <>
+                            <h2 className='text-4xl font-semibold'>Amenities</h2>
+                            <Expandable>
+                                <div className='flex flex-wrap gap-10'>
+                                    {item?.amenities?.map((am) => (
+                                        <div key={am} className='bg-white px-10 py-4 text-lg rounded-lg'>
+                                            {am}
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    </Expandable>
+                            </Expandable>
+                        </>}
 
 
                     {item?.rooms && item?.rooms?.length > 0 && (
@@ -140,7 +145,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
 }
 
 const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVarietyTypes }) => {
-    const {totalSize, bookingSize} = await getRooms({ type: room.type, hotelId: hotelData._id as ObjectId })
+    const { totalSize, bookingSize } = await getRooms({ type: room.type, hotelId: hotelData._id as ObjectId })
 
     if (totalSize.length == 0) {
         return (<></>)

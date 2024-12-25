@@ -14,6 +14,7 @@ import SearchInput, { Filter } from './SearchInput';
 import Description from '@/Components/Description';
 import { getHotels } from '@/server/db';
 import Image from 'next/image';
+import UserForm from '@/Components/UserForm';
 
 type Props = {
     searchParams: Promise<SearchParams>
@@ -46,7 +47,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
     return (
         <Container className='pb-20'>
             <div className='flex items-center justify-center'>
-                <p className='text-center mb-20 text-4xl font-bold text-slate-700'>{count} search resuls found</p>
+                {count == 0 && <p className='text-center mb-20 text-4xl font-bold text-slate-700'>{count == 0 && 'No Hotels Found' }</p>}
             </div>
 
             <div className='flex flex-col lg:flex-row gap-10'>
@@ -66,7 +67,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                 </div>
 
                 <div className='flex flex-col gap-10 w-full'>
-                    {data && data?.map((item) => (
+                    {data?.length > 0 ? data?.map((item) => (
                         <div key={item?._id as string} className='bg-white p-6 rounded-md flex flex-col lg:flex-row gap-10 justify-between relative'>
                             <div className='flex flex-col lg:flex-row gap-10'>
                                 {item?.photos && <SliderImage photos={item.photos} />}
@@ -127,11 +128,17 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    ))
+                        : (
+                            <div className='flex flex-col w-full items-center'>
+                                <UserForm />
+                            </div>
+                        )
+                    }
                 </div>
             </div>
 
-            {limit <= count &&
+            {count > 0 && (limit <= count) &&
                 <div className='flex items-center justify-center my-10'>
                     <Link passHref replace scroll={false} href={{
                         query: {

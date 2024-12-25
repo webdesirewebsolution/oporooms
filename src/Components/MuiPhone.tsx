@@ -18,8 +18,8 @@ import {
 } from 'react-international-phone';
 
 export interface MUIPhoneProps extends BaseTextFieldProps {
-    value: string;
-    onChange: (phone: string) => void;
+    value?: string;
+    onChange?: (phone: string) => void;
 }
 
 export const MuiPhone: React.FC<MUIPhoneProps> = ({
@@ -33,7 +33,7 @@ export const MuiPhone: React.FC<MUIPhoneProps> = ({
             value,
             countries: defaultCountries,
             onChange: (data) => {
-                onChange(data.phone);
+                onChange && onChange(data.phone);
             },
         });
 

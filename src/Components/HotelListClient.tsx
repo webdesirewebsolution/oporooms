@@ -28,7 +28,6 @@ const HotelListClient = () => {
   const [loading, setLoading] = useState(false)
   const [count, setCount] = useState(0)
   const [address, setAddress] = useState('')
-  console.log(address)
   const [filter, setFilter] = useState<{
     page: number, pageSize: number, hotelName: string | undefined
   }>({

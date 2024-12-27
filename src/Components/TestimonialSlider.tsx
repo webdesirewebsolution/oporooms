@@ -27,7 +27,7 @@ const TestimonialSlider = ({ list }: Props) => {
                 <SwiperSlide key={i} className='h-full'>
                     <div className='w-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden bg-white'>
                         <div className='w-full aspect-video relative'>
-                            {item.image ? <Image src={item.image} alt='' objectFit='cover' fill /> : (
+                            {item.image ? <Image src={item.image} alt={item.title} title={item.title} objectFit='cover' fill /> : (
                                 <div className='w-full aspect-video flex items-center justify-center bg-slate-300'>
                                     <CiImageOff size={100} />
                                 </div>

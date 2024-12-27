@@ -40,7 +40,6 @@ const Enquiry = (props: Props) => {
                     setValue(initialData)
                     setMsg('Success')
 
-                    console.log({newContact, r: r.data?.msg})
 
                     await signIn('credentials', {
                         redirectTo: '/Admin/Hotels',

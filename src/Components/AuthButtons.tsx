@@ -27,8 +27,8 @@ const AuthButtons = () => {
         return (
             <>
                 <div className='flex gap-5'>
-                    <Button className='text-red-500 font-bold border-red-500' variant='outlined' onClick={() => setAuthModal('Register')}>Register</Button>
-                    <Button className='bg-red-500 text-white font-bold' onClick={() => setAuthModal('SignIn')}>
+                    <Button title='Register' className='text-red-500 font-bold border-red-500' variant='outlined' onClick={() => setAuthModal('Register')}>Register</Button>
+                    <Button title="SignIn" className='bg-red-500 text-white font-bold' onClick={() => setAuthModal('SignIn')}>
                         Sign In
                     </Button>
                 </div>
@@ -136,7 +136,7 @@ export const SignIn = ({ setModal }: { setModal: React.Dispatch<React.SetStateAc
                 </div>
 
 
-                <Button type='submit' className='bg-red-400 text-white py-5 w-full text-2xl' disabled={isLoading} size='large'>{isLoading ? <CircularProgress size={15} color='inherit' /> : 'Sign In'}</Button>
+                <Button title="SignIn" type='submit' className='bg-red-400 text-white py-5 w-full text-2xl' disabled={isLoading} size='large'>{isLoading ? <CircularProgress size={15} color='inherit' /> : 'Sign In'}</Button>
             </form> :
 
             <form onSubmit={handleOtp} className='flex flex-col gap-5 items-center'>
@@ -168,12 +168,12 @@ export const SignIn = ({ setModal }: { setModal: React.Dispatch<React.SetStateAc
                     </div>
                 </div>
 
-                <Button disabled={isLoading} className={`${isLoading ? 'bg-red-300' : 'bg-red-400'} text-white py-5 text-2xl w-full`} size='large' type='submit'>{isLoading ? <CircularProgress size={15} color='inherit' /> : 'Sign In'}</Button>
+                <Button title="SignIn" disabled={isLoading} className={`${isLoading ? 'bg-red-300' : 'bg-red-400'} text-white py-5 text-2xl w-full`} size='large' type='submit'>{isLoading ? <CircularProgress size={15} color='inherit' /> : 'Sign In'}</Button>
             </form>
         }
 
             <div className='w-full mt-5'>
-                <Button className='border-2 border-red-400 text-red-500 w-full text-2xl py-5' size='large' variant='outlined' onClick={() => setModal('Register')}>Register</Button>
+                <Button title="Register" className='border-2 border-red-400 text-red-500 w-full text-2xl py-5' size='large' variant='outlined' onClick={() => setModal('Register')}>Register</Button>
             </div>
         </>
     )

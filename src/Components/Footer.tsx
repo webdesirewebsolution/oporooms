@@ -65,7 +65,7 @@ const Footer = () => {
             <Container className=''>
                 <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-20'>
                     <div className='flex flex-col gap-5'>
-                        <Image src='/Images/logo.png' alt='Logo' width={80} height={52} objectFit='contain' className='w-32' />
+                        <Image src='/Images/logo.png' alt='Logo' title='Oporooms' width={80} height={52} objectFit='contain' className='w-32' />
                         <p>OPO Rooms Provide All Types of Travelling Bookings Bus, Train, Flight, Cabs etc.</p>
                     </div>
 
@@ -77,7 +77,7 @@ const Footer = () => {
                             <li>Rooms</li>
                             <li>About Us</li>
                             <li>
-                                <Link href='/Contact'>
+                                <Link href='/Contact' title='Contact'>
                                     Contact Us
                                 </Link>
                             </li>
@@ -100,10 +100,10 @@ const Footer = () => {
                         <p className='font-semibold'>Terms and Policies</p>
                         <ul>
                             <li>
-                                <Link href='PrivacyPolicy'>Privacy Policy</Link>
+                                <Link href='PrivacyPolicy' title="Privacy Policy">Privacy Policy</Link>
                             </li>
                             <li>
-                                <Link href='TermsConditions'>Terms of use</Link>
+                                <Link href='TermsConditions' title="Terms of use">Terms of use</Link>
                             </li>
                             <li>Accessbility</li>
                             <li>Reward system policy</li>
@@ -140,7 +140,7 @@ const Footer = () => {
                                         adults: 1,
                                         childrens: 0
                                     }
-                                }}>
+                                }} title={item.title}>
                                     {item.title}
                                 </Link>
                             </li>

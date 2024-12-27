@@ -214,7 +214,6 @@ const AddHotel = ({ hotelOwnerData, setShowModal, isEdit, hotelData }: Props) =>
                             geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
                                 if (status == google.maps.GeocoderStatus.OK) {
                                     const location = results?.[0]?.geometry?.location?.toJSON()
-                                    console.log(results?.[0])
 
                                     setValue(prev => ({
                                         ...prev,

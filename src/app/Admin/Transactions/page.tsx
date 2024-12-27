@@ -267,7 +267,6 @@ const UserDetails = ({ params }: { params: GridRenderCellParams }) => {
 const BookingDetails = ({ params }: { params: GridRenderCellParams }) => {
     const [show, setShow] = useState(false)
 
-    console.log(params.row.bookings)
 
     return (
         <div className='h-full flex items-center justify-center'>

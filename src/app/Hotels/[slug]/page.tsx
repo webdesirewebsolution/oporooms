@@ -42,7 +42,6 @@ const Hotel = async ({ params, searchParams }: Props) => {
         return (<></>)
     }
 
-    console.log(item?.photos)
 
     return (
         <>

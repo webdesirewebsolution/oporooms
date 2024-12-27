@@ -249,3 +249,9 @@ export const getRooms = async ({ type, hotelId }: { type: RoomVarietyTypes['type
 
     return ({ totalSize, bookingSize }) as { totalSize: [] | [{ TotalSize: 0 }], bookingSize: [] | [{ BookingSize: 0 }] }
 }
+
+export const getSingleHotel = async ({ _id }: { _id: ObjectId }) => {
+    const hotelColl: Collection<HotelTypes> = client.collection('Hotels')
+    const data = hotelColl.findOne({ _id: new ObjectId(_id) })
+    return data
+}

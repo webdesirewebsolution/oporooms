@@ -99,7 +99,6 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                         break;
                 }
 
-                console.log(companyId)
 
                 const formData: User = {
                     ...value,

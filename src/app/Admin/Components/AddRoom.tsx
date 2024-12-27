@@ -38,7 +38,6 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
 
     useEffect(() => {
         if (isEdit) {
-            console.log(roomData)
             setValue([roomData as dataProps])
         }
     }, [isEdit, roomData])
@@ -80,7 +79,6 @@ const AddRoom = ({ hotelData, setShowModal, isEdit, roomData }: Props) => {
         }
     }
 
-    console.log(value)
 
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>

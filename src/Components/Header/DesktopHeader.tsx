@@ -7,7 +7,7 @@ import { MdOutlineBusinessCenter } from 'react-icons/md'
 const DesktopHeader = () => {
     return (
         <div className='hidden lg:flex'>
-            <Link href='/Opo-for-business' className='flex gap-5 px-8 h-full items-center border-r'>
+            <Link href='/Opo-for-business' className='flex gap-5 px-8 h-full items-center border-r' title="Opo-for-business">
                     <MdOutlineBusinessCenter size={30}/>
                 <div className='flex flex-col items-center'>
                     <p className='text-[#212121] font-medium'>OPO for Business</p>
@@ -15,7 +15,7 @@ const DesktopHeader = () => {
                 </div>
             </Link>
 
-            <Link href='/ListProperty' className='flex gap-5 px-5 h-full items-center border-r'>
+            <Link href='/ListProperty' className='flex gap-5 px-5 h-full items-center border-r' title='ListProperty'>
                     <FaBuilding size={23}/>
                 <div className='flex flex-col items-center'>
                     <p className='text-[#212121] font-medium'>List Your Property</p>

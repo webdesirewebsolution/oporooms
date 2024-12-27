@@ -45,7 +45,7 @@ const Home = async ({ searchParams }: Props) => {
       </Container>
 
       <div className='relative w-screen aspect-video max-h-[35.63rem] flex items-center px-14 lg:px-24 mt-28'>
-        <Image src='/Images/banner2.jpg' alt='' fill objectFit='cover' />
+        <Image src='/Images/banner2.jpg' alt='Banner' title='Banner' fill objectFit='cover' />
         <div className='absolute z-10 flex flex-col gap-10'>
           <p className='text-white text-2xl lg:text-5xl text-bold w-[20rem] lg:w-[58rem]'>Download the mobile application for bonus coupons and travel <br /> codes</p>
           <Button className='bg-red-500 text-white w-fit px-10 py-5' size='large'>Download Now</Button>
@@ -106,7 +106,7 @@ const DreamVacation = () => {
   return (
     <div className='flex flex-col gap-5'>
       <p className='text-4xl text-red-500 font-bold'>Enjoy your dream vacation</p>
-      <p className='text-slate-700 text-lg w-[45rem] max-w-full'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</p>
+      <h2 className='text-slate-700 text-lg w-[45rem] max-w-full'>Plan and book our perfect trip with expert advice, travel tips, destination information and  inspiration from us</h2>
 
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
         {data?.map((item, i) => (
@@ -121,9 +121,9 @@ const DreamVacation = () => {
               adults: 1,
               childrens: 0
             }
-          }} key={i} className='w-full flex flex-col gap-3'>
+          }} key={i} className='w-full flex flex-col gap-3' title={item.title}>
             <div className='w-full aspect-video relative'>
-              <Image src={item.image} alt='' objectFit='cover' fill className='rounded-lg w-full' />
+              <Image src={item.image} alt={item.title} title={item.title} objectFit='cover' fill className='rounded-lg w-full' />
             </div>
             <p className='text-3xl font-semibold'>{item.title}</p>
           </Link>
@@ -144,7 +144,7 @@ const Rooms = async ({ searchParams }: { searchParams: any }) => {
         <p className='uppercase text-center font-semibold'>Our Rooms</p>
         <div className='w-20 border border-black' />
       </div>
-      <div className='text-5xl font-bold'>Explore Our <span className='text-red-500 text-5xl font-bold uppercase'>Hotels</span></div>
+      <h1 className='text-5xl font-bold'>Explore Our <span className='text-red-500 text-5xl font-bold uppercase'>Hotels</span></h1>
 
       <HotelSlider list={data} params={params.toString()} />
     </div>
@@ -195,7 +195,7 @@ const Testimonials = async () => {
     <div className='flex flex-col gap-14 items-center w-full'>
       <div className='flex items-center gap-4'>
         <div className='w-20 border border-black' />
-        <p className='uppercase text-center font-semibold'>Testimonials</p>
+        <h3 className='uppercase text-center font-semibold'>Testimonials</h3>
         <div className='w-20 border border-black' />
       </div>
       <div className='text-5xl font-bold'>What <span className='text-red-500 text-5xl font-bold uppercase'>Users </span>

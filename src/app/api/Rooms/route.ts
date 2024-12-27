@@ -103,7 +103,6 @@ export async function GET(req: NextRequest) {
         ]).limit(Number(pageSize)).skip(Number(page)).toArray()
 
 
-        console.log(Boolean(forAssign))
 
         const count = await myColl.countDocuments(searchKeys)
         return NextResponse.json({ list, count }, { status: 200 });

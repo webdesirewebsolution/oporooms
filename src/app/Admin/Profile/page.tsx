@@ -8,7 +8,6 @@ const Profile = async () => {
     const session = await auth()
     const user = session && await getUser(session as Session)
 
-    console.log(user)
 
     return (
         <div className='p-10'>

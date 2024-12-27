@@ -39,7 +39,7 @@ const Cities = ({ item, children }: Props) => {
                             adults: 1,
                             childrens: 0
                         }
-                    }} key={subItem.name} className='text-nowrap'>
+                    }} key={subItem.name} className='text-nowrap' title={subItem.name}>
                         {subItem.name}
                     </Link>
                 ))}

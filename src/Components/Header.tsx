@@ -721,8 +721,8 @@ const Header = async ({ }) => {
         <>
             <div className='w-full bg-white shadow border-b-2 border-slate-200'>
                 <div className='py-5 flex justify-between items-center px-8'>
-                    <Link href='/' className='w-[140px] h-[53px] relative'>
-                        <Image src='/Images/logo.png' alt='Logo' fill objectFit='contain' />
+                    <Link href='/' className='w-[140px] h-[53px] relative' title='Home'>
+                        <Image src='/Images/logo.png' alt='Logo' title='Oporooms' fill objectFit='contain' />
                     </Link>
                     <DesktopHeader />
                     {/* <Menu /> */}

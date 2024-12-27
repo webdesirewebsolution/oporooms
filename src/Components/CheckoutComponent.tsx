@@ -59,7 +59,6 @@ export const FillingDetails = () => {
 export const Details = () => {
     const { bookingData } = useContext(Context)
 
-    console.log(bookingData)
 
     const rooms = bookingData ? Number(bookingData?.roomDetails?.rooms) : 0
     const adults = bookingData ? Number(bookingData?.roomDetails?.adults) : 0

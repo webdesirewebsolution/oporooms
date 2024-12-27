@@ -69,7 +69,6 @@ const AddCategory = ({ data, setShowModal, isEdit }: Props) => {
         }
     }
 
-    console.log(value)
 
     return (
         <>

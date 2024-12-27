@@ -41,7 +41,6 @@ const RatingComp = ({ user, hotelId, hotelOwnerId }: Props) => {
         }).finally(() => setLoading(false))
     }
 
-    console.log(loading)
 
     return (
         <div>

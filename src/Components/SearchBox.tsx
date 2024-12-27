@@ -139,7 +139,6 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
         }
     }, [value, placeId, pathname])
 
-    console.log(moment(value.checkOut).diff(value.checkIn, 'days'))
 
     return (
         <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} w-full gap-5 items-end transition-all`}>
@@ -156,7 +155,6 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                                     geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
                                         if (status == google.maps.GeocoderStatus.OK) {
                                             const location = results?.[0]?.geometry?.location?.toJSON()
-                                            console.log(results?.[0])
 
                                             setValue(prev => ({
                                                 ...prev,

@@ -81,8 +81,6 @@ export async function GET(req: NextRequest) {
         }
     }
 
-    console.log(searchKeys)
-
     try {
         const list = await myColl.aggregate([
             {

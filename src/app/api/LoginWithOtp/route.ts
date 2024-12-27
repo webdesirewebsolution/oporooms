@@ -15,7 +15,6 @@ export async function GET(req: NextRequest) {
         const findResult = await myColl.findOne({ contact1: contact1 }, { projection: { password: 0 } })
         const findOtp = await myOtpColl.findOne({ contact1: contact1 })
 
-        console.log(contact1, findOtp, otp)
 
         if (findOtp?.randomCode == otp) {
 

@@ -13,7 +13,7 @@ const Banner = (props: Props) => {
             <Swiper className='w-full h-full' slidesPerView={1} autoplay loop modules={[Autoplay]}>
                 {Array(3).fill('')?.map((item, i) => (
                     <SwiperSlide key={i}>
-                        <Image src={`/Images/banners/banner${i + 1}.jpg`} alt='' objectFit='cover'
+                        <Image src={`/Images/banners/banner${i + 1}.jpg`} alt='Oporooms' title='Oporooms' objectFit='cover'
                             width={0}
                             height={0}
                             sizes='100vw'

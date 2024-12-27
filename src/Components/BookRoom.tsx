@@ -33,7 +33,7 @@ const BookRoom = ({ hotelId }: Props) => {
             searchData[i[0]] = i[1]
         }
 
-        const totalNights = moment(Number(searchData?.checkOut)).diff(moment(Number(searchData?.checkIn)), 'days') + 1
+        const totalNights = moment(Number(searchData?.checkOut)).diff(moment(Number(searchData?.checkIn)), 'days')
 
         const transactionDetails = {
             cost: Number(roomData?.price) * totalNights * Number(searchData?.rooms),
@@ -54,7 +54,7 @@ const BookRoom = ({ hotelId }: Props) => {
             userDetails: user,
             hotelOwnerId: hotelData?.hotelOwnerId as string,
             assignedRooms: [],
-            roomDetails: { ...searchData, roomData: roomData },
+            roomDetails: { ...searchData,  checkIn: new Date(Number(searchData.checkIn)), checkOut: new Date(Number(searchData.checkOut)), roomData: roomData },
             roomType: roomData?.type,
             paymentMode: 'Online Pay',
             transactionDetails,

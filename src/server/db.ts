@@ -32,41 +32,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
 
     if (searchParams?.name) searchKeys['name'] = new RegExp(String(searchParams.name), 'i')
 
-    const data = searchParams?.lng && await hotelColl.aggregate([
-        {
-            $geoNear: {
-                near: { type: "Point", coordinates: [Number(searchParams?.lng), Number(searchParams?.lat)] },
-                distanceField: "dist.calculated",
-                includeLocs: "location",
-                spherical: true,
-                minDistance: 0,
-                maxDistance: 10000,
-            },
-        },
-
-        {
-            '$lookup': {
-                'as': 'Rooms',
-                'from': 'Rooms',
-                'foreignField': 'hotelId',
-                'localField': '_id'
-            }
-        }, {
-            '$addFields': {
-                'roomCount': {
-                    '$size': '$Rooms'
-                }
-            }
-        },
-        {
-            $match: {
-                ...searchKeys,
-                roomCount: { $gt: 0 }
-            }
-        },
-    ]).limit(limit).skip(skip).toArray()
-
-    const counts = searchParams?.lng ? await hotelColl.aggregate([
+    const aggregation = [
         {
             $geoNear: {
                 near: { type: "Point", coordinates: [Number(searchParams?.lng), Number(searchParams?.lat)] },
@@ -86,78 +52,190 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
             }
         }, {
             '$addFields': {
-                'roomCount': {
-                    '$size': '$Rooms'
+                'stringHotelId': {
+                    '$toString': '$_id'
+                }
+            }
+        }, {
+            '$lookup': {
+                'as': 'Bookings',
+                'from': 'Bookings',
+                'foreignField': 'hotelId',
+                'localField': 'stringHotelId'
+            }
+        }, {
+            '$addFields': {
+                'rooms': {
+                    '$map': {
+                        'input': '$rooms',
+                        'as': 'room',
+                        'in': {
+                            '$mergeObjects': [
+                                '$$room', {
+                                    'count': {
+                                        '$size': {
+                                            '$filter': {
+                                                'input': '$Rooms',
+                                                'as': 'roomItem',
+                                                'cond': {
+                                                    '$eq': [
+                                                        '$$roomItem.type', '$$room.type'
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }, {
+                                    'bookingCount': {
+                                        '$size': {
+                                            '$filter': {
+                                                'input': '$Bookings',
+                                                'as': 'bookingItem',
+                                                'cond': {
+                                                    '$and': [
+                                                        {
+                                                            '$eq': [
+                                                                '$$bookingItem.roomType', '$$room.type'
+                                                            ]
+                                                        }, {
+                                                            '$gt': [
+                                                                '$$bookingItem.roomDetails.checkOut', new Date(checkIn as string)
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }, {
+            '$addFields': {
+                'totalRooms': {
+                    '$sum': '$rooms.count'
+                },
+                'totalBookings': {
+                    '$sum': '$rooms.bookingCount'
+                }
+            }
+        }, {
+            '$match': {
+                '$expr': {
+                    '$gt': [
+                        '$totalRooms', '$totalBookings'
+                    ]
                 }
             }
         },
         {
-            $match: {
+            '$match': {
                 ...searchKeys,
-                roomCount: { $gt: 0 }
-            }
-        },
-    ]).toArray() : []
-
-    const roomData: RoomData[] = []
-
-    if (data) {
-        for (const item of (data as HotelTypes[])) {
-            for (const room of item.rooms) {
-                const d = await getRooms({ type: room.type, hotelId: item._id as ObjectId }).then(res => {
-                    return res
-                })
-                roomData.push({
-                    hotelId: item._id as string,
-                    data: d
-                })
+                "totalRooms": { $gt: 0 }
             }
         }
-    }
+    ]
+
+    const data = searchParams?.lng && await hotelColl.aggregate(aggregation).limit(limit).skip(skip).toArray()
+
+    // [
+    //     {
+    //         $geoNear: {
+    //             near: { type: "Point", coordinates: [Number(searchParams?.lng), Number(searchParams?.lat)] },
+    //             distanceField: "dist.calculated",
+    //             includeLocs: "location",
+    //             spherical: true,
+    //             minDistance: 0,
+    //             maxDistance: 10000,
+    //         },
+    //     },
+
+    //     {
+    //         '$lookup': {
+    //             'as': 'Rooms',
+    //             'from': 'Rooms',
+    //             'foreignField': 'hotelId',
+    //             'localField': '_id'
+    //         }
+    //     }, {
+    //         '$addFields': {
+    //             'roomCount': {
+    //                 '$size': '$Rooms'
+    //             }
+    //         }
+    //     },
+    //     {
+    //         $match: {
+    //             ...searchKeys,
+    //             roomCount: { $gt: 0 }
+    //         }
+    //     },
+    // ]
+
+    // const counts = searchParams?.lng ? await hotelColl.aggregate(aggregation).toArray() : []
+
+    // const roomData: RoomData[] = []
+
+    // if (data) {
+    //     for (const item of (data as HotelTypes[])) {
+    //         for (const room of item.rooms) {
+    //             const d = await getRooms({ type: room.type, hotelId: item._id as ObjectId }).then(res => {
+    //                 return res
+    //             })
+    //             roomData.push({
+    //                 hotelId: item._id as string,
+    //                 data: d
+    //             })
+    //         }
+    //     }
+    // }
 
 
-    (data as HotelTypes[])?.forEach((item, index) => {
-        item.rooms.forEach((room, index) => {
-            roomData.forEach((roomItem, index) => {
-                if (String(roomItem.hotelId) === String(item._id)) {
-                    const totalSize = roomItem.data.totalSize[0]?.TotalSize || 0
-                    const bookingSize = roomItem.data.bookingSize[0]?.BookingSize || 0
-                    const remainingSize = totalSize - bookingSize
-                    item.size = roomItem.data
-                    item.remainingSize = remainingSize
-                }
-            })
-        })
-    });
+    // (data as HotelTypes[])?.forEach((item, index) => {
+    //     item.rooms.forEach((room, index) => {
+    //         roomData.forEach((roomItem, index) => {
+    //             if (String(roomItem.hotelId) === String(item._id)) {
+    //                 const totalSize = roomItem.data.totalSize[0]?.TotalSize || 0
+    //                 const bookingSize = roomItem.data.bookingSize[0]?.BookingSize || 0
+    //                 const remainingSize = totalSize - bookingSize
+    //                 item.size = roomItem.data
+    //                 item.remainingSize = remainingSize
+    //             }
+    //         })
+    //     })
+    // });
 
-    (counts as HotelTypes[])?.forEach((item, index) => {
-        item.rooms.forEach((room, index) => {
-            roomData.forEach((roomItem, index) => {
-                if (String(roomItem.hotelId) === String(item._id)) {
-                    const totalSize = roomItem.data.totalSize[0]?.TotalSize || 0
-                    const bookingSize = roomItem.data.bookingSize[0]?.BookingSize || 0
-                    const remainingSize = totalSize - bookingSize
+    // (counts as HotelTypes[])?.forEach((item, index) => {
+    //     item.rooms.forEach((room, index) => {
+    //         roomData.forEach((roomItem, index) => {
+    //             if (String(roomItem.hotelId) === String(item._id)) {
+    //                 const totalSize = roomItem.data.totalSize[0]?.TotalSize || 0
+    //                 const bookingSize = roomItem.data.bookingSize[0]?.BookingSize || 0
+    //                 const remainingSize = totalSize - bookingSize
 
-                    item.size = roomItem.data
-                    item.remainingSize = remainingSize
-                }
-            })
-        })
-    });
+    //                 item.size = roomItem.data
+    //                 item.remainingSize = remainingSize
+    //             }
+    //         })
+    //     })
+    // });
 
-    const newData = (data as HotelTypes[])?.filter((item, index) => {
-        if (searchParams?.rooms && (Number(searchParams?.rooms) <= (item.remainingSize as number))) {
-            return true
-        } else false
-    })
+    // const newData = (data as HotelTypes[])?.filter((item, index) => {
+    //     if (searchParams?.rooms && (Number(searchParams?.rooms) <= (item.remainingSize as number))) {
+    //         return true
+    //     } else false
+    // })
 
-    const newCount = (counts as HotelTypes[])?.filter((item, index) => {
-        if (searchParams?.rooms && (Number(searchParams?.rooms) <= (item.remainingSize as number) || (item.size?.totalSize?.[0] && Number(searchParams?.rooms) <= item.size?.totalSize?.[0]?.TotalSize))) {
-            return true
-        } else false
-    })
+    // const newCount = (counts as HotelTypes[])?.filter((item, index) => {
+    //     if (searchParams?.rooms && (Number(searchParams?.rooms) <= (item.remainingSize as number) || (item.size?.totalSize?.[0] && Number(searchParams?.rooms) <= item.size?.totalSize?.[0]?.TotalSize))) {
+    //         return true
+    //     } else false
+    // })
 
-    return ({ data: newData, count: newCount.length, roomData }) as { data: HotelTypes[], count: number, roomData: RoomData[] };
+    return ({ data, count: data?.length }) as { data: HotelTypes[], count: number, roomData: RoomData[] };
 }
 
 export const getRooms = async ({ type, hotelId }: { type: RoomVarietyTypes['type'], hotelId: ObjectId }) => {

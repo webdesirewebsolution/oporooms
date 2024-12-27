@@ -8,10 +8,12 @@ const UserColl = client.collection("Users");
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { ...rest } = body;
 
     try {
-        const result = await myColl.insertOne(rest);
+        const result = await myColl.insertOne({...body, roomDetails: {...body.roomDetails, 
+            checkIn: new Date(body.roomDetails.checkIn as Date),
+            checkOut: new Date(body.roomDetails.checkOut as Date),
+        }});
         return NextResponse.json({ msg: result }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ status: 400, error });
@@ -27,29 +29,29 @@ export async function GET(req: NextRequest) {
 
     const searchKeys: { [key: string]: unknown } = {}
 
-    if (!session?.user?._id) {
-        return NextResponse.json('User not loggedin', { status: 400 });
-    }
+    // if (!session?.user?._id) {
+    //     return NextResponse.json('User not loggedin', { status: 400 });
+    // }
 
     const user = session?.user?._id ? await UserColl.findOne({ _id: ObjectId.createFromHexString(session?.user._id as string) }) : {
         userRole: null, _id: null, companyId: null
     }
 
 
-    switch (user?.userRole) {
-        case 'CADMIN':
-            searchKeys['userDetails.companyId'] = user?._id?.toString();
-            break;
+    // switch (user?.userRole) {
+    //     case 'CADMIN':
+    //         searchKeys['userDetails.companyId'] = user?._id?.toString();
+    //         break;
 
-        case 'HR':
-            searchKeys['userDetails.companyId'] = user?.companyId?.toString();
-            break;
+    //     case 'HR':
+    //         searchKeys['userDetails.companyId'] = user?.companyId?.toString();
+    //         break;
 
-        case 'HotelOwner':
-            searchKeys['hotelOwnerId'] = user?._id?.toString();
-            searchKeys['status'] = 'booked';
-            break;
-    }
+    //     case 'HotelOwner':
+    //         searchKeys['hotelOwnerId'] = user?._id?.toString();
+    //         searchKeys['status'] = 'booked';
+    //         break;
+    // }
 
 
     for (const [keys, values] of searchParamsKeys) {

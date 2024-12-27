@@ -134,7 +134,7 @@ const DreamVacation = () => {
 }
 
 const Rooms = async ({ searchParams }: { searchParams: any }) => {
-  const {data} = await getHotels({ searchParams })
+  const { data } = await getHotels({ searchParams })
   const params = new URLSearchParams(searchParams)
 
   return (
@@ -146,7 +146,7 @@ const Rooms = async ({ searchParams }: { searchParams: any }) => {
       </div>
       <h1 className='text-5xl font-bold'>Explore Our <span className='text-red-500 text-5xl font-bold uppercase'>Hotels</span></h1>
 
-      <HotelSlider list={data} params={params.toString()} />
+      {data?.length > 0 && <HotelSlider list={JSON.parse(JSON.stringify(data))} params={params.toString()} />}
     </div>
   )
 }

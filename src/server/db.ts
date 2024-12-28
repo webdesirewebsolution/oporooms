@@ -46,7 +46,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
         },
         // {
         //     $match: {
-        //         _id: new ObjectId("67570cdcacc6a3155f1af82d")
+        //         _id: new ObjectId("6760332581dd7e3830fe0455")
         //     }
         // },
         {

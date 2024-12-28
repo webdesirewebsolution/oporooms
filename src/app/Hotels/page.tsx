@@ -13,22 +13,24 @@ import SliderImage from './SliderImage';
 import SearchInput, { Filter } from './SearchInput';
 import Description from '@/Components/Description';
 import { getHotels } from '@/server/db';
-import Image from 'next/image';
 import UserForm from '@/Components/UserForm';
+import { Params } from 'next/dist/server/request/params';
 
 type Props = {
+    params: Promise<Params>
     searchParams: Promise<SearchParams>
 }
 
-const HotelList = async ({ searchParams }: Props) => {
-    const params = await searchParams
+const HotelList = async ({params, searchParams }: Props) => {
+    const paramsRes = await params
+    const searchParamsRes = await searchParams
     return (
         <>
             <Header />
             <div className='bg-[rgb(244,244,244,1)]'>
                 <SearchHotel />
 
-                <HotelListClient searchParams={params} />
+                <HotelListClient searchParams={searchParamsRes} />
             </div>
             <Footer />
         </>
@@ -47,7 +49,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
     return (
         <Container className='pb-20'>
             <div className='flex items-center justify-center'>
-                {count == 0 && <p className='text-center mb-20 text-4xl font-bold text-slate-700'>{count == 0 && 'No Hotels Found' }</p>}
+                {count == 0 && <p className='text-center mb-20 text-4xl font-bold text-slate-700'>{count == 0 && 'No Hotels Found'}</p>}
             </div>
 
             <div className='flex flex-col lg:flex-row gap-10'>

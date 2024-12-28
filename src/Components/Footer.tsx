@@ -1,10 +1,19 @@
+import { auth } from '@/auth'
 import { Container } from '@mui/material'
 import moment from 'moment'
+import { Params } from 'next/dist/server/request/params'
+import { headers } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
+import { FaBookmark, FaRegBookmark, FaRegUser, FaUser } from 'react-icons/fa6'
 
-const Footer = () => {
+const Footer = async () => {
+    const session = await auth()
+    const headerslist = await headers()
+    const pathname = headerslist.get('x-pathname')
+
     const hotels = [
         { title: "Hotels near me", placeId: "", lat: "", lng: "" },
         { title: "Hotels in Goa", placeId: "ChIJv90m7-u4jzsR37q8v8h5q0", lat: 15.299326, lng: 73.854945 },
@@ -60,95 +69,146 @@ const Footer = () => {
         { title: "Hotels in Nagpur", placeId: "ChIJd6h5_u-4jzsR3w1Y7o6690", lat: 21.1458, lng: 79.0882 }
     ];
 
+    const menu = [
+        {
+            icon: <AiOutlineHome size={22} />,
+            pathIcon: <AiFillHome size={22} />,
+            title: 'Home',
+            path: '/',
+        },
+        {
+            icon: <FaRegUser size={20} />,
+            pathIcon: <FaUser size={20} />,
+            title: 'Profile',
+            path: '/Profile',
+        },
+        {
+            icon: <FaRegBookmark size={20} />,
+            pathIcon: <FaBookmark size={20} />,
+            title: 'Bookings',
+            path: '/Bookings',
+        },
+    ]
+
     return (
-        <footer className='shadow-lg bg-[#6d787d] border-t mt-auto w-full py-10 md:py-20'>
-            <Container className=''>
-                <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-20'>
-                    <div className='flex flex-col gap-5'>
-                        <Image src='/Images/logo.png' alt='Logo' title='Oporooms' width={80} height={52} objectFit='contain' className='w-32' />
-                        <p>OPO Rooms Provide All Types of Travelling Bookings Bus, Train, Flight, Cabs etc.</p>
+        <>
+            <footer className='shadow-lg bg-[#6d787d] border-t mt-auto w-full py-10 md:py-20 pb-25 lg:pb-0'>
+                <Container className=''>
+                    <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-20'>
+                        <div className='flex flex-col gap-5'>
+                            <Image src='/Images/logo.png' alt='Logo' title='Oporooms' width={80} height={52} objectFit='contain' className='w-32' />
+                            <p>OPO Rooms Provide All Types of Travelling Bookings Bus, Train, Flight, Cabs etc.</p>
+                        </div>
+
+                        <div className='flex flex-col gap-5'>
+                            <p className='font-semibold'>Company</p>
+                            <ul>
+                                <li>About</li>
+                                <li>Services</li>
+                                <li>Rooms</li>
+                                <li>About Us</li>
+                                <li>
+                                    <Link href='/Contact' title='Contact'>
+                                        Contact Us
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className='flex flex-col gap-5'>
+                            <p className='font-semibold'>Explore</p>
+                            <ul>
+                                <li>Mumbai</li>
+                                <li>Delhi</li>
+                                <li>Goa</li>
+                                <li>Kashmir</li>
+                                <li>Laddak</li>
+                                <li>Kerla</li>
+                            </ul>
+                        </div>
+
+                        <div className='flex flex-col gap-5'>
+                            <p className='font-semibold'>Terms and Policies</p>
+                            <ul>
+                                <li>
+                                    <Link href='PrivacyPolicy' title="Privacy Policy">Privacy Policy</Link>
+                                </li>
+                                <li>
+                                    <Link href='TermsConditions' title="Terms of use">Terms of use</Link>
+                                </li>
+                                <li>Accessbility</li>
+                                <li>Reward system policy</li>
+                            </ul>
+                        </div>
+
+                        <div className='flex flex-col gap-5'>
+                            <p className='font-semibold'>Help</p>
+                            <ul>
+                                <li>Support</li>
+                                <li>Cancel your bookings</li>
+                                <li>Use Coupon</li>
+                                <li>Refund Policies</li>
+                                <li>International Travel Documents</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <div className='flex flex-col gap-5'>
-                        <p className='font-semibold'>Company</p>
-                        <ul>
-                            <li>About</li>
-                            <li>Services</li>
-                            <li>Rooms</li>
-                            <li>About Us</li>
-                            <li>
-                                <Link href='/Contact' title='Contact'>
-                                    Contact Us
-                                </Link>
-                            </li>
+                    <div className='w-full mt-10 hidden lg:block'>
+                        <p className='text-3xl mb-5 font-semibold'>OPO Hotels</p>
+                        <ul className='grid grid-cols-6 w-full gap-5'>
+                            {hotels?.map((item) => (
+                                <li key={item.title}>
+                                    <Link href={{
+                                        pathname: 'Hotels',
+                                        query: {
+                                            placeId: item.placeId,
+                                            city: item.title,
+                                            lat: item.lat,
+                                            lng: item.lng,
+                                            checkIn: moment(Date.now()).valueOf(),
+                                            checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
+                                            rooms: 1,
+                                            adults: 1,
+                                            childrens: 0
+                                        }
+                                    }} title={item.title}>
+                                        {item.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
+                </Container>
+            </footer>
 
-                    <div className='flex flex-col gap-5'>
-                        <p className='font-semibold'>Explore</p>
-                        <ul>
-                            <li>Mumbai</li>
-                            <li>Delhi</li>
-                            <li>Goa</li>
-                            <li>Kashmir</li>
-                            <li>Laddak</li>
-                            <li>Kerla</li>
-                        </ul>
-                    </div>
-
-                    <div className='flex flex-col gap-5'>
-                        <p className='font-semibold'>Terms and Policies</p>
-                        <ul>
-                            <li>
-                                <Link href='PrivacyPolicy' title="Privacy Policy">Privacy Policy</Link>
-                            </li>
-                            <li>
-                                <Link href='TermsConditions' title="Terms of use">Terms of use</Link>
-                            </li>
-                            <li>Accessbility</li>
-                            <li>Reward system policy</li>
-                        </ul>
-                    </div>
-
-                    <div className='flex flex-col gap-5'>
-                        <p className='font-semibold'>Help</p>
-                        <ul>
-                            <li>Support</li>
-                            <li>Cancel your bookings</li>
-                            <li>Use Coupon</li>
-                            <li>Refund Policies</li>
-                            <li>International Travel Documents</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className='w-full mt-10 hidden lg:block'>
-                    <p className='text-3xl mb-5 font-semibold'>OPO Hotels</p>
-                    <ul className='grid grid-cols-6 w-full gap-5'>
-                        {hotels?.map((item) => (
+            {session?.user?._id && <div className='lg:hidden flex bg-white p-5 fixed bottom-0 w-full z-50 shadow-[0_-.5rem_1rem_rgba(0,0,0,0.2)]'>
+                <ul className='flex items-center justify-around w-full'>
+                    {menu?.map((item) => {
+                        return (
                             <li key={item.title}>
                                 <Link href={{
-                                    pathname: 'Hotels',
+                                    pathname: item.path,
                                     query: {
-                                        placeId: item.placeId,
-                                        city: item.title,
-                                        lat: item.lat,
-                                        lng: item.lng,
-                                        checkIn: moment(Date.now()).valueOf(),
-                                        checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
+                                        placeId: 'ChIJWYjjgtUZDTkRHkvG5ehfzwI',
+                                        city: 'Gurgaon, Haryana, India',
+                                        lat: 28.4594965,
+                                        lng: 77.0266383,
+                                        checkIn: moment(new Date()).valueOf(),
+                                        checkOut: moment(new Date()).add(1, 'day').valueOf(),
                                         rooms: 1,
                                         adults: 1,
                                         childrens: 0
                                     }
-                                }} title={item.title}>
-                                    {item.title}
+                                }} className='flex flex-col items-center justify-between gap-2'>
+                                    {pathname == item.path ? item.pathIcon : item.icon}
+                                    <span className='text-lg text-center'>{item.title}</span>
                                 </Link>
                             </li>
-                        ))}
-                    </ul>
-                </div>
-            </Container>
-        </footer>
+                        )
+                    })}
+                </ul>
+            </div>}
+        </>
     )
 }
 

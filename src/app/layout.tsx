@@ -8,6 +8,7 @@ import { SessionProvider } from "next-auth/react";
 import ContextProvider from "@/Context/context";
 import { Session } from "next-auth";
 import Script from "next/script";
+import { newDate } from "@/Functions";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -53,6 +54,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth()
+
+  newDate(new Date())
 
   return (
     <html lang="en">

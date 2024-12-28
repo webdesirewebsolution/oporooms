@@ -1,5 +1,6 @@
 "use server"
 
+import { newDate } from "@/Functions";
 import client from "@/Lib/mongo";
 import { HotelTypes } from "@/Types/Hotels";
 import { RoomVarietyTypes } from "@/Types/Rooms";
@@ -43,6 +44,11 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
                 maxDistance: 10000,
             },
         },
+        // {
+        //     $match: {
+        //         _id: new ObjectId("67570cdcacc6a3155f1af82d")
+        //     }
+        // },
         {
             '$lookup': {
                 'as': 'Rooms',
@@ -92,15 +98,65 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
                                                 'input': '$Bookings',
                                                 'as': 'bookingItem',
                                                 'cond': {
-                                                    '$and': [
+                                                    $and: [
                                                         {
-                                                            '$eq': [
-                                                                '$$bookingItem.roomType', '$$room.type'
+                                                            $eq: [
+                                                                "$$bookingItem.roomType",
+                                                                "$$room.type"
                                                             ]
-                                                        }, {
-                                                            '$gt': [
-                                                                '$$bookingItem.roomDetails.checkOut', new Date(checkIn as string)
-                                                            ]
+                                                        },
+                                                        {
+                                                            $not:
+                                                            {
+                                                                $and: [
+                                                                    {
+                                                                        $or: [
+                                                                            { $lt: ["$$bookingItem.roomDetails.checkIn", newDate(new Date(checkIn as string))] },
+                                                                            { $gte: ["$$bookingItem.roomDetails.checkIn", newDate(new Date(checkOut as string))] }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        $or: [
+                                                                            { $lte: ["$$bookingItem.roomDetails.checkOut", newDate(new Date(checkIn as string))] },
+                                                                            { $gt: ["$$bookingItem.roomDetails.checkOut", newDate(new Date(checkOut as string))] }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                                // $or: [
+                                                                //     {
+                                                                //         $or: [
+                                                                //             {
+                                                                //                 $lte: [
+                                                                //                     "$$bookingItem.roomDetails.checkIn",
+                                                                //                     newDate(new Date(checkIn as string))
+                                                                //                 ]
+                                                                //             },
+                                                                //             {
+                                                                //                 $lte: [
+                                                                //                     "$$bookingItem.roomDetails.checkIn",
+                                                                //                     newDate(new Date(checkOut as string))
+                                                                //                 ]
+                                                                //             },
+                                                                //         ]
+                                                                //     },
+                                                                //     {
+                                                                //       $gte: [
+                                                                //         "$$bookingItem.roomDetails.checkOut",
+                                                                //         new Date(
+                                                                //           "2024-12-29T02:09:37.155+00:00"
+                                                                //         )
+                                                                //       ]
+                                                                //     },
+                                                                //     {
+                                                                //       $lte: [
+                                                                //         "$$bookingItem.roomDetails.checkIn",
+                                                                //         new Date(
+                                                                //           "2024-12-26T02:09:37.155+00:00"
+                                                                //         )
+                                                                //       ]
+                                                                //     }
+                                                                // ]
+                                                            }
                                                         }
                                                     ]
                                                 }
@@ -113,7 +169,8 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
                     }
                 }
             }
-        }, {
+        },
+        {
             '$addFields': {
                 'totalRooms': {
                     '$sum': '$rooms.count'
@@ -122,24 +179,56 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
                     '$sum': '$rooms.bookingCount'
                 }
             }
-        }, {
+        },
+        {
             '$match': {
                 '$expr': {
-                    '$gt': [
-                        '$totalRooms', '$totalBookings'
-                    ]
+                    '$gt': ['$totalRooms', '$totalBookings']
                 }
             }
         },
         {
             '$match': {
+                '$expr': {
+                    $and: [
+                        { $gt: ['$totalRooms', 0] },
+                        { $gte: ['$totalRooms', Number(searchParams.rooms)] }
+                    ]
+                },
                 ...searchKeys,
-                "totalRooms": { $gt: 0 }
+            }
+        },
+        {
+            $unset: ["Rooms", "Bookings"]
+        },
+        {
+            $project: {
+                Address: 1,
+                "Google Rating": 1,
+                "address": {
+                    City: 1,
+                    Locality: 1
+                },
+                amenities: 1,
+                customAddress: 1,
+                desc: 1,
+                name: 1,
+                photos: 1,
+                rooms: 1,
             }
         }
     ]
 
+    const count: { dataSize: number }[] | undefined = searchParams?.lng ? await hotelColl.aggregate<{ dataSize: number }>([
+        ...aggregation,
+        {
+            $count: "dataSize"
+        }
+    ]).toArray() : undefined
+
     const data = searchParams?.lng && await hotelColl.aggregate(aggregation).limit(limit).skip(skip).toArray()
+
+    const dataSize: number = count ? count?.[0]?.dataSize : 0;
 
     // [
     //     {
@@ -235,7 +324,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
     //     } else false
     // })
 
-    return ({ data, count: data?.length }) as { data: HotelTypes[], count: number, roomData: RoomData[] };
+    return ({ data, count: dataSize }) as { data: HotelTypes[], count: number, roomData: RoomData[] };
 }
 
 export const getRooms = async ({ type, hotelId }: { type: RoomVarietyTypes['type'], hotelId: ObjectId }) => {

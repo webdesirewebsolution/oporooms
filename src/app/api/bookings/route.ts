@@ -4,16 +4,20 @@ import client from "@/Lib/mongo";
 const myColl = client.collection("Bookings");
 import { ObjectId } from "mongodb";
 import { auth } from "@/auth";
+import { newDate } from "@/Functions";
 const UserColl = client.collection("Users");
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
 
     try {
-        const result = await myColl.insertOne({...body, roomDetails: {...body.roomDetails, 
-            checkIn: new Date(body.roomDetails.checkIn as Date),
-            checkOut: new Date(body.roomDetails.checkOut as Date),
-        }});
+        const result = await myColl.insertOne({
+            ...body, roomDetails: {
+                ...body.roomDetails,
+                checkIn: newDate(body.roomDetails.checkIn as Date),
+                checkOut: newDate(body.roomDetails.checkOut as Date),
+            }
+        });
         return NextResponse.json({ msg: result }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ status: 400, error });

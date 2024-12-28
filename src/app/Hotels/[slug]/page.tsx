@@ -179,7 +179,7 @@ const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVar
                                     className='w-28'
                                 />
                             </div>
-                            : <BookRoom hotelId={hotelData?._id as string} />}
+                            : <BookRoom hotelId={JSON.parse(JSON.stringify(hotelData))?._id as string} />}
                     </div>
                     <div className='flex flex-col lg:items-end'>
                         <p className='text-4xl font-bold text-green-400'>&#8377;{room?.price}</p>

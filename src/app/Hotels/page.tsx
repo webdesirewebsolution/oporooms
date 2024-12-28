@@ -96,7 +96,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                                 View Details
                                             </Button>
                                         </Link>
-                                        <BookRoom hotelId={item?._id as string} />
+                                        <BookRoom hotelId={JSON.parse(JSON.stringify(item))._id as string} />
                                     </div>
                                 </div>
 

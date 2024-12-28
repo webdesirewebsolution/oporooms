@@ -20,7 +20,7 @@ export function debounce<T extends (...args: any[]) => void>(
 }
 
 export function newDate(d: Date) {
-    let date = new Date(d)
+    const date = new Date(d)
     date.setHours(0, 0, 0, 0)
 
     return date

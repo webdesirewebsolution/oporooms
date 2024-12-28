@@ -16,6 +16,7 @@ import { Collection, ObjectId } from 'mongodb';
 import Description from '@/Components/Description';
 import Expandable from '@/Components/Expandable';
 import { getRooms } from '@/server/db';
+import HotelPhotos from '@/Components/HotelPhotos';
 
 type Props = {
     params: Promise<Params>,
@@ -52,9 +53,10 @@ const Hotel = async ({ params, searchParams }: Props) => {
                     <Container className='py-10'>
                         <div className='flex flex-col lg:flex-row gap-5'>
                             <div className='relative w-[100%] aspect-video max-w-full'>
-                                <Image src={item.photos?.[0]} alt='' fill />
+                                <Image src={item.photos?.[0]} alt='' fill className='object-' quality={100}/>
                             </div>
-                            {item?.photos?.length > 1 &&
+                            <HotelPhotos photos={item.photos}/>
+                            {/* {item?.photos?.length > 1 &&
                                 <div className='flex flex-row lg:flex-col gap-5 w-full lg:w-[49%]'>
                                     <div className='relative w-[100%] aspect-video max-w-full'>
                                         <Image src={item.photos?.[1]} alt='' fill />
@@ -62,7 +64,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
                                     <div className='relative w-[100%] aspect-video max-w-full'>
                                         <Image src={item.photos?.[2]} alt='' fill />
                                     </div>
-                                </div>}
+                                </div>} */}
                         </div>
                     </Container>
                 </div>
@@ -179,7 +181,7 @@ const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVar
                                     className='w-28'
                                 />
                             </div>
-                            : <BookRoom hotelId={hotelData?._id as string} />}
+                            : <BookRoom hotelId={JSON.parse(JSON.stringify(hotelData))?._id as string} />}
                     </div>
                     <div className='flex flex-col lg:items-end'>
                         <p className='text-4xl font-bold text-green-400'>&#8377;{room?.price}</p>

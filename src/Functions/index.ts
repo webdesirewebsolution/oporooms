@@ -18,3 +18,10 @@ export function debounce<T extends (...args: any[]) => void>(
         }, delay);
     };
 }
+
+export function newDate(d: Date) {
+    let date = new Date(d)
+    date.setHours(0, 0, 0, 0)
+
+    return date
+}

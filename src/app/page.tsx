@@ -8,16 +8,19 @@ import TestimonialSlider from '@/Components/TestimonialSlider'
 import { getHotels } from '@/server/db'
 import { Button, Container } from '@mui/material'
 import moment from 'moment'
+import { Params } from 'next/dist/server/request/params'
 import { SearchParams } from 'next/dist/server/request/search-params'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
 type Props = {
+  params: Promise<Params>
   searchParams: Promise<SearchParams>
 }
 
-const Home = async ({ searchParams }: Props) => {
+const Home = async ({ params, searchParams }: Props) => {
+  const paramsRes = await params
   const searchParamsRes = await searchParams
 
   return (

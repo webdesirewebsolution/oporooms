@@ -9,19 +9,21 @@ import { Bookings } from '@/Types/Booking'
 
 type Props = {
     bookingId: string,
-    bookingData: Bookings
+    bookingData: Bookings,
+    setBookingData: React.Dispatch<React.SetStateAction<Bookings[]>>
 }
 
-const CancelBooking = ({ bookingId, bookingData }: Props) => {
+const CancelBooking = ({ bookingId, bookingData, setBookingData }: Props) => {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
 
     const handleCancel = async () => {
         setLoading(true)
-        await axios.put(`/api/bookings`, { _id: bookingId, status: bookingData?.paymentMode == 'Pay at hotel' ? 'cancelled' :  'cancel request' }).then((r) => {
+        await axios.put(`/api/bookings`, { _id: bookingId, status: bookingData?.paymentMode == 'Pay at hotel' ? 'cancelled' : 'cancel request' }).then((r) => {
             if (r.status == 200) {
-                router.refresh()
+                setBookingData(prev => prev.map((item) => item._id === bookingId ? ({...item, status: 'cancel request'}): ({...item})))
+                // router.refresh()
                 setShowModal(false)
             }
         }).finally(() => setLoading(false))

@@ -70,6 +70,7 @@ export const Details = () => {
 
     const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 0
 
+
     return (
         <div className='flex flex-col gap-10'>
             <div className='shadow overflow-hidden rounded-lg'>
@@ -132,7 +133,7 @@ export const Details = () => {
                             {rooms} room{rooms > 1 && 's'} <IoMdClose size={10} /> {totalDays} day{totalDays > 1 && 's'}
                         </div>
                         <p className='text-lg text-slate-800'>
-                            &#8377;{rooms * totalDays * price}
+                            &#8377;{price}
                         </p>
                     </div>
 

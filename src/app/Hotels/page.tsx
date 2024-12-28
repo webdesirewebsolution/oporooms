@@ -96,13 +96,12 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                                 View Details
                                             </Button>
                                         </Link>
-                                        {item?.size?.totalSize[0]?.TotalSize != item?.size?.bookingSize?.[0]?.BookingSize &&
-                                            <BookRoom hotelId={item?._id as string} />}
+                                        <BookRoom hotelId={item?._id as string} />
                                     </div>
                                 </div>
 
                             </div>
-                            <div className='absolute right-10 top-0'>
+                            {/* <div className='absolute right-10 top-0'>
                                 {item?.size?.totalSize[0]?.TotalSize == item?.size?.bookingSize?.[0]?.BookingSize &&
                                     <div>
                                         <Image src='/Images/soldout.png' alt=''
@@ -112,7 +111,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                             className='w-28'
                                         />
                                     </div>}
-                            </div>
+                            </div> */}
 
                             <div className='flex flex-col items-end justify-between gap-5 lg:py-5'>
                                 <div></div>

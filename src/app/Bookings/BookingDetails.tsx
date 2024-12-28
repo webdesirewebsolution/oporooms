@@ -1,7 +1,7 @@
 'use client'
 
 import { Bookings as BookingTypes } from '@/Types/Booking'
-import { Container, Rating } from '@mui/material'
+import { CircularProgress, Container, Rating } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useContext, useEffect, useState } from 'react'
@@ -14,13 +14,14 @@ const BookingsDetails = () => {
     const { status } = useSession()
     const { user } = useContext(Context)
     const [data, setData] = useState<BookingTypes[]>([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         (async () => await axios.get(`/api/bookings?userId=${user?._id}`).then(r => {
             if (r.status == 200) {
                 setData(r.data?.list)
             }
-        }))()
+        }))().finally(() => setLoading(false))
     }, [user?._id])
 
     if (data?.length == 0) {
@@ -51,6 +52,14 @@ const BookingsDetails = () => {
                     </Container>
                 </div>
             </>
+        )
+    }
+
+    if(loading){
+        return(
+            <div className='w-full min-h-[40rem] flex items-center justify-center'>
+                <CircularProgress />
+            </div>
         )
     }
 
@@ -97,7 +106,7 @@ const BookingsDetails = () => {
                                                     Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
                                                 </p>
 
-                                                {(item?.status == 'cancel request' || item?.status == 'cancelled') ? <></> : <CancelBooking bookingId={item._id as string} bookingData={item}/>}
+                                                {(item?.status == 'cancel request' || item?.status == 'cancelled') ? <></> : <CancelBooking bookingId={item._id as string} bookingData={item} setBookingData={setData}/>}
                                             </div>
 
                                         </div>

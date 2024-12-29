@@ -1,7 +1,6 @@
 import { auth } from '@/auth'
 import { Container } from '@mui/material'
-import moment from 'moment'
-import { Params } from 'next/dist/server/request/params'
+import dayjs from 'dayjs'
 import { headers } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -165,8 +164,8 @@ const Footer = async () => {
                                             city: item.title,
                                             lat: item.lat,
                                             lng: item.lng,
-                                            checkIn: moment(Date.now()).valueOf(),
-                                            checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
+                                            checkIn: dayjs(Date.now()).valueOf(),
+                                            checkOut: dayjs(Date.now()).add(1 , 'day').valueOf(),
                                             rooms: 1,
                                             adults: 1,
                                             childrens: 0
@@ -193,8 +192,8 @@ const Footer = async () => {
                                         city: 'Gurgaon, Haryana, India',
                                         lat: 28.4594965,
                                         lng: 77.0266383,
-                                        checkIn: moment(new Date()).valueOf(),
-                                        checkOut: moment(new Date()).add(1, 'day').valueOf(),
+                                        checkIn: dayjs(new Date()).valueOf(),
+                                        checkOut: dayjs(new Date()).add(1, 'day').valueOf(),
                                         rooms: 1,
                                         adults: 1,
                                         childrens: 0

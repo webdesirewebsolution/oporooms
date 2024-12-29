@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
 import generateCode from "@/Functions/generateCode";
 import axios from "axios";
 import ip from 'ip'
-import moment from "moment";
+import dayjs from "dayjs";
 
 export async function POST(req: NextRequest) {
     const { contact1, code } = await req.json();
@@ -51,7 +51,7 @@ export async function PUT(req: NextRequest) {
     const findUser = await UserColl.findOne({ contact1: newContact })
     const userIp = ip.address()
     const maxCount = await IpColl.findOne({ contact1: newContact, userIp })
-    const diffInMs = maxCount?.date && moment().diff(new Date(maxCount.date))
+    const diffInMs = maxCount?.date && dayjs().diff(new Date(maxCount.date))
 
     if (type == 'register' && findUser) {
         return NextResponse.json({

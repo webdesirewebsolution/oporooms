@@ -5,7 +5,6 @@ import Input from './Input'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
-import moment, { Moment } from 'moment'
 import Modal from './Modal'
 import { FaHotel, FaPlus, FaTrainSubway } from 'react-icons/fa6'
 import { MdOutlineFlightTakeoff } from 'react-icons/md'
@@ -15,6 +14,7 @@ import { useMotionValueEvent, useScroll } from 'framer-motion'
 import useWindowDimensions from '@/Hooks/useWindow'
 import { usePathname, useRouter } from 'next/navigation'
 import { FaMinus } from 'react-icons/fa'
+import dayjs, { Dayjs } from 'dayjs'
 
 type tabsTypes = {
     icon: string,
@@ -92,8 +92,8 @@ type SearchProps = {
     city: string,
     lat: number,
     lng: number
-    checkIn: Moment,
-    checkOut: Moment,
+    checkIn: Dayjs,
+    checkOut: Dayjs,
     rooms: number,
     guests: {
         adults: number,
@@ -105,8 +105,8 @@ const initialData: SearchProps = {
     city: 'Gurgaon, Haryana, India',
     lat: 28.4594965,
     lng: 77.0266383,
-    checkIn: moment(new Date()),
-    checkOut: moment(new Date()).add(1, 'day'),
+    checkIn: dayjs(new Date()),
+    checkOut: dayjs(new Date()).add(1, 'day'),
     rooms: 1,
     guests: {
         adults: 2,
@@ -128,8 +128,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
             params.set('city', value.city)
             params.set('lat', value.lat.toString())
             params.set('lng', value.lng.toString())
-            params.set('checkIn', moment(value.checkIn).format('x'))
-            params.set('checkOut', moment(value.checkOut).format('x'))
+            params.set('checkIn', dayjs(value.checkIn).format('x'))
+            params.set('checkOut', dayjs(value.checkOut).format('x'))
             params.set('rooms', value.rooms.toString())
             params.set('adults', value.guests.adults.toString())
             params.set('childrens', value.guests.children.toString())
@@ -185,9 +185,9 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                     placeholder="CHECK-IN"
                     type='date'
                     className='bg-transparent h-20'
-                    value={moment(value.checkIn).format('YYYY-MM-DD')}
+                    value={dayjs(value.checkIn).format('YYYY-MM-DD')}
                     onChange={(e) => {
-                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value).add(1, 'days') }))
+                        setValue(prev => ({ ...prev, checkIn: dayjs(e.target.value), checkOut: dayjs(value.checkOut) > dayjs(e.target.value) ? dayjs(value.checkOut) : dayjs(e.target.value).add(1, 'day') }))
                     }}
                 />
 
@@ -195,9 +195,9 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                     placeholder="CHECK-OUT"
                     type='date'
                     className='bg-transparent h-20'
-                    min={moment(value.checkIn).add(1, 'days').format('YYYY-MM-DD')}
-                    value={moment(value.checkOut).format('YYYY-MM-DD')}
-                    onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
+                    min={dayjs(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
+                    value={dayjs(value.checkOut).format('YYYY-MM-DD')}
+                    onChange={e => setValue(prev => ({ ...prev, checkOut: dayjs(e.target.value) }))}
                 />
 
                 <div className='flex flex-col w-full h-20'>
@@ -214,8 +214,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                     city: value.city,
                     lat: value.lat,
                     lng: value.lng,
-                    checkIn: moment(value.checkIn).format('x'),
-                    checkOut: moment(value.checkOut).format('x'),
+                    checkIn: dayjs(value.checkIn).valueOf(),
+                    checkOut: dayjs(value.checkOut).valueOf(),
                     rooms: value.rooms,
                     adults: value.guests.adults,
                     childrens: value.guests.children

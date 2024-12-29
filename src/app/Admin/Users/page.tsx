@@ -5,12 +5,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import Image from 'next/image'
-import moment from 'moment'
 import { Context } from '@/Context/context'
 import { User, UserAction } from '@/Types/Profile'
 import { Avatar, Button, Paper } from '@mui/material'
 import Modal from '@/Components/Modal'
 import AddUser from '../Components/AddUser'
+import dayjs from 'dayjs'
 
 const Users = () => {
     const { user } = useContext(Context)
@@ -48,7 +48,7 @@ const Users = () => {
         { id: 6, field: 'username', headerName: 'Username' },
         { id: 7, field: 'contact1', headerName: 'Contact1' },
         { id: 8, field: 'contact2', headerName: 'Contact2' },
-        { id: 9, field: 'dob', headerName: 'Date', valueGetter: (value) => moment(value).format('Do, MMMM, YYYY') },
+        { id: 9, field: 'dob', headerName: 'Date', valueGetter: (value) => dayjs(value).format('Do, MMMM, YYYY') },
         { id: 10, field: 'actions', headerName: 'Action', renderCell: (params) => <Action params={params} /> },
     ]
 

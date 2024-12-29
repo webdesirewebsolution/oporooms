@@ -1,6 +1,6 @@
 import { getUser } from '@/app/actions'
 import { auth } from '@/auth'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Session } from 'next-auth'
 import React from 'react'
 
@@ -42,11 +42,11 @@ const Profile = async () => {
                 </li>
                 <li className='w-full flex justify-between items-center'>
                     <span className='font-semibold'>DOB:</span>
-                    <span>{moment(user?.dob).format('Do MMM YYYY')}</span>
+                    <span>{dayjs(user?.dob).format('Do MMM YYYY')}</span>
                 </li>
                 <li className='w-full flex justify-between items-center'>
                     <span className='font-semibold'>User Role:</span>
-                    <span>{moment(user?.userRole).format('Do MMM YYYY')}</span>
+                    <span>{dayjs(user?.userRole).format('Do MMM YYYY')}</span>
                 </li>
             </ul>
         </div>

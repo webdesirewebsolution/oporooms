@@ -5,7 +5,7 @@ import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { TransactionType } from '@/Types/Transaction'
 import { Button, CircularProgress, TextField } from '@mui/material'
 import axios, { AxiosError } from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { MuiTelInput } from 'mui-tel-input'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
@@ -169,7 +169,7 @@ const AddPay = ({ data, setShowModal, isEdit }: Props) => {
           />
 
           <TextField id="outlined-basic" label="Date" variant="outlined"
-            value={moment(value.transactionDate).format('YYYY-MM-DD')}
+            value={dayjs(value.transactionDate).format('YYYY-MM-DD')}
             className='*:text-xl'
             type='date'
             onChange={e => setValue(prev => ({ ...prev, transactionDate: new Date(e.target.value) }))}

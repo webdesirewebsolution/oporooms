@@ -4,7 +4,6 @@ import Header from '@/Components/Header'
 import { HotelTypes } from '@/Types/Hotels';
 import { RoomVarietyTypes } from '@/Types/Rooms';
 import { Container } from '@mui/material';
-import moment from 'moment';
 import { Params } from 'next/dist/server/request/params';
 import { SearchParams } from 'next/dist/server/request/search-params';
 import Image from 'next/image';
@@ -17,6 +16,7 @@ import Description from '@/Components/Description';
 import Expandable from '@/Components/Expandable';
 import { getRooms } from '@/server/db';
 import HotelPhotos from '@/Components/HotelPhotos';
+import dayjs from 'dayjs';
 
 type Props = {
     params: Promise<Params>,
@@ -37,7 +37,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
     const childrens = query?.childrens ? Number(query?.childrens) : 0
     const checkIn = query?.checkIn && Number(query.checkIn)
     const checkOut = query?.checkOut && Number(query.checkOut)
-    const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 0
+    const totalDays = (checkIn && checkOut) ? dayjs(checkOut).diff(checkIn, 'days') : 0
 
     if (!item) {
         return (<></>)
@@ -94,13 +94,13 @@ const Hotel = async ({ params, searchParams }: Props) => {
                                     <div className='pr-10 border-r-2'>
                                         <p className='text-lg'>Check-in</p>
                                         <p className='text-xl font-semibold'>
-                                            {checkIn && moment(checkIn)?.format('ddd, Do MMM YYYY')}
+                                            {checkIn && dayjs(checkIn)?.format('ddd, Do MMM YYYY')}
                                         </p>
                                     </div>
                                     <div className='pl-10'>
                                         <p className='text-lg'>Check-out</p>
                                         <p className='text-xl font-semibold'>
-                                            {checkOut && moment(checkOut)?.format('ddd, Do MMM YYYY')}
+                                            {checkOut && dayjs(checkOut)?.format('ddd, Do MMM YYYY')}
                                         </p>
                                     </div>
                                 </div>

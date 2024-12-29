@@ -5,13 +5,11 @@ import { Context } from '@/Context/context'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { User } from '@/Types/Profile'
 import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import axios, { AxiosError } from 'axios'
-import moment from 'moment'
+import axios from 'axios'
+import dayjs from 'dayjs'
 import { MuiTelInput } from 'mui-tel-input'
-import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import React, { useContext, useEffect, useState } from 'react'
-import OTPInput from 'react-otp-input'
 
 type Props = {
     userData: User,
@@ -31,7 +29,7 @@ const initialData: User = {
     contact1: '',
     contact2: '',
     address: '',
-    dob: moment(new Date()),
+    dob: dayjs(new Date()),
     gender: 'Male',
     createdBy: '',
     profileStatus: '',
@@ -236,10 +234,10 @@ const AddUser = ({ userData, setShowModal, isEdit }: Props) => {
                     value={value.contact1} onChange={e => setValue(prev => ({ ...prev, contact1: e }))} />
 
                 {isEdit && <TextField id="outlined-basic" label="DOB" variant="outlined"
-                    value={moment(value.dob).format('YYYY-MM-DD')}
+                    value={dayjs(value.dob).format('YYYY-MM-DD')}
                     type='date'
                     className='*:text-xl'
-                    onChange={e => setValue(prev => ({ ...prev, dob: moment(e.target.value) }))}
+                    onChange={e => setValue(prev => ({ ...prev, dob: dayjs(e.target.value) }))}
                     required
                 />}
 

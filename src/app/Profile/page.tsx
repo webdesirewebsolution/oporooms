@@ -6,8 +6,8 @@ import React from 'react'
 import { getUser } from '../actions'
 import { auth } from '@/auth'
 import { Session } from 'next-auth'
-import moment from 'moment'
 import EditProfile from '@/Components/Profile/EditProfile'
+import dayjs from 'dayjs'
 
 const Profile = async () => {
     const session = await auth()
@@ -49,7 +49,7 @@ const Profile = async () => {
                         {user?.address && <p className='capitalize'>{user?.address}</p>}
                         {user?.contact1 && <p className='capitalize text-xl'>{user?.contact1}</p>}
                         {user?.contact2 && <p className='capitalize text-xl'>{user?.contact2}</p>}
-                        {user?.dob && <p className='capitalize text-xl'>{moment(new Date(user?.dob as Date)).format('Do MMM YYYY')}</p>}
+                        {user?.dob && <p className='capitalize text-xl'>{dayjs(new Date(user?.dob as Date)).format('Do MMM YYYY')}</p>}
                     </div>
                 </div>
             </Container>

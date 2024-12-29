@@ -4,10 +4,10 @@ import { Button } from '@mui/material'
 import React, { useContext } from 'react'
 import { Context } from '@/Context/context'
 import { useRouter, useSearchParams } from 'next/navigation'
-import moment from 'moment'
 import { Bookings } from '@/Types/Booking'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 type Props = {
     hotelId: string,
@@ -33,7 +33,7 @@ const BookRoom = ({ hotelId }: Props) => {
             searchData[i[0]] = i[1]
         }
 
-        const totalNights = moment(Number(searchData?.checkOut)).diff(moment(Number(searchData?.checkIn)), 'days')
+        const totalNights = dayjs(Number(searchData?.checkOut)).diff(dayjs(Number(searchData?.checkIn)), 'days')
 
         const transactionDetails = {
             cost: Number(roomData?.price) * totalNights * Number(searchData?.rooms),

@@ -5,16 +5,16 @@ import Input from './Input'
 import { Button, Container } from '@mui/material'
 import Link from 'next/link'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
-import moment, { Moment } from 'moment'
 import Modal from './Modal'
 import { useSearchParams } from 'next/navigation'
+import dayjs, { Dayjs } from 'dayjs'
 
 type SearchProps = {
     city: string,
     lat: number,
     lng: number,
-    checkIn: Moment,
-    checkOut: Moment,
+    checkIn: Dayjs,
+    checkOut: Dayjs,
     rooms: number,
     guests: {
         adults: number,
@@ -30,8 +30,8 @@ const SearchHotel = ({ }) => {
         city: searchParams.get('city')?.split("%20").join(' ') ? searchParams.get('city') as string : 'Gurgaon, Haryana, India',
         lat: Number(searchParams.get('lat')),
         lng: Number(searchParams.get('lng')),
-        checkIn: moment(new Date(Number(searchParams.get('checkIn')))),
-        checkOut: moment(new Date(Number(searchParams.get('checkOut')))),
+        checkIn: dayjs(new Date(Number(searchParams.get('checkIn')))),
+        checkOut: dayjs(new Date(Number(searchParams.get('checkOut')))),
         rooms: Number(searchParams.get('rooms')) || 1,
         guests: {
             adults: Number(searchParams.get('adults')) || 2,
@@ -85,9 +85,9 @@ const SearchHotel = ({ }) => {
                     placeholder="CHECK-IN"
                     type='date'
                     className='bg-gray-50 border-gray-100 rounded-lg'
-                    value={moment(value.checkIn).format('YYYY-MM-DD')}
+                    value={dayjs(value.checkIn).format('YYYY-MM-DD')}
                     onChange={(e) => {
-                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value).add(1, 'days') }))
+                        setValue(prev => ({ ...prev, checkIn: dayjs(e.target.value), checkOut: dayjs(value.checkOut) > dayjs(e.target.value) ? dayjs(value.checkOut) : dayjs(e.target.value).add(1, 'day') }))
                     }}
                 />
 
@@ -95,9 +95,9 @@ const SearchHotel = ({ }) => {
                     placeholder="CHECK-OUT"
                     type='date'
                     className='bg-gray-50 border-gray-100 rounded-lg'
-                    min={moment(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
-                    value={moment(value.checkOut).format('YYYY-MM-DD')}
-                    onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
+                    min={dayjs(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
+                    value={dayjs(value.checkOut).format('YYYY-MM-DD')}
+                    onChange={e => setValue(prev => ({ ...prev, checkOut: dayjs(e.target.value) }))}
                 />
 
                 <div className='flex flex-col w-full'>
@@ -112,8 +112,8 @@ const SearchHotel = ({ }) => {
                         city: value.city,
                         lat: value.lat,
                         lng: value.lng,
-                        checkIn: moment(value.checkIn).format('x'),
-                        checkOut: moment(value.checkOut).add(1, 'day').format('x'),
+                        checkIn: dayjs(value.checkIn).format('x'),
+                        checkOut: dayjs(value.checkOut).add(1, 'day').format('x'),
                         rooms: value.rooms,
                         adults: value.guests.adults,
                         childrens: value.guests.children

@@ -4,7 +4,7 @@ import { newDate } from "@/Functions";
 import client from "@/Lib/mongo";
 import { HotelTypes } from "@/Types/Hotels";
 import { RoomVarietyTypes } from "@/Types/Rooms";
-import moment from "moment";
+import dayjs from "dayjs";
 import { Collection, ObjectId } from "mongodb";
 import { SearchParams } from "next/dist/server/request/search-params";
 
@@ -27,7 +27,7 @@ export const getHotels = async ({ searchParams }: { searchParams: SearchParams }
     if (searchParams?.min) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min) }
     const checkIn = searchParams?.checkIn && Number(searchParams.checkIn)
     const checkOut = searchParams?.checkOut && Number(searchParams.checkOut)
-    const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 1
+    const totalDays = (checkIn && checkOut) ? dayjs(checkOut).diff(checkIn, 'days') : 1
 
     if (searchParams?.min && searchParams?.max) searchKeys['rooms.0.price'] = { $gte: Number(searchParams.min), $lte: Number(searchParams.max) }
 

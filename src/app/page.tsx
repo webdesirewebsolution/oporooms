@@ -7,12 +7,12 @@ import ServicesComp from '@/Components/ServicesComp'
 import TestimonialSlider from '@/Components/TestimonialSlider'
 import { getHotels } from '@/server/db'
 import { Button, Container } from '@mui/material'
-import moment from 'moment'
 import { Params } from 'next/dist/server/request/params'
 import { SearchParams } from 'next/dist/server/request/search-params'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import dayjs from 'dayjs'
 
 type Props = {
   params: Promise<Params>
@@ -114,12 +114,12 @@ const DreamVacation = () => {
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
         {data?.map((item, i) => (
           <Link href={{
-            pathname: '/Hotel',
+            pathname: '/Hotels',
             query: {
               placeId: item.placeId,
               city: item.title,
-              checkIn: moment(Date.now()).valueOf(),
-              checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
+              checkIn: dayjs(Date.now()).valueOf(),
+              checkOut: dayjs(Date.now()).add(1, 'day').valueOf(),
               rooms: 1,
               adults: 1,
               childrens: 0

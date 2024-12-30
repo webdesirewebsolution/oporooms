@@ -44,9 +44,9 @@ const SearchHotel = ({ }) => {
 
 
     return (
-        <div className='py-20 px-10 md:px-0'>
+        <div className='py-20 px-6 md:px-0'>
             <Container className='flex flex-col md:flex-row gap-5 items-center w-full shadow-xl py-8 bg-white'>
-                <div className='flex flex-col md:flex-row items-center w-full border-2 rounded-xl h-20'>
+                <div className='flex flex-col md:flex-row md:items-center w-full md:border-2 rounded-xl gap-4 md:gap-0 md:h-20'>
                     <div className='w-full'>
                         <GooglePlacesAutocomplete
                             selectProps={{
@@ -73,7 +73,7 @@ const SearchHotel = ({ }) => {
                                     setPlaceId(e?.value?.place_id)
                                 },
                                 classNames: {
-                                    control: () => 'border-0'
+                                    control: () => 'md:border-0'
                                 }
                             }}
                             // apiOptions={{
@@ -85,27 +85,29 @@ const SearchHotel = ({ }) => {
                         />
                     </div>
 
-                    <input
-                        placeholder="CHECK-IN"
-                        type='date'
-                        min={dayjs(newDate(new Date())).format('YYYY-MM-DD')}
-                        className='bg-transparent h-full border-x-2 px-10'
-                        value={dayjs(value.checkIn).format('YYYY-MM-DD')}
-                        onChange={(e) => {
-                            setValue(prev => ({ ...prev, checkIn: dayjs(e.target.value), checkOut: dayjs(value.checkOut) > dayjs(e.target.value) ? dayjs(value.checkOut) : dayjs(e.target.value).add(1, 'day') }))
-                        }}
-                    />
+                    <div className='flex gap-3 md:gap-0'>
+                        <input
+                            placeholder="CHECK-IN"
+                            type='date'
+                            min={dayjs(newDate(new Date())).format('YYYY-MM-DD')}
+                            className='bg-transparent md:h-full p-3 md:p-0 border-y-2 md:border-y-0 border-l-2 md:border-l-0 border-x-2 md:px-10'
+                            value={dayjs(value.checkIn).format('YYYY-MM-DD')}
+                            onChange={(e) => {
+                                setValue(prev => ({ ...prev, checkIn: dayjs(e.target.value), checkOut: dayjs(value.checkOut) > dayjs(e.target.value) ? dayjs(value.checkOut) : dayjs(e.target.value).add(1, 'day') }))
+                            }}
+                        />
 
-                    <input
-                        placeholder="CHECK-OUT"
-                        type='date'
-                        className='bg-transparent h-full border-r-2 px-10'
-                        min={dayjs(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
-                        value={dayjs(value.checkOut).format('YYYY-MM-DD')}
-                        onChange={e => setValue(prev => ({ ...prev, checkOut: dayjs(e.target.value) }))}
-                    />
+                        <input
+                            placeholder="CHECK-OUT"
+                            type='date'
+                            className='bg-transparent md:h-full p-3 md:p-0 border-y-2 md:border-y-0 border-l-2 md:border-l-0 border-x-2 md:px-10'
+                            min={dayjs(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
+                            value={dayjs(value.checkOut).format('YYYY-MM-DD')}
+                            onChange={e => setValue(prev => ({ ...prev, checkOut: dayjs(e.target.value) }))}
+                        />
+                    </div>
 
-                    <button type='button' className='px-10 rounded-md h-full text-nowrap' onClick={() => setSelectRoom(true)}>
+                    <button type='button' className='px-10 rounded-md h-full text-nowrap border-2 md:border-none py-4 md:py-0' onClick={() => setSelectRoom(true)}>
                         <p>{value.rooms} {value.guests.adults > 1 ? 'Rooms' : 'Room'}, {value.guests.adults} {value.guests.adults > 1 ? 'Adults' : 'Adult'}{value.guests.children > 0 && `, ${value.guests.children} `} {value.guests.children > 0 && (value.guests.children > 1 ? 'Childrens' : 'Children')}</p>
                     </button>
 
@@ -123,7 +125,7 @@ const SearchHotel = ({ }) => {
                             childrens: value.guests.children
                         }
                     }} passHref legacyBehavior className='h-full'>
-                        <Button className={'bg-red-500 text-white text-nowrap h-full !px-20 rounded-xl rounded-l-none'} size='large'>
+                        <Button className={'bg-red-500 text-white text-nowrap md:h-full !py-5 !px-24 rounded-xl md:rounded-l-none'} size='large'>
                             Find Hotels</Button>
                     </Link>
                 </div>

@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import Link from 'next/link'
 import React from 'react'
 
@@ -33,8 +33,8 @@ const Cities = ({ item, children }: Props) => {
                             city: subItem.city,
                             lat: subItem.latitude,
                             lng: subItem.longitude,
-                            checkIn: moment(Date.now()).valueOf(),
-                            checkOut: moment(Date.now()).add(1 + 'days').valueOf(),
+                            checkIn: dayjs(Date.now()).valueOf(),
+                            checkOut: dayjs(Date.now()).add(1 , 'day').valueOf(),
                             rooms: 1,
                             adults: 1,
                             childrens: 0

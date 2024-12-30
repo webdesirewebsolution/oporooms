@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, CircularProgress, Skeleton, TextField } from '@mui/material'
+import {  CircularProgress, Skeleton, TextField } from '@mui/material'
 import React, { FormEvent, useContext, useState } from 'react'
 import Modal from '@/Components/Modal'
 import { signIn, useSession } from 'next-auth/react'
@@ -10,6 +10,7 @@ import OTPInput from 'react-otp-input'
 import { MuiTelInput } from 'mui-tel-input'
 import { Context } from '@/Context/context'
 import { MuiPhone } from './MuiPhone'
+import Button from './Buttons'
 
 const AuthButtons = () => {
     const { status } = useSession()

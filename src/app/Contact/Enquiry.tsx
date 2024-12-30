@@ -2,10 +2,11 @@
 
 // import Modal from '@/Components/Modal'
 import { EnquiryTypes } from '@/Types/EnquiryType'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import {  CircularProgress, TextField } from '@mui/material'
 import axios from 'axios'
 import { MuiTelInput } from 'mui-tel-input'
 import React, { useState } from 'react'
+import Button from '@/Components/Buttons'
 
 type Props = {}
 

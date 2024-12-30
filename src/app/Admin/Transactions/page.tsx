@@ -4,14 +4,15 @@ import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
-import { Button, FormControl, InputLabel, Menu, MenuItem, Paper, Select, TextField } from '@mui/material'
+import {  FormControl, InputLabel, Menu, MenuItem, Paper, Select, TextField } from '@mui/material'
 import { TransactionAction, TransactionType } from '@/Types/Transaction'
-import moment from 'moment'
 import Modal from '@/Components/Modal'
 import AddTransactions from '../Components/AddTransactions'
 import AddPay from '../Components/AddPay'
 import { FaWallet } from 'react-icons/fa6'
 import { Context } from '@/Context/context'
+import dayjs from 'dayjs'
+import Button from '@/Components/Buttons'
 
 const Transaction = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -78,7 +79,7 @@ const Transaction = () => {
             id: 4, field: 'receiver', headerName: 'Receiver Name', minWidth: 300, renderCell: (params) => <UserDetails params={params} />
         },
         { id: 3, field: 'status', headerName: 'Status' },
-        { id: 4, field: 'created_at', headerName: 'Created At', minWidth: 150, valueGetter: (value) => moment(new Date(value)).format('Do MMM YYYY') },
+        { id: 4, field: 'created_at', headerName: 'Created At', minWidth: 150, valueGetter: (value) => dayjs(new Date(value)).format('Do MMM YYYY') },
     ]
 
     columns.forEach((item) => {
@@ -161,9 +162,9 @@ const Transaction = () => {
                         <TextField
                             label="Date From"
                             type='date'
-                            value={moment(Number(filter.from) || Date.now()).format('YYYY-MM-DD')}
+                            value={dayjs(Number(filter.from) || Date.now()).format('YYYY-MM-DD')}
                             onChange={(e) => {
-                                setFilter(prev => ({ ...prev, from: moment(e.target.value).valueOf().toString() }))
+                                setFilter(prev => ({ ...prev, from: dayjs(e.target.value).valueOf().toString() }))
                             }}
                             className='w-full *:text-xl' />
                     </FormControl>
@@ -172,9 +173,9 @@ const Transaction = () => {
                         <TextField
                             label="Date To"
                             type='date'
-                            value={moment(Number(filter.to) || Date.now()).format('YYYY-MM-DD')}
+                            value={dayjs(Number(filter.to) || Date.now()).format('YYYY-MM-DD')}
                             onChange={(e) => {
-                                setFilter(prev => ({ ...prev, to: moment(e.target.value).valueOf().toString() }))
+                                setFilter(prev => ({ ...prev, to: dayjs(e.target.value).valueOf().toString() }))
                             }}
                             className='w-full *:text-xl' />
                     </FormControl>
@@ -252,7 +253,7 @@ const UserDetails = ({ params }: { params: GridRenderCellParams }) => {
                                             {key}
                                         </span>
                                         <span className="text-gray-900 font-semibold text-xl">
-                                            {value instanceof Date ? moment(new Date(value)).format('Do MMM YYYY') as string : value as string}
+                                            {value instanceof Date ? dayjs(new Date(value)).format('Do MMM YYYY') as string : value as string}
                                         </span>
                                     </div>
                                 ))}
@@ -288,7 +289,7 @@ const BookingDetails = ({ params }: { params: GridRenderCellParams }) => {
                                         {key}
                                     </span>
                                     <span className="text-gray-900 font-semibold text-xl">
-                                        {moment(value as string).isValid() ? moment(new Date(value as string)).format('Do MMM YYYY') : value as string}
+                                        {dayjs(value as string).isValid() ? dayjs(new Date(value as string)).format('Do MMM YYYY') : value as string}
                                     </span>
                                 </div>
                             ))}

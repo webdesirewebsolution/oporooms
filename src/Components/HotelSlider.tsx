@@ -1,7 +1,6 @@
 'use client'
 
 import { HotelTypes } from '@/Types/Hotels'
-import { Button } from '@mui/material'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -9,6 +8,7 @@ import { CiImageOff } from 'react-icons/ci'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay } from 'swiper/modules';
 import Description from './Description'
+import Button from './Buttons'
 
 type Props = {
     list: HotelTypes[],

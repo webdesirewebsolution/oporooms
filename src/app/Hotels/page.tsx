@@ -3,8 +3,7 @@ import SearchHotel from '@/Components/SearchHotel'
 import React from 'react'
 import Footer from '@/Components/Footer';
 import { SearchParams } from 'next/dist/server/request/search-params';
-import moment from 'moment';
-import { Button, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import { FaStar } from 'react-icons/fa6';
 import { IoLocation } from 'react-icons/io5';
 import Link from 'next/link';
@@ -15,13 +14,15 @@ import Description from '@/Components/Description';
 import { getHotels } from '@/server/db';
 import UserForm from '@/Components/UserForm';
 import { Params } from 'next/dist/server/request/params';
+import dayjs from 'dayjs';
+import Button from '@/Components/Buttons'
 
 type Props = {
     params: Promise<Params>
     searchParams: Promise<SearchParams>
 }
 
-const HotelList = async ({params, searchParams }: Props) => {
+const HotelList = async ({ params, searchParams }: Props) => {
     const paramsRes = await params
     const searchParamsRes = await searchParams
     return (
@@ -44,7 +45,7 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
     const rooms = searchParams?.rooms ? Number(searchParams?.rooms) : 0
     const checkIn = searchParams?.checkIn && Number(searchParams.checkIn)
     const checkOut = searchParams?.checkOut && Number(searchParams.checkOut)
-    const totalDays = (checkIn && checkOut) ? moment(checkOut).diff(checkIn, 'days') : 0
+    const totalDays = (checkIn && checkOut) ? dayjs(checkOut).diff(checkIn, 'days') : 0
 
     return (
         <Container className='pb-20'>

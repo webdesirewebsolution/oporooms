@@ -2,7 +2,7 @@
 
 import useWindowDimensions from '@/Hooks/useWindow'
 import React, { useState } from 'react'
-import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material'
+import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material'
 import { IoMdMenu } from 'react-icons/io'
 import { signOut } from '@/auth'
 import { User } from '../../../Types/Profile'
@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { RiPagesLine } from "react-icons/ri";
 import { MdOutlineBookmark } from "react-icons/md";
+import IconButton from '@/Components/IconButton'
 
 type Props = {
     user: User

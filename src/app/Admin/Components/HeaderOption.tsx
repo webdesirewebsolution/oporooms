@@ -1,12 +1,13 @@
 'use client'
 
 import { User } from '@/Types/Profile'
-import { Avatar, Button } from '@mui/material'
+import { Avatar } from '@mui/material'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { IoChevronUp } from "react-icons/io5";
 import { signOut } from 'next-auth/react'
+import Button from '@/Components/Buttons'
 
 type Props = {
     user: User

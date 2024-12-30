@@ -1,4 +1,4 @@
-import { Moment } from "moment";
+import { Dayjs } from "dayjs";
 import { ObjectId } from "mongodb";
 
 export interface User {
@@ -13,7 +13,7 @@ export interface User {
     contact1?: string,
     contact2?: string,
     address?: string,
-    dob?: Moment | Date,
+    dob?: Dayjs | Date,
     gender?: string,
     createdBy?: string,
     profileStatus?: string,

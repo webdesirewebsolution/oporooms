@@ -2,7 +2,7 @@
 'use client'
 
 import { HotelTypes } from '@/Types/Hotels'
-import { Button, CircularProgress, Container, Skeleton } from '@mui/material'
+import { CircularProgress, Container, Skeleton } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
@@ -12,9 +12,10 @@ import { FaStar } from 'react-icons/fa6'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { CiImageOff } from "react-icons/ci";
 import Link from 'next/link'
-import moment from 'moment'
 import { IoLocation } from 'react-icons/io5'
 import BookRoom from './BookRoom'
+import dayjs from 'dayjs'
+import Button from './Buttons'
 
 declare global {
   interface Window {
@@ -77,9 +78,9 @@ const HotelListClient = () => {
   }
 
   const rooms = Number(searchParams.get('rooms'))
-  const checkIn = moment(Number(searchParams.get('checkIn')))
-  const checkOut = moment(Number(searchParams.get('checkOut'))).add(1, 'day')
-  const totalDays = moment(checkOut).diff(checkIn, 'days')
+  const checkIn = dayjs(Number(searchParams.get('checkIn')))
+  const checkOut = dayjs(Number(searchParams.get('checkOut'))).add(1, 'day')
+  const totalDays = dayjs(checkOut).diff(checkIn, 'days')
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFilter(prev => ({ ...prev, hotelName: e.target.value }))

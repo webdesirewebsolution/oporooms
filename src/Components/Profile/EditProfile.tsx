@@ -1,11 +1,11 @@
 'use client'
 
 import { User } from '@/Types/Profile'
-import { IconButton } from '@mui/material'
 import React, { useState } from 'react'
 import { MdEdit } from 'react-icons/md'
 import Modal from '../Modal'
 import AddUser from '../AddUser'
+import IconButton from '../IconButton'
 
 type Props = {
     user: User

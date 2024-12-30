@@ -5,14 +5,15 @@ import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
-import { Button, Checkbox, Skeleton, CircularProgress } from '@mui/material'
+import { Checkbox, Skeleton, CircularProgress } from '@mui/material'
 import Image from 'next/image'
-import moment from 'moment'
 import Modal from '@/Components/Modal'
 import { Context } from '@/Context/context'
 import { RoomsTypes } from '@/Types/Rooms'
 import ReactSelect from 'react-select'
 import { compareArray } from '@/Functions'
+import dayjs from 'dayjs'
+import Button from '@/Components/Buttons'
 
 const Home = () => {
   const { user } = useContext(Context)
@@ -45,7 +46,7 @@ const Home = () => {
     { id: 0, field: '_id', headerName: 'Id' },
     { id: 0, field: 'bookingUid', headerName: 'Booking UID' },
     // { id: 1, field: 'photos', headerName: 'Photo', renderCell: (params) => <Photos params={params} /> },
-    { id: 1, field: 'bookingDate', headerName: 'Date', valueGetter: (value) => moment(value).format('Do, MMMM, YYYY') },
+    { id: 1, field: 'bookingDate', headerName: 'Date', valueGetter: (value) => dayjs(value).format('Do, MMMM, YYYY') },
     { id: 2, field: 'bookingType', headerName: 'Type', },
     { id: 3, field: 'status', headerName: 'Status', renderCell: (params) => <Status params={params} /> },
     { id: 4, field: 'assignedRooms', headerName: 'Assigned Rooms', renderCell: (params) => params?.row?.assignedRooms?.length },
@@ -130,7 +131,7 @@ const ViewRooms = ({ params }: { params: GridRenderCellParams }) => {
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <div className='flex h-full items-center justify-center'>
       <Button className='bg-blue-500 text-white' onClick={() => setOpen(true)}>View Rooms</Button>
 
       <Modal open={open} setOpen={setOpen}>
@@ -157,7 +158,7 @@ const ViewRooms = ({ params }: { params: GridRenderCellParams }) => {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   )
 }
 

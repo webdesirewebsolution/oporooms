@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react'
 import Jodit from './jodit'
-import { Button, CircularProgress } from '@mui/material'
+import {  CircularProgress } from '@mui/material'
 import Modal from '@/Components/Modal'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import Button from '@/Components/Buttons'
 
 type Props = {
     type: 'TermsConditions' | 'PrivacyPolicy',

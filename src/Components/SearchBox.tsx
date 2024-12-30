@@ -1,20 +1,21 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Input from './Input'
-import Button from '@mui/material/Button'
 import Link from 'next/link'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
-import moment, { Moment } from 'moment'
 import Modal from './Modal'
 import { FaHotel, FaPlus, FaTrainSubway } from 'react-icons/fa6'
 import { MdOutlineFlightTakeoff } from 'react-icons/md'
 import { BiSolidBusSchool } from "react-icons/bi";
-import { Container, IconButton } from '@mui/material'
+import { Container } from '@mui/material'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
 import useWindowDimensions from '@/Hooks/useWindow'
 import { usePathname, useRouter } from 'next/navigation'
 import { FaMinus } from 'react-icons/fa'
+import dayjs, { Dayjs } from 'dayjs'
+import Button from './Buttons'
+import IconButton from './IconButton'
+import { newDate } from '@/Functions'
 
 type tabsTypes = {
     icon: string,
@@ -62,8 +63,8 @@ const SearchBox = ({ }) => {
                 // `lg:sticky lg:-top-[2rem] z-50`
                 `${(scrolled ? 'lg:fixed -top-[2rem]' : 'lg:fixed top-[12rem]')} w-full z-50`
             }>
-                <Container maxWidth={isScrolledOnDesktop ? 'xl' : 'lg'} className={`relative top-5 lg:top-12 transition-all`}>
-                    <div className={`bg-white shadow rounded-xl p-10 w-full flex flex-col gap-5`}>
+                <Container maxWidth={isScrolledOnDesktop ? 'xl' : 'lg'} className={`relative top-5 lg:top-12 transition-all flex items-center justify-center`}>
+                    <div className={`bg-white shadow rounded-xl p-8 w-fit flex flex-col gap-5`}>
                         <div className='flex'>
                             {tabs?.map((tab) => (
                                 <div key={tab.title} className={`border-r-2 px-5 cursor-pointer w-full md:w-fit`} onClick={() => setActiveTab(tab.title as tabsTypes['title'])}>
@@ -92,8 +93,8 @@ type SearchProps = {
     city: string,
     lat: number,
     lng: number
-    checkIn: Moment,
-    checkOut: Moment,
+    checkIn: Dayjs,
+    checkOut: Dayjs,
     rooms: number,
     guests: {
         adults: number,
@@ -105,8 +106,8 @@ const initialData: SearchProps = {
     city: 'Gurgaon, Haryana, India',
     lat: 28.4594965,
     lng: 77.0266383,
-    checkIn: moment(new Date()),
-    checkOut: moment(new Date()).add(1, 'day'),
+    checkIn: dayjs(newDate(new Date())),
+    checkOut: dayjs(newDate(new Date())).add(1, 'day'),
     rooms: 1,
     guests: {
         adults: 2,
@@ -128,8 +129,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
             params.set('city', value.city)
             params.set('lat', value.lat.toString())
             params.set('lng', value.lng.toString())
-            params.set('checkIn', moment(value.checkIn).format('x'))
-            params.set('checkOut', moment(value.checkOut).format('x'))
+            params.set('checkIn', dayjs(value.checkIn).format('x'))
+            params.set('checkOut', dayjs(value.checkOut).format('x'))
             params.set('rooms', value.rooms.toString())
             params.set('adults', value.guests.adults.toString())
             params.set('childrens', value.guests.children.toString())
@@ -141,8 +142,8 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
 
 
     return (
-        <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} w-full gap-5 items-end transition-all`}>
-            <div className='flex flex-col md:flex-row gap-5 items-center w-full'>
+        <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} w-fit gap-5 items-end transition-all`}>
+            <div className='flex flex-col md:flex-row items-center w-full border-2 rounded-xl h-20'>
                 <div className='w-full'>
                     <GooglePlacesAutocomplete
                         selectProps={{
@@ -169,7 +170,7 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                                 setPlaceId(e?.value?.place_id)
                             },
                             classNames: {
-                                control: () => 'py-[0.5rem] mt-1'
+                                control: () => 'border-0'
                             }
                         }}
                         // apiOptions={{
@@ -181,49 +182,49 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
                     />
                 </div>
 
-                <Input
+                <input
                     placeholder="CHECK-IN"
                     type='date'
-                    className='bg-transparent h-20'
-                    value={moment(value.checkIn).format('YYYY-MM-DD')}
+                    min={dayjs(newDate(new Date())).format('YYYY-MM-DD')}
+                    className='bg-transparent h-full border-x-2 px-10'
+                    value={dayjs(value.checkIn).format('YYYY-MM-DD')}
                     onChange={(e) => {
-                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value).add(1, 'days') }))
+                        setValue(prev => ({ ...prev, checkIn: dayjs(e.target.value), checkOut: dayjs(value.checkOut) > dayjs(e.target.value) ? dayjs(value.checkOut) : dayjs(e.target.value).add(1, 'day') }))
                     }}
                 />
 
-                <Input
+                <input
                     placeholder="CHECK-OUT"
                     type='date'
-                    className='bg-transparent h-20'
-                    min={moment(value.checkIn).add(1, 'days').format('YYYY-MM-DD')}
-                    value={moment(value.checkOut).format('YYYY-MM-DD')}
-                    onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
+                    className='bg-transparent h-full border-r-2 px-10'
+                    min={dayjs(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
+                    value={dayjs(value.checkOut).format('YYYY-MM-DD')}
+                    onChange={e => setValue(prev => ({ ...prev, checkOut: dayjs(e.target.value) }))}
                 />
 
-                <div className='flex flex-col w-full h-20'>
-                    <button type='button' className='border-2 border-slate-400 px-5 rounded-md h-full' onClick={() => setSelectRoom(true)}>
-                        <p>{value.rooms} {value.guests.adults > 1 ? 'Rooms' : 'Room'}, {value.guests.adults} {value.guests.adults > 1 ? 'Adults' : 'Adult'}{value.guests.children > 0 && `, ${value.guests.children} `} {value.guests.children > 0 && (value.guests.children > 1 ? 'Childrens' : 'Children')}</p>
-                    </button>
-                </div>
+                <button type='button' className='px-10 rounded-md h-full text-nowrap' onClick={() => setSelectRoom(true)}>
+                    <p>{value.rooms} {value.guests.adults > 1 ? 'Rooms' : 'Room'}, {value.guests.adults} {value.guests.adults > 1 ? 'Adults' : 'Adult'}{value.guests.children > 0 && `, ${value.guests.children} `} {value.guests.children > 0 && (value.guests.children > 1 ? 'Childrens' : 'Children')}</p>
+                </button>
+
+                <Link href={{
+                    pathname: '/Hotels',
+                    query: {
+                        placeId: placeId,
+                        city: value.city,
+                        lat: value.lat,
+                        lng: value.lng,
+                        checkIn: dayjs(value.checkIn).valueOf(),
+                        checkOut: dayjs(value.checkOut).valueOf(),
+                        rooms: value.rooms,
+                        adults: value.guests.adults,
+                        childrens: value.guests.children
+                    }
+                }} passHref legacyBehavior className='h-full'>
+                    <Button className={'bg-red-500 text-white text-nowrap h-full !px-20 rounded-xl rounded-l-none'} size='large'>
+                        Find Hotels</Button>
+                </Link>
             </div>
 
-            <Link href={{
-                pathname: '/Hotels',
-                query: {
-                    placeId: placeId,
-                    city: value.city,
-                    lat: value.lat,
-                    lng: value.lng,
-                    checkIn: moment(value.checkIn).format('x'),
-                    checkOut: moment(value.checkOut).format('x'),
-                    rooms: value.rooms,
-                    adults: value.guests.adults,
-                    childrens: value.guests.children
-                }
-            }} passHref legacyBehavior>
-                <Button className={'bg-red-500 text-white text-nowrap'} size='large'>
-                    Find Hotels</Button>
-            </Link>
 
             <Modal open={selectRoom} setOpen={setSelectRoom} className='w-96'>
                 <SelectRooms value={value} setValue={setValue} setSelectRoom={setSelectRoom} />
@@ -262,7 +263,7 @@ const SelectRooms = ({ value, setValue, setSelectRoom }: SelectRoomsProps) => {
                             disabled={val.rooms <= 1}
                             onClick={() => {
                                 setVal(prev => ({ ...prev, rooms: Number(prev.rooms) - 1, guests: { ...prev.guests, adults: Number(val.guests.adults) > Number(prev.rooms) ? Number(val.guests.adults) : Number(prev.rooms) - 1 } }))
-                            }} className={`${val.rooms <= 1 ? 'bg-blue-300' : 'bg-blue-500'} text-white`}>
+                            }} className={`${val.rooms <= 1 ? '!bg-blue-300' : '!bg-blue-500'} !text-white`}>
                             <FaMinus size={10} />
                         </IconButton>
                         <span>{val.rooms}</span>

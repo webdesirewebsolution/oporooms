@@ -5,7 +5,7 @@ import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { AddressTypes, HotelTypes } from '@/Types/Hotels'
 import { User } from '@/Types/Profile'
 import { RoomVarietyTypes } from '@/Types/Rooms'
-import { Button, CircularProgress, IconButton, TextareaAutosize, TextField } from '@mui/material'
+import {  CircularProgress, TextareaAutosize, TextField } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
@@ -14,6 +14,8 @@ import { MdDelete } from 'react-icons/md'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { MultiSelect } from "react-multi-select-component";
 import { useRouter } from 'next/navigation'
+import Button from '@/Components/Buttons'
+import IconButton from '@/Components/IconButton'
 
 type Props = {
     hotelOwnerData: {

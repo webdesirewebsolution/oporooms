@@ -2,19 +2,21 @@
 
 import React, { useState } from 'react'
 import Input from './Input'
-import { Button, Container } from '@mui/material'
+import { Container } from '@mui/material'
 import Link from 'next/link'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
-import moment, { Moment } from 'moment'
 import Modal from './Modal'
 import { useSearchParams } from 'next/navigation'
+import dayjs, { Dayjs } from 'dayjs'
+import Button from './Buttons'
+import { newDate } from '@/Functions'
 
 type SearchProps = {
     city: string,
     lat: number,
     lng: number,
-    checkIn: Moment,
-    checkOut: Moment,
+    checkIn: Dayjs,
+    checkOut: Dayjs,
     rooms: number,
     guests: {
         adults: number,
@@ -30,8 +32,8 @@ const SearchHotel = ({ }) => {
         city: searchParams.get('city')?.split("%20").join(' ') ? searchParams.get('city') as string : 'Gurgaon, Haryana, India',
         lat: Number(searchParams.get('lat')),
         lng: Number(searchParams.get('lng')),
-        checkIn: moment(new Date(Number(searchParams.get('checkIn')))),
-        checkOut: moment(new Date(Number(searchParams.get('checkOut')))),
+        checkIn: dayjs(newDate(new Date(Number(searchParams.get('checkIn'))))),
+        checkOut: dayjs(newDate(new Date(Number(searchParams.get('checkOut'))))),
         rooms: Number(searchParams.get('rooms')) || 1,
         guests: {
             adults: Number(searchParams.get('adults')) || 2,
@@ -44,83 +46,87 @@ const SearchHotel = ({ }) => {
     return (
         <div className='py-20 px-10 md:px-0'>
             <Container className='flex flex-col md:flex-row gap-5 items-center w-full shadow-xl py-8 bg-white'>
-                <div className='w-full'>
-                    <GooglePlacesAutocomplete
-                        selectProps={{
-                            defaultValue: { label: value.city, value: value.city },
-                            value: { label: value.city, value: value.city },
-                            onChange: (e) => {
-                                if (typeof window !== 'undefined') {
-                                    const geocoder = new google.maps.Geocoder()
+                <div className='flex flex-col md:flex-row items-center w-full border-2 rounded-xl h-20'>
+                    <div className='w-full'>
+                        <GooglePlacesAutocomplete
+                            selectProps={{
+                                defaultValue: { label: value.city, value: value.city },
+                                value: { label: value.city, value: value.city },
+                                onChange: (e) => {
+                                    if (typeof window !== 'undefined') {
+                                        const geocoder = new google.maps.Geocoder()
 
-                                    geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
-                                        if (status == google.maps.GeocoderStatus.OK) {
-                                            const location = results?.[0]?.geometry?.location?.toJSON()
+                                        geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
+                                            if (status == google.maps.GeocoderStatus.OK) {
+                                                const location = results?.[0]?.geometry?.location?.toJSON()
 
-                                            setValue(prev => ({
-                                                ...prev,
-                                                lat: location?.lat as number,
-                                                lng: location?.lng as number,
-                                                city: e?.value?.description,
-                                            }))
-                                        }
-                                    })
+                                                setValue(prev => ({
+                                                    ...prev,
+                                                    lat: location?.lat as number,
+                                                    lng: location?.lng as number,
+                                                    city: e?.value?.description,
+                                                }))
+                                            }
+                                        })
+                                    }
+
+                                    setPlaceId(e?.value?.place_id)
+                                },
+                                classNames: {
+                                    control: () => 'border-0'
                                 }
-                                setPlaceId(e?.value?.place_id)
-                            },
-                            classNames: {
-                                control: () => 'py-[0.7rem] mt-1 bg-gray-50 border-gray-100'
-                            }
-                        }}
-                        apiOptions={{
-                            id: 'GoogleMaps',
-                            apiKey: 'AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U'
-                        }}
-                        apiKey="AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U"
+                            }}
+                            // apiOptions={{
+                            //     id: 'GoogleMaps',
+                            //     apiKey: 'AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U'
+                            // }}
+                            apiKey="AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U"
 
+                        />
+                    </div>
+
+                    <input
+                        placeholder="CHECK-IN"
+                        type='date'
+                        min={dayjs(newDate(new Date())).format('YYYY-MM-DD')}
+                        className='bg-transparent h-full border-x-2 px-10'
+                        value={dayjs(value.checkIn).format('YYYY-MM-DD')}
+                        onChange={(e) => {
+                            setValue(prev => ({ ...prev, checkIn: dayjs(e.target.value), checkOut: dayjs(value.checkOut) > dayjs(e.target.value) ? dayjs(value.checkOut) : dayjs(e.target.value).add(1, 'day') }))
+                        }}
                     />
-                </div>
 
-                <Input
-                    placeholder="CHECK-IN"
-                    type='date'
-                    className='bg-gray-50 border-gray-100 rounded-lg'
-                    value={moment(value.checkIn).format('YYYY-MM-DD')}
-                    onChange={(e) => {
-                        setValue(prev => ({ ...prev, checkIn: moment(e.target.value), checkOut: moment(value.checkOut) > moment(e.target.value) ? moment(value.checkOut) : moment(e.target.value).add(1, 'days') }))
-                    }}
-                />
+                    <input
+                        placeholder="CHECK-OUT"
+                        type='date'
+                        className='bg-transparent h-full border-r-2 px-10'
+                        min={dayjs(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
+                        value={dayjs(value.checkOut).format('YYYY-MM-DD')}
+                        onChange={e => setValue(prev => ({ ...prev, checkOut: dayjs(e.target.value) }))}
+                    />
 
-                <Input
-                    placeholder="CHECK-OUT"
-                    type='date'
-                    className='bg-gray-50 border-gray-100 rounded-lg'
-                    min={moment(value.checkIn).add(1, 'day').format('YYYY-MM-DD')}
-                    value={moment(value.checkOut).format('YYYY-MM-DD')}
-                    onChange={e => setValue(prev => ({ ...prev, checkOut: moment(e.target.value) }))}
-                />
-
-                <div className='flex flex-col w-full'>
-                    <button type='button' className='border-2 bg-gray-50 border-gray-100 rounded-lg px-5 h-20' onClick={() => setSelectRoom(true)}>
-                        <p>{value.rooms} {value.guests.adults > 1 ? 'Rooms' : 'Room'}, {value.guests.adults} {value.guests.adults > 1 ? 'Adults' : 'Adult'}{value.guests.children > 0 && `, ${value.guests.children}`} {value.guests.children > 0 && (value.guests.children > 1 ? 'Childrens' : 'Children')}</p>
+                    <button type='button' className='px-10 rounded-md h-full text-nowrap' onClick={() => setSelectRoom(true)}>
+                        <p>{value.rooms} {value.guests.adults > 1 ? 'Rooms' : 'Room'}, {value.guests.adults} {value.guests.adults > 1 ? 'Adults' : 'Adult'}{value.guests.children > 0 && `, ${value.guests.children} `} {value.guests.children > 0 && (value.guests.children > 1 ? 'Childrens' : 'Children')}</p>
                     </button>
+
+                    <Link href={{
+                        pathname: '/Hotels',
+                        query: {
+                            placeId: placeId,
+                            city: value.city,
+                            lat: value.lat,
+                            lng: value.lng,
+                            checkIn: dayjs(value.checkIn).valueOf(),
+                            checkOut: dayjs(value.checkOut).valueOf(),
+                            rooms: value.rooms,
+                            adults: value.guests.adults,
+                            childrens: value.guests.children
+                        }
+                    }} passHref legacyBehavior className='h-full'>
+                        <Button className={'bg-red-500 text-white text-nowrap h-full !px-20 rounded-xl rounded-l-none'} size='large'>
+                            Find Hotels</Button>
+                    </Link>
                 </div>
-                <Link href={{
-                    pathname: '/Hotels',
-                    query: {
-                        placeId: placeId,
-                        city: value.city,
-                        lat: value.lat,
-                        lng: value.lng,
-                        checkIn: moment(value.checkIn).format('x'),
-                        checkOut: moment(value.checkOut).add(1, 'day').format('x'),
-                        rooms: value.rooms,
-                        adults: value.guests.adults,
-                        childrens: value.guests.children
-                    }
-                }} className='w-full'>
-                    <Button className='bg-red-500 text-white w-full h-20' size='large'>Find Hotels</Button>
-                </Link>
 
                 <Modal open={selectRoom} setOpen={setSelectRoom} className='w-96'>
                     <SelectRooms value={value} setValue={setValue} setSelectRoom={setSelectRoom} />

@@ -1,12 +1,13 @@
 'use client'
 
 import { User } from '@/Types/Profile'
-import { Avatar, Button } from '@mui/material'
+import { Avatar } from '@mui/material'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { IoChevronUp } from "react-icons/io5";
 import { signOut } from 'next-auth/react'
+import Button from './Buttons'
 
 type Props = {
     user: User
@@ -18,13 +19,13 @@ const HeaderOption = ({ user }: Props) => {
     return (
         <div className='relative'>
             <Button className='bg-slate-200 text-black gap-2 rounded-xl text-[1.2rem] font-semibold capitalize' size='large' onClick={() => setShow(prev => !prev)}>
-                <Avatar className='size-10'>
-                    {user.photo && <Image src={user.photo as string} alt={user.fullname as string} title={user.fullname} fill objectFit='cover' />}
-                </Avatar>
-                {user.fullname}
-                <div className={`${show ? 'rotate-180' : 'rotate-0'} transition-transform`}>
-                    <IoChevronUp />
-                </div>
+                    <Avatar className='size-10'>
+                        {user.photo && <Image src={user.photo as string} alt={user.fullname as string} title={user.fullname} fill objectFit='cover' />}
+                    </Avatar>
+                    {user.fullname}
+                    <div className={`${show ? 'rotate-180' : 'rotate-0'} transition-transform`}>
+                        <IoChevronUp />
+                    </div>
             </Button>
 
             <div className={`${show ? 'flex' : 'hidden'} absolute flex-col shadow bg-white z-[9999] top-28 rounded-lg overflow-hidden right-0`}>

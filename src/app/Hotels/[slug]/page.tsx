@@ -17,6 +17,7 @@ import Expandable from '@/Components/Expandable';
 import { getRooms } from '@/server/db';
 import HotelPhotos from '@/Components/HotelPhotos';
 import dayjs from 'dayjs';
+import SliderImage from '../SliderImage';
 
 type Props = {
     params: Promise<Params>,
@@ -53,9 +54,9 @@ const Hotel = async ({ params, searchParams }: Props) => {
                     <Container className='py-10'>
                         <div className='flex flex-col lg:flex-row gap-5'>
                             <div className='relative w-[100%] aspect-video max-w-full'>
-                                <Image src={item.photos?.[0]} alt='' fill className='object-' quality={100}/>
+                                <Image src={item.photos?.[0]} alt='' fill className='object-' quality={100} />
                             </div>
-                            <HotelPhotos photos={item.photos}/>
+                            <HotelPhotos photos={item.photos} />
                             {/* {item?.photos?.length > 1 &&
                                 <div className='flex flex-row lg:flex-col gap-5 w-full lg:w-[49%]'>
                                     <div className='relative w-[100%] aspect-video max-w-full'>
@@ -146,6 +147,7 @@ const Hotel = async ({ params, searchParams }: Props) => {
 }
 
 const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVarietyTypes }) => {
+    console.log(room)
     const { totalSize, bookingSize } = await getRooms({ type: room.type, hotelId: hotelData._id as ObjectId })
 
     if (totalSize.length == 0) {
@@ -154,8 +156,9 @@ const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVar
 
     return (
         <div key={room.type} className='border flex flex-col md:flex-row shadow-lg bg-white overflow-hidden rounded-lg'>
-            <div className='w-full md:w-[35rem] aspect-video max-w-full relative rounded-xl'>
-                <Image src={room?.photos?.[0]} alt='' fill objectFit='cover' />
+            <div className='rounded-xl'>
+                {/* <Image src={room?.photos?.[0]} alt='' fill objectFit='cover' /> */}
+                <SliderImage photos={room?.photos} loop autoplay/>
             </div>
 
 

@@ -16,7 +16,7 @@ type Props = {
 
 const TestimonialSlider = ({ list }: Props) => {
     return (
-        <Swiper slidesPerView={3}
+        <Swiper slidesPerView="auto"
             loop
             autoplay
             // speed={5000}
@@ -24,8 +24,8 @@ const TestimonialSlider = ({ list }: Props) => {
             spaceBetween={20}
             className='w-full'>
             {list?.map((item, i) => (
-                <SwiperSlide key={i} className='h-full'>
-                    <div className='w-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden bg-white'>
+                <SwiperSlide key={i} className='h-auto w-[35rem] pb-10'>
+                    <div className='w-full h-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden bg-white'>
                         <div className='w-full aspect-video relative'>
                             {item.image ? <Image src={item.image} alt={item.title} title={item.title} objectFit='cover' fill /> : (
                                 <div className='w-full aspect-video flex items-center justify-center bg-slate-300'>

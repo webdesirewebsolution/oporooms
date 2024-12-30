@@ -158,40 +158,55 @@ const Testimonials = async () => {
 
   const list = [
     {
-      image: '',
-      title: 'Rahul',
-      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+      "image": "",
+      "title": "Priya Sharma",
+      "desc": "I recently booked a weekend getaway to Jaipur through OpoRooms, and the experience was seamless! The hotel options were well-curated, and I found an amazing deal on a heritage property. Highly recommend OpoRooms for hassle-free hotel bookings!"
     },
     {
-      image: '',
-      title: 'Rahul',
-      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+      "image": "",
+      "title": "Ramesh Iyer",
+      "desc": "Planning a family vacation to Kerala was a breeze with OpoRooms. From booking train tickets to finding perfect homestays, the platform had it all. The affordability and convenience they provided was exceptional!"
     },
     {
-      image: '',
-      title: 'Rahul',
-      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+      "image": "",
+      "title": "Anjali Menon",
+      "desc": "I had to book a last-minute flight for a business trip to Hyderabad, and OpoRooms saved the day. The process was quick, and I managed to get a great discount. It's now my go-to app for travel needs!"
     },
     {
-      image: '',
-      title: 'Rahul',
-      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+      "image": "",
+      "title": "Amit Mishra",
+      "desc": "OpoRooms made our group bus booking to Rishikesh extremely convenient. We could choose the perfect bus for our budget, and the booking confirmation was instant. Our trip was hassle-free. Will definitely use this again!"
     },
     {
-      image: '',
-      title: 'Rahul',
-      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+      "image": "",
+      "title": "Sneha Gupta",
+      "desc": "My honeymoon trip to Goa was made extra special with OpoRooms. The hotel package included airport transfers and a candlelight dinner. It was unforgettable, and the prices were unbeatable. Thank you, OpoRooms!"
     },
     {
-      image: '',
-      title: 'Rahul',
-      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+      "image": "",
+      "title": "Rahul Verma",
+      "desc": "OpoRooms exceeded my expectations when I booked my train tickets to Shimla. The interface was easy to navigate, and their updates were spot-on. Great job!"
     },
     {
-      image: '',
-      title: 'Rahul',
-      desc: 'This is a fantastic hotel. Our rooms were very comfortable. The hotel is convenient to the central area of Helsinki as well as to the train station. I only wish we could have stayed longer than just one night before continuing on to other parts of Finland.'
+      "image": "",
+      "title": "Meera Nair",
+      "desc": "I used OpoRooms to book a hotel for my parents in Varanasi. The process was smooth, and the hotel was exactly as described. My parents loved the experience, and I’ll definitely use this platform again."
     },
+    {
+      "image": "",
+      "title": "Sanjay Kulkarni",
+      "desc": "I recently booked a flight to Kolkata through OpoRooms and found an amazing deal. Adding travel insurance was easy, and the transparency in pricing impressed me. Highly recommended!"
+    },
+    {
+      "image": "",
+      "title": "Kavita Joshi",
+      "desc": "OpoRooms made our college reunion trip to Manali super convenient. The luxury bus we booked was affordable and comfortable. I’ll definitely book again for future trips!"
+    },
+    {
+      "image": "",
+      "title": "Arjun Das",
+      "desc": "I was looking for a budget-friendly hotel in Chennai for a short business trip, and OpoRooms had the perfect options. Booking was quick, and I loved the real reviews. My trip was stress-free thanks to them!"
+    }
   ]
 
   return (

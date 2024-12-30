@@ -4,19 +4,19 @@ const nextConfig: NextConfig = {
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    // ignoreDuringBuilds: true,
   },
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors.
     // !! WARN !!
-    ignoreBuildErrors: true,
+    // ignoreBuildErrors: true,
   },
-  productionBrowserSourceMaps: false,
+  // productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ['@mui/x-data-grid', 'jodit-react'],
-    serverSourceMaps: false
+    // serverSourceMaps: false
   },
   images: {
     remotePatterns: [
@@ -44,8 +44,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+// const withBundleAnalyzer = require('@next/bundle-analyzer')({
+//   enabled: process.env.ANALYZE === 'true',
+// })
 
-module.exports = withBundleAnalyzer(nextConfig)
+// module.exports = withBundleAnalyzer(nextConfig)
+module.exports = nextConfig

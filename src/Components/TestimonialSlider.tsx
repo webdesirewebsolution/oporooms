@@ -26,8 +26,8 @@ const TestimonialSlider = ({ list }: Props) => {
             {list?.map((item, i) => (
                 <SwiperSlide key={i} className='h-auto w-[35rem] pb-10'>
                     <div className='w-full h-full flex flex-col gap-3 shadow-lg rounded-xl overflow-hidden bg-white'>
-                        <div className='w-full aspect-video relative'>
-                            {item.image ? <Image src={item.image} alt={item.title} title={item.title} objectFit='cover' fill /> : (
+                        <div className='w-full flex items-center justify-center relative pt-10 pb-5'>
+                            {item.image ? <Image src={`/Images/testimonials/${item.image}.jpg`} alt={item.title} title={item.title} objectFit='contain' fill className='size-40 rounded-full overflow-hidden relative bg-slate-200'/> : (
                                 <div className='w-full aspect-video flex items-center justify-center bg-slate-300'>
                                     <CiImageOff size={100} />
                                 </div>

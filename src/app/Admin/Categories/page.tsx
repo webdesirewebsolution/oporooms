@@ -5,11 +5,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import { Context } from '@/Context/context'
-import { Button, Paper } from '@mui/material'
+import {  Paper } from '@mui/material'
 import Modal from '@/Components/Modal'
 import { CategoriesAction, CategoriesTypes } from '@/Types/Categories'
 import AddCategory from '../Components/AddCategory'
 import { AddressTypes } from '@/Types/Hotels'
+import Button from '@/Components/Buttons'
 
 const Categories = () => {
     const { user } = useContext(Context)

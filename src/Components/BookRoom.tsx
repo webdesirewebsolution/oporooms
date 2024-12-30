@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@mui/material'
 import React, { useContext } from 'react'
 import { Context } from '@/Context/context'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -8,6 +7,7 @@ import { Bookings } from '@/Types/Booking'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
 import dayjs from 'dayjs'
+import Button from './Buttons'
 
 type Props = {
     hotelId: string,

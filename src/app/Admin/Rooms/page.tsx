@@ -6,12 +6,13 @@ import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import Image from 'next/image'
 import { Context } from '@/Context/context'
-import { Avatar, Button, Paper } from '@mui/material'
+import { Avatar, Paper } from '@mui/material'
 import { RoomActions, RoomsTypes } from '@/Types/Rooms'
 import Modal from '@/Components/Modal'
 import AddRoom from '../Components/AddRoom'
 import { FaCheck } from 'react-icons/fa6'
 import { IoMdClose } from 'react-icons/io'
+import Button from '@/Components/Buttons'
 
 const Rooms = () => {
     const { user } = useContext(Context)

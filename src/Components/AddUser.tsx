@@ -3,7 +3,7 @@
 import Upload from '@/Components/Upload'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { User } from '@/Types/Profile'
-import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import {  CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import axios, { AxiosError } from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
@@ -12,6 +12,8 @@ import { useRouter } from 'next/navigation'
 import OtpInput from 'react-otp-input';
 import { signIn } from 'next-auth/react'
 import dayjs from 'dayjs'
+import Button from './Buttons'
+
 
 type Props = {
     userData?: User,

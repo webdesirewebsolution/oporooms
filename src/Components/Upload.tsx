@@ -1,6 +1,6 @@
-import { Button } from '@mui/material';
 import React, { InputHTMLAttributes } from 'react'
 import { GoUpload } from "react-icons/go";
+import Button from './Buttons';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     setValue?: (e: FileList) => void;

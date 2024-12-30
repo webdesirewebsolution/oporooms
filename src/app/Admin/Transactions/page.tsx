@@ -4,7 +4,7 @@ import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
-import { Button, FormControl, InputLabel, Menu, MenuItem, Paper, Select, TextField } from '@mui/material'
+import {  FormControl, InputLabel, Menu, MenuItem, Paper, Select, TextField } from '@mui/material'
 import { TransactionAction, TransactionType } from '@/Types/Transaction'
 import Modal from '@/Components/Modal'
 import AddTransactions from '../Components/AddTransactions'
@@ -12,6 +12,7 @@ import AddPay from '../Components/AddPay'
 import { FaWallet } from 'react-icons/fa6'
 import { Context } from '@/Context/context'
 import dayjs from 'dayjs'
+import Button from '@/Components/Buttons'
 
 const Transaction = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)

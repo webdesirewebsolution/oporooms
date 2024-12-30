@@ -1,8 +1,9 @@
 'use client'
 
+import Button from '@/Components/Buttons'
 import Modal from '@/Components/Modal'
 import { EnquiryTypes } from '@/Types/EnquiryType'
-import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import axios from 'axios'
 import { MuiTelInput } from 'mui-tel-input'
 import React, { useState } from 'react'

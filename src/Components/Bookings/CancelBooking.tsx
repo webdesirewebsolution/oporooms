@@ -1,11 +1,12 @@
 'use client'
 
-import { Button, CircularProgress } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 import React, { useState } from 'react'
 import Modal from '../Modal'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { Bookings } from '@/Types/Booking'
+import Button from '../Buttons'
 
 type Props = {
     bookingId: string,

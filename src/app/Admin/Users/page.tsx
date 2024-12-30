@@ -7,10 +7,11 @@ import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import Image from 'next/image'
 import { Context } from '@/Context/context'
 import { User, UserAction } from '@/Types/Profile'
-import { Avatar, Button, Paper } from '@mui/material'
+import { Avatar,  Paper } from '@mui/material'
 import Modal from '@/Components/Modal'
 import AddUser from '../Components/AddUser'
 import dayjs from 'dayjs'
+import Button from '@/Components/Buttons'
 
 const Users = () => {
     const { user } = useContext(Context)

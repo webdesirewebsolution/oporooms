@@ -5,7 +5,7 @@ import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
-import { Button, Checkbox, Skeleton, CircularProgress } from '@mui/material'
+import { Checkbox, Skeleton, CircularProgress } from '@mui/material'
 import Image from 'next/image'
 import Modal from '@/Components/Modal'
 import { Context } from '@/Context/context'
@@ -13,6 +13,7 @@ import { RoomsTypes } from '@/Types/Rooms'
 import ReactSelect from 'react-select'
 import { compareArray } from '@/Functions'
 import dayjs from 'dayjs'
+import Button from '@/Components/Buttons'
 
 const Home = () => {
   const { user } = useContext(Context)
@@ -130,7 +131,7 @@ const ViewRooms = ({ params }: { params: GridRenderCellParams }) => {
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <div className='flex h-full items-center justify-center'>
       <Button className='bg-blue-500 text-white' onClick={() => setOpen(true)}>View Rooms</Button>
 
       <Modal open={open} setOpen={setOpen}>
@@ -157,7 +158,7 @@ const ViewRooms = ({ params }: { params: GridRenderCellParams }) => {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   )
 }
 

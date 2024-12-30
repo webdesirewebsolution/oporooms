@@ -2,7 +2,7 @@
 'use client'
 
 import { HotelTypes } from '@/Types/Hotels'
-import { Button, CircularProgress, Container, Skeleton } from '@mui/material'
+import { CircularProgress, Container, Skeleton } from '@mui/material'
 import axios from 'axios'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { IoLocation } from 'react-icons/io5'
 import BookRoom from './BookRoom'
 import dayjs from 'dayjs'
+import Button from './Buttons'
 
 declare global {
   interface Window {

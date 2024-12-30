@@ -1,10 +1,11 @@
 'use client'
 
+import Button from '@/Components/Buttons'
 import Upload from '@/Components/Upload'
 import { Context } from '@/Context/context'
 import cloudinaryImageUploadMethod from '@/Functions/cloudinary'
 import { User } from '@/Types/Profile'
-import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { MuiTelInput } from 'mui-tel-input'

@@ -6,7 +6,7 @@ import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid'
 import { TypeSafeColDef } from '@/Types/DataGridTypes'
 import Image from 'next/image'
 import { Context } from '@/Context/context'
-import { Avatar, Button, Paper } from '@mui/material'
+import { Avatar, Paper } from '@mui/material'
 import { AddressTypes, HotelActions, HotelTypes } from '@/Types/Hotels'
 import Modal from '@/Components/Modal'
 import { RoomVarietyTypes } from '@/Types/Rooms'
@@ -14,6 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import AddRoom from '../Components/AddRoom'
 import AddHotel from '../Components/AddHotel'
+import Button from '@/Components/Buttons'
 
 const Hotels = () => {
     const { user } = useContext(Context)
@@ -112,7 +113,7 @@ const Photos = ({ params }: { params: GridRenderCellParams }) => {
 const Address = ({ params }: { params: GridRenderCellParams }) => {
     const [showAddr, setShowAddr] = useState(false)
     return (
-        <>
+        <div className='flex h-full items-center justify-center'>
             <Button onClick={() => setShowAddr(true)} className='bg-red-400 text-white'>View Address</Button>
 
             <Modal open={showAddr} setOpen={() => setShowAddr(false)}>
@@ -125,14 +126,14 @@ const Address = ({ params }: { params: GridRenderCellParams }) => {
                     ))}
                 </div>
             </Modal>
-        </>
+        </div>
     )
 }
 
 const RoomTypes = ({ params }: { params: GridRenderCellParams }) => {
     const [showRoomTypes, setShowRoomTypes] = useState(false)
     return (
-        <>
+        <div className='flex h-full items-center justify-center'>
             <Button onClick={() => setShowRoomTypes(true)} className='bg-red-400 text-white'>Show Room Types</Button>
 
             <Modal open={showRoomTypes} setOpen={() => setShowRoomTypes(false)}>
@@ -172,14 +173,15 @@ const RoomTypes = ({ params }: { params: GridRenderCellParams }) => {
                     </div>
                 </div>
             </Modal>
-        </>
+        </div>
     )
 }
 
 const Amenities = ({ params }: { params: GridRenderCellParams }) => {
     const [showModal, setShowModal] = useState(false)
     return (
-        <>
+        <div className='flex h-full items-center justify-center'>
+
             <Button onClick={() => setShowModal(true)} className='bg-red-400 text-white'>View Amenities</Button>
 
             <Modal open={showModal} setOpen={() => setShowModal(false)}>
@@ -191,7 +193,7 @@ const Amenities = ({ params }: { params: GridRenderCellParams }) => {
                     ))}
                 </div>
             </Modal>
-        </>
+        </div>
     )
 }
 
@@ -239,13 +241,13 @@ const RoomActions = ({ params }: { params: GridRenderCellParams }) => {
     const [showModal, setShowModal] = useState(false)
 
     return (
-        <>
+        <div className='flex h-full items-center justify-center'>
             <Button onClick={() => setShowModal(true)} className='bg-red-400 text-white'>Add Rooms</Button>
 
             <Modal open={showModal} setOpen={() => setShowModal(false)} className='overflow-y-scroll'>
                 <AddRoom hotelData={params?.row} setShowModal={setShowModal} />
             </Modal>
-        </>
+        </div>
     )
 }
 

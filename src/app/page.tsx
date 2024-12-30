@@ -6,13 +6,14 @@ import SearchBox from '@/Components/SearchBox'
 import ServicesComp from '@/Components/ServicesComp'
 import TestimonialSlider from '@/Components/TestimonialSlider'
 import { getHotels } from '@/server/db'
-import { Button, Container } from '@mui/material'
+import { Container } from '@mui/material'
 import { Params } from 'next/dist/server/request/params'
 import { SearchParams } from 'next/dist/server/request/search-params'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import dayjs from 'dayjs'
+import Button from '@/Components/Buttons'
 
 type Props = {
   params: Promise<Params>

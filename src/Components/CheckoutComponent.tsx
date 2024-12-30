@@ -2,7 +2,7 @@
 
 import { Context } from '@/Context/context';
 import { Bookings } from '@/Types/Booking';
-import { Button, Checkbox, CircularProgress } from '@mui/material';
+import {  Checkbox, CircularProgress } from '@mui/material';
 import axios from 'axios';
 import React, { useContext, useState } from 'react'
 import { IoCard, IoLocationSharp } from "react-icons/io5";
@@ -13,6 +13,7 @@ import { FaStar } from 'react-icons/fa6';
 import { IoMdClose } from 'react-icons/io';
 import Expandable from './Expandable';
 import dayjs from 'dayjs';
+import Button from './Buttons';
 
 const CheckoutComponent = () => {
     return (
@@ -110,13 +111,13 @@ export const Details = () => {
                     <div className='pr-10 border-r-2'>
                         <p className='text-lg'>Check-in</p>
                         <p className='text-xl font-semibold'>
-                            {checkIn && dayjs(checkIn)?.format('ddd, Do MMM YYYY')}
+                            {checkIn && dayjs(checkIn)?.format('ddd, D MMM YYYY')}
                         </p>
                     </div>
                     <div className='pl-10'>
                         <p className='text-lg'>Check-out</p>
                         <p className='text-xl font-semibold'>
-                            {checkOut && dayjs(checkOut)?.format('ddd, Do MMM YYYY')}
+                            {checkOut && dayjs(checkOut)?.format('ddd, D MMM YYYY')}
                         </p>
                     </div>
                 </div>

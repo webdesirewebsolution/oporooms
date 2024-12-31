@@ -18,7 +18,7 @@ const ListProperty = () => {
 
                             <div className='p-10 flex flex-col gap-10'>
                                 <h1 className='text-white text-8xl font-extrabold'>List your property</h1>
-                                <h2 className='text-white max-w-[50rem] w-full text-wrap'>Are you ready to take your hotel business to the next level? It’s easier than ever to start earning more revenue with minimal effort! By listing your hotel with us, you can begin attracting guests from all around the India  in just 10 minutes.
+                                <h2 className='text-white max-w-[50rem] w-full text-wrap'>Are you ready to take your hotel business to the next level? It&apos;s easier than ever to start earning more revenue with minimal effort! By listing your hotel with us, you can begin attracting guests from all around the India  in just 10 minutes.
                                 </h2>
                             </div>
 
@@ -34,7 +34,7 @@ const ListProperty = () => {
                         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8">
                             {/* Header Section */}
                             <div className="text-center mb-6">
-                                <p className="text-3xl font-bold text-blue-600">Here's How It Works</p>
+                                <p className="text-3xl font-bold text-blue-600">Here&apos;s How It Works</p>
                                 <p className="text-gray-600 mt-2">
                                     A quick guide to listing your property and maximizing your revenue.
                                 </p>
@@ -52,7 +52,7 @@ const ListProperty = () => {
                                             Simple Listing Process
                                         </p>
                                         <p className="text-gray-600 mt-2">
-                                            In just a few steps, you can create your hotel's profile on our platform. Add essential details such as location, amenities, photos, and pricing.
+                                            In just a few steps, you can create your hotel&apos;s profile on our platform. Add essential details such as location, amenities, photos, and pricing.
                                         </p>
                                     </div>
                                 </div>

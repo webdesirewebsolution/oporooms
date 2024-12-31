@@ -125,7 +125,7 @@ const SearchHotel = ({ }) => {
                             childrens: value.guests.children
                         }
                     }} passHref legacyBehavior className='h-full'>
-                        <Button className={'bg-red-500 text-white text-nowrap md:h-full !py-5 !px-24 rounded-xl md:rounded-l-none'} size='large'>
+                        <Button className={'bg-red-500 text-white text-nowrap md:h-full rounded-xl md:rounded-l-none'} size='large'>
                             Find Hotels</Button>
                     </Link>
                 </div>

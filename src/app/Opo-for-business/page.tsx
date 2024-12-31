@@ -16,7 +16,7 @@ const features = [
     {
         title: "Travel Booking Options",
         details: [
-            "Flights: Integration with major airlines' APIs or global distribution systems (GDS).",
+            "Flights: Integration with major airlines&apos; APIs or global distribution systems (GDS).",
             "Hotels: hotel booking With (Opo Rooms Partner Hotels).",
             "Trains: Support for regional train services through APIs.",
             "Buses: Integration with local and international bus service providers.",
@@ -64,7 +64,7 @@ const OpoBusiness = () => {
 
                             <div className='p-10 flex flex-col gap-10'>
                                 <h1 className='text-white text-8xl font-extrabold'>OPO for business</h1>
-                                <h2 className='text-white max-w-[50rem] w-full'>A single corporate portal that allows users to log in and book hotels, flights, trains, and buses is a practical solution for streamlining travel management for businesses. Here's a high-level overview of how such a portal could be designed and implemented:
+                                <h2 className='text-white max-w-[50rem] w-full'>A single corporate portal that allows users to log in and book hotels, flights, trains, and buses is a practical solution for streamlining travel management for businesses. Here&apos;s a high-level overview of how such a portal could be designed and implemented:
                                 </h2>
                             </div>
 

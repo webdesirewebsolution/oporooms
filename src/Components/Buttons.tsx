@@ -29,7 +29,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
     const [ripple, setRipple] = useState<{ x: number; y: number; size: number } | null>(null);
 
-    const baseStyles = 'font-medium focus:outline-none rounded transition ease-in-out duration-300 relative overflow-hidden flex items-center justify-center';
+    const baseStyles = 'font-medium focus:outline-none rounded transition ease-in-out duration-300 relative flex items-center justify-center';
 
     const variantStyles = {
         none: '',

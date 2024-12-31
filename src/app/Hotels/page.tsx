@@ -124,9 +124,9 @@ const HotelListClient = async ({ searchParams }: { searchParams: SearchParams })
                                         {searchParams?.rooms && <span className='text-xl'>{rooms} room{rooms > 1 && 's'}</span>}
                                         {searchParams?.checkIn && searchParams?.checkOut && <span className='text-xl'>{totalDays} day{totalDays > 1 && 's'}</span>}
                                     </div>
-                                    <p className='text-4xl font-semibold'>&#8377;{Number(item?.rooms?.[0]?.price)}</p>
+                                    <p className='text-4xl font-semibold'>&#8377;{Number(item?.rooms?.[0]?.price) + (Number(item?.rooms?.[0]?.price) * 0.18)}</p>
                                     <p className='text-slate-700 text-lg'>Per Night</p>
-                                    <p className='text-slate-700 text-lg'>Includes taxes and fees</p>
+                                    <p className='text-slate-700 text-lg'>Including taxes and fees</p>
                                 </div>
                             </div>
                         </div>

@@ -44,6 +44,10 @@ const Hotel = async ({ params, searchParams }: Props) => {
         return (<></>)
     }
 
+    const allPhotos = [
+        ...item?.photos, // Main photos array
+        ...item.rooms?.flatMap(room => room?.photos) // Flatten and extract photos from rooms
+    ];
 
     return (
         <>
@@ -54,18 +58,10 @@ const Hotel = async ({ params, searchParams }: Props) => {
                     <Container className='py-10'>
                         <div className='flex flex-col lg:flex-row gap-5'>
                             <div className='relative w-[100%] aspect-video max-w-full'>
-                                <Image src={item.photos?.[0]} alt='' fill className='object-' quality={100} />
+                                <Image src={allPhotos?.[0]} alt='' fill className='object-' quality={100} />
                             </div>
-                            <HotelPhotos photos={item.photos} />
-                            {/* {item?.photos?.length > 1 &&
-                                <div className='flex flex-row lg:flex-col gap-5 w-full lg:w-[49%]'>
-                                    <div className='relative w-[100%] aspect-video max-w-full'>
-                                        <Image src={item.photos?.[1]} alt='' fill />
-                                    </div>
-                                    <div className='relative w-[100%] aspect-video max-w-full'>
-                                        <Image src={item.photos?.[2]} alt='' fill />
-                                    </div>
-                                </div>} */}
+                            <HotelPhotos photos={allPhotos} />
+                            
                         </div>
                     </Container>
                 </div>
@@ -95,13 +91,13 @@ const Hotel = async ({ params, searchParams }: Props) => {
                                     <div className='pr-10 border-r-2'>
                                         <p className='text-lg'>Check-in</p>
                                         <p className='text-xl font-semibold'>
-                                            {checkIn && dayjs(checkIn)?.format('ddd, Do MMM YYYY')}
+                                            {checkIn && dayjs(checkIn)?.format('ddd, D MMM YYYY')}
                                         </p>
                                     </div>
                                     <div className='pl-10'>
                                         <p className='text-lg'>Check-out</p>
                                         <p className='text-xl font-semibold'>
-                                            {checkOut && dayjs(checkOut)?.format('ddd, Do MMM YYYY')}
+                                            {checkOut && dayjs(checkOut)?.format('ddd, D MMM YYYY')}
                                         </p>
                                     </div>
                                 </div>
@@ -158,7 +154,7 @@ const Rooms = async ({ hotelData, room }: { hotelData: HotelTypes, room: RoomVar
         <div key={room.type} className='border flex flex-col md:flex-row shadow-lg bg-white overflow-hidden rounded-lg'>
             <div className='rounded-xl'>
                 {/* <Image src={room?.photos?.[0]} alt='' fill objectFit='cover' /> */}
-                <SliderImage photos={room?.photos} loop autoplay/>
+                <SliderImage photos={room?.photos} loop autoplay />
             </div>
 
 

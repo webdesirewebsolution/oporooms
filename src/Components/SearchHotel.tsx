@@ -10,6 +10,8 @@ import { useSearchParams } from 'next/navigation'
 import dayjs, { Dayjs } from 'dayjs'
 import Button from './Buttons'
 import { newDate } from '@/Functions'
+import IconButton from './IconButton'
+import { FaMinus, FaPlus } from 'react-icons/fa6'
 
 type SearchProps = {
     city: string,
@@ -146,8 +148,11 @@ type SelectRoomsProps = {
 
 const SelectRooms = ({ value, setValue, setSelectRoom }: SelectRoomsProps) => {
     const [val, setVal] = useState({
-        rooms: value?.rooms,
-        guests: value?.guests
+        rooms: value?.rooms || 1,
+        guests: value?.guests || {
+            adults: 2,
+            children: 0
+        }
     })
 
     const handleSubmit = () => {
@@ -155,28 +160,84 @@ const SelectRooms = ({ value, setValue, setSelectRoom }: SelectRoomsProps) => {
         setSelectRoom(false)
     }
 
-
     return (
         <div>
             <ul className='w-full flex flex-col gap-5 mb-10'>
                 <li className='flex justify-between items-center w-full gap-10'>
                     <p className='font-semibold text-slate-700'>Rooms</p>
-                    <Input value={val.rooms} onChange={e => {
+                    <div className='flex items-center gap-5'>
+                        <IconButton
+                            disabled={val.rooms <= 1}
+                            onClick={() => {
+                                setVal(prev => ({ ...prev, rooms: Number(prev.rooms) - 1, guests: { ...prev.guests, adults: Number(val.guests.adults) > Number(prev.rooms) ? Number(val.guests.adults) : Number(prev.rooms) - 1 } }))
+                            }} className={`${val.rooms <= 1 ? '!bg-blue-300' : '!bg-blue-500'} !text-white`}>
+                            <FaMinus size={10} />
+                        </IconButton>
+                        <span>{val.rooms}</span>
+                        <IconButton
+                            disabled={val.rooms >= 40}
+                            onClick={() => {
+                                setVal(prev => ({ ...prev, rooms: Number(prev.rooms) + 1, guests: { ...prev.guests, adults: Number(val.guests.adults) > Number(prev.rooms) ? Number(val.guests.adults) : Number(prev.rooms) + 1 } }))
+                            }} className={`${val.rooms >= 40 ? 'bg-blue-300' : 'bg-blue-500'} text-white`}>
+                            <FaPlus size={10} />
+                        </IconButton>
+                    </div>
+                    {/* <Input value={val.rooms} onChange={e => {
                         setVal(prev => ({ ...prev, rooms: Number(e.target.value), guests: { ...prev.guests, adults: Number(val.guests.adults) > Number(e.target.value) ? Number(val.guests.adults) : Number(e.target.value) } }))
                     }}
-                        className='font-semibold' type='number' min={1} max={20} />
+                        className='font-semibold' type='number' min={1} max={20} /> */}
                 </li>
 
                 <li className='flex justify-between items-center w-full gap-10'>
                     <p className='font-semibold text-slate-700'>Adults</p>
-                    <Input value={val.guests.adults} onChange={e => setVal(prev => ({ ...prev, guests: { ...prev.guests, adults: Number(e.target.value) } }))}
-                        className='font-semibold' type='number' min={val.rooms} max={val.rooms * 2} />
+                    <div className='flex items-center gap-5'>
+                        <IconButton
+                            disabled={val.guests.adults <= 1}
+                            onClick={() => {
+                                setVal(prev => ({ ...prev, rooms: val.rooms < val.guests.adults ? val.rooms : val.rooms - 1, guests: { ...prev.guests, adults: Number(val.guests.adults) - 1 } }))
+                            }} className={`${val.guests.adults <= 1 ? 'bg-blue-300' : 'bg-blue-500'} text-white`}>
+                            <FaMinus size={10} />
+                        </IconButton>
+
+                        <span>{val.guests.adults}</span>
+
+                        <IconButton
+                            disabled={val.guests.adults >= 40 || val.guests.adults >= val.rooms * 2}
+                            onClick={() => {
+                                setVal(prev => ({ ...prev, guests: { ...prev.guests, adults: Number(val.guests.adults) + 1 } }))
+                            }} className={`${(val.guests.adults >= 40 || val.guests.adults >= val.rooms * 2) ? 'bg-blue-300' : 'bg-blue-500'} text-white`}>
+                            <FaPlus size={10} />
+                        </IconButton>
+                    </div>
+
+                    {/* <Input value={val.guests.adults} onChange={e => setVal(prev => ({ ...prev, guests: { ...prev.guests, adults: Number(e.target.value) } }))}
+                        className='font-semibold' type='number' min={val.rooms} max={val.rooms * 2} /> */}
                 </li>
 
                 <li className='flex justify-between items-center w-full gap-10'>
                     <p className='font-semibold text-slate-700'>Children</p>
-                    <Input value={val.guests.children} onChange={e => setVal(prev => ({ ...prev, guests: { ...prev.guests, children: Number(e.target.value) } }))}
-                        className='font-semibold' type='number' min={0} max={20} />
+                    <div className='flex items-center gap-5'>
+                        <IconButton
+                            disabled={val.guests.children < 1}
+                            onClick={() => {
+                                setVal(prev => ({ ...prev, guests: { ...prev.guests, children: Number(val.guests.children) - 1 } }))
+                            }} className={`${val.guests.children < 1 ? 'bg-blue-300' : 'bg-blue-500'} text-white`}>
+                            <FaMinus size={10} />
+                        </IconButton>
+
+                        <span>{val.guests.children}</span>
+
+                        <IconButton
+                            disabled={val.guests.children >= val.guests.adults}
+                            onClick={() => {
+                                setVal(prev => ({ ...prev, guests: { ...prev.guests, children: Number(val.guests.children) + 1 } }))
+                            }} className={`${(val.guests.children >= val.guests.adults) ? 'bg-blue-300' : 'bg-blue-500'} text-white`}>
+                            <FaPlus size={10} />
+                        </IconButton>
+                    </div>
+
+                    {/* <Input value={val.guests.children} onChange={e => setVal(prev => ({ ...prev, guests: { ...prev.guests, children: Number(e.target.value) } }))}
+                        className='font-semibold' type='number' min={0} max={20} /> */}
                 </li>
             </ul>
             <Button className='bg-blue-500 text-white w-full py-5' onClick={handleSubmit} size='large'>

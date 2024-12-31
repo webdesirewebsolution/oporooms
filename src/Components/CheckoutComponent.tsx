@@ -67,7 +67,7 @@ export const Details = () => {
     const checkIn = bookingData ? Number(bookingData?.roomDetails?.checkIn) : 0
     const checkOut = bookingData ? Number(bookingData?.roomDetails?.checkOut) : 0
     const price = bookingData ? Number(bookingData?.transactionDetails?.cost) : 0
-    const fee = bookingData ? Number(bookingData?.transactionDetails?.fee) : 0
+    const fee = price * 0.18
 
     const totalDays = (checkIn && checkOut) ? dayjs(checkOut).diff(checkIn, 'days') : 0
 
@@ -139,7 +139,7 @@ export const Details = () => {
                     </div>
 
                     <div className='flex justify-between items-center'>
-                        <p className='text-lg text-slate-800'>Tax & fee</p>
+                        <p className='text-lg text-slate-800'>18% Tax</p>
                         <p className='text-lg text-slate-800'>&#8377;{fee}</p>
                     </div>
                 </div>

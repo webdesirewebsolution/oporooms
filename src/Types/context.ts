@@ -10,4 +10,6 @@ export type ContextType = {
     setBookingSubmitLoading: React.Dispatch<React.SetStateAction<boolean>>,
     authModal: 'SignIn' | 'Register' | '',
     setAuthModal: React.Dispatch<React.SetStateAction<'SignIn' | 'Register' | ''>>,
+    selectedFlight: {id: string},
+    setSelectedFlight: React.Dispatch<React.SetStateAction<{id: string}>>
 }

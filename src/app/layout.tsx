@@ -64,6 +64,8 @@ export default async function RootLayout({
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U&loading=async&libraries=places&callback=initMap">
       </Script>
 
+      {/* <Script async defer id='Travel' src='https://tp.media/content?currency=inr&trs=377316&shmarker=596056&show_hotels=false&powered_by=true&locale=en&searchUrl=www.aviasales.com%2Fsearch&primary_override=%23ee292c&color_button=%23ee292c&color_icons=%23ee292c&dark=%23262626&light=%23FFFFFF&secondary=%23FFFFFF&special=%23C4C4C4&color_focused=%23ee292c&border_radius=10&no_labels=&plain=true&promo_id=7879&campaign_id=100'></Script> */}
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning={true}

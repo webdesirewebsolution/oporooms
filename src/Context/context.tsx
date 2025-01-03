@@ -20,7 +20,11 @@ const initialData: ContextType = {
     bookingSubmitLoading: false,
     setBookingSubmitLoading: () => { },
     authModal: '',
-    setAuthModal: () => {}
+    setAuthModal: () => {},
+    selectedFlight: {
+        id: ''
+    },
+    setSelectedFlight: () => {}
 }
 
 export const Context = createContext<ContextType>(initialData)
@@ -36,6 +40,9 @@ const ContextProvider = ({ children, session }: Props) => {
     const [bookingData, setBookingData] = useState<Bookings>({} as Bookings)
     const [bookingSubmitLoading, setBookingSubmitLoading] = useState(false)
     const [authModal, setAuthModal] = useState<'SignIn' | 'Register' | ''>('')
+    const [selectedFlight, setSelectedFlight] = useState({
+        id: ''
+    })
 
     useEffect(() => {
         (async () => {
@@ -48,7 +55,7 @@ const ContextProvider = ({ children, session }: Props) => {
     }, [session])
 
     return (
-        <Context.Provider value={{ user, bookingData, setBookingData, bookingSubmitLoading, setBookingSubmitLoading, authModal, setAuthModal }}>
+        <Context.Provider value={{ user, bookingData, setBookingData, bookingSubmitLoading, setBookingSubmitLoading, authModal, setAuthModal, selectedFlight, setSelectedFlight }}>
             {children}
         </Context.Provider>
     )

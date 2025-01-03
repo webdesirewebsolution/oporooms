@@ -10,12 +10,13 @@ import { BiSolidBusSchool } from "react-icons/bi";
 import { Container } from '@mui/material'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
 import useWindowDimensions from '@/Hooks/useWindow'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FaMinus } from 'react-icons/fa'
 import dayjs, { Dayjs } from 'dayjs'
 import Button from './Buttons'
 import IconButton from './IconButton'
 import { newDate } from '@/Functions'
+import Script from 'next/script'
 
 type tabsTypes = {
     icon: string,
@@ -80,7 +81,10 @@ const SearchBox = ({ }) => {
                             ))}
                         </div>
 
-                        {activeTab == 'Hotels' && <HotelSearchBox isScrolledOnDesktop={isScrolledOnDesktop} />}
+                        <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} md:w-fit gap-5 items-end transition-all`}>
+                            {activeTab == 'Hotels' && <HotelSearchBox />}
+                            {activeTab == 'Flights' && <FlightSearchBox />}
+                        </div>
                     </div>
                 </Container>
             </div>
@@ -115,7 +119,7 @@ const initialData: SearchProps = {
     }
 }
 
-const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean }) => {
+const HotelSearchBox = () => {
     const pathname = usePathname()
     const router = useRouter()
     const [placeId, setPlaceId] = useState('ChIJWYjjgtUZDTkRHkvG5ehfzwI')
@@ -142,7 +146,7 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
 
 
     return (
-        <div className={`flex ${isScrolledOnDesktop ? 'flex-row items-center' : 'flex-col'} md:w-fit gap-5 items-end transition-all`}>
+        <>
             <div className='flex flex-col md:flex-row md:items-center w-full md:border-2 rounded-xl gap-4 md:gap-0 md:h-20'>
                 <div className='w-full'>
                     <GooglePlacesAutocomplete
@@ -231,7 +235,7 @@ const HotelSearchBox = ({ isScrolledOnDesktop }: { isScrolledOnDesktop: boolean 
             <Modal open={selectRoom} setOpen={setSelectRoom} className='w-96'>
                 <SelectRooms value={value} setValue={setValue} setSelectRoom={setSelectRoom} />
             </Modal>
-        </div>
+        </>
     )
 }
 
@@ -338,6 +342,192 @@ const SelectRooms = ({ value, setValue, setSelectRoom }: SelectRoomsProps) => {
             <Button className='bg-blue-500 text-white w-full py-5' onClick={handleSubmit} size='large'>
                 Apply
             </Button>
+        </div>
+    )
+}
+
+type FlightSearchProps = {
+    departureCity: string,
+    arrivalCity: string,
+    departureLat: number,
+    departureLng: number
+    departureDate: Dayjs,
+    returnDate: Dayjs,
+    rooms: number,
+    passengers: {
+        adults: number,
+        children: number
+    }
+}
+
+
+export const FlightSearchBox = () => {
+    const searchParams = useSearchParams()
+    const pathname = usePathname()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+
+            // const script = document.createElement("script");
+            // script.src = "https://tp.media/content?currency=inr&trs=377316&shmarker=596056&show_hotels=false&powered_by=true&locale=en&searchUrl=www.aviasales.com%2Fsearch&primary_override=%23ee292c&color_button=%23ee292c&color_icons=%23ee292c&dark=%23262626&light=%23FFFFFF&secondary=%23FFFFFF&special=%23C4C4C4&color_focused=%23ee292c&border_radius=10&no_labels=&plain=true&promo_id=7879&campaign_id=100";
+            // script.async = true;
+            // document.body.appendChild(script);
+
+            console.log({ w: window })
+
+            // return () => {
+            //     document.body.removeChild(script);
+            // };
+        }
+    }, []);
+
+    const initialFlightData: FlightSearchProps = {
+        departureCity: searchParams.get('from')?.split("%20").join(' ') ? searchParams.get('from') as string : 'Gurgaon, Haryana, India',
+        arrivalCity: searchParams.get('to')?.split("%20").join(' ') ? searchParams.get('to') as string : 'Gurgaon, Haryana, India',
+        departureLat: 28.4594965,
+        departureLng: 77.0266383,
+        departureDate: dayjs(newDate(new Date())),
+        returnDate: dayjs(newDate(new Date())).add(1, 'day'),
+        rooms: 1,
+        passengers: {
+            adults: 2,
+            children: 0
+        }
+    }
+    const [departurePlaceId, setDeparturePlaceId] = useState('ChIJWYjjgtUZDTkRHkvG5ehfzwI')
+    const [arrivalPlaceId, setArrivalPlaceId] = useState('ChIJWYjjgtUZDTkRHkvG5ehfzwI')
+    const [value, setValue] = useState(initialFlightData)
+    const [passengersModal, setPassengersModal] = useState(false)
+
+
+    return (
+        <div className='w-full'>
+            <script async defer id='Travel' src='https://tp.media/content?currency=inr&trs=377316&shmarker=596056&show_hotels=false&powered_by=true&locale=en&searchUrl=www.aviasales.com%2Fsearch&primary_override=%23ee292c&color_button=%23ee292c&color_icons=%23ee292c&dark=%23262626&light=%23FFFFFF&secondary=%23FFFFFF&special=%23C4C4C4&color_focused=%23ee292c&border_radius=10&no_labels=&plain=true&promo_id=7879&campaign_id=100'></script>
+
+            {/* <div id="Travel">
+                <p>Loading travel deals...</p>
+            </div> */}
+
+            <div className='flex flex-col md:flex-row md:items-center w-full md:border-2 rounded-xl gap-4 md:gap-0 md:h-32 relative bg-white p-5 md:p-0'>
+                <div className='w-full md:h-full flex flex-col justify-center md:border-r-2 relative'>
+                    <label className='text-lg md:absolute top-2 ml-2 text-slate-600'>From</label>
+                    <GooglePlacesAutocomplete
+                        selectProps={{
+                            defaultValue: { label: value.departureCity, value: value.departureCity },
+                            value: { label: value.departureCity, value: value.departureCity },
+                            onChange: (e) => {
+                                if (typeof window !== 'undefined') {
+                                    const geocoder = new google.maps.Geocoder();
+
+                                    geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
+                                        if (status === google.maps.GeocoderStatus.OK) {
+                                            const location = results?.[0]?.geometry?.location?.toJSON();
+
+                                            setValue(prev => ({
+                                                ...prev,
+                                                departureLat: location?.lat as number,
+                                                departureLng: location?.lng as number,
+                                                departureCity: e?.value?.description,
+                                            }));
+                                        }
+                                    });
+                                }
+
+                                setDeparturePlaceId(e?.value?.place_id);
+                            },
+                            classNames: {
+                                control: () => 'md:border-0'
+                            }
+                        }}
+                        apiKey="AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U"
+                    />
+                </div>
+
+                <div className='w-full md:h-full flex flex-col justify-center md:border-r-2 relative'>
+                    <label className='text-lg md:absolute top-2 ml-2 text-slate-600'>To</label>
+                    <GooglePlacesAutocomplete
+                        selectProps={{
+                            defaultValue: { label: value.arrivalCity, value: value.arrivalCity },
+                            value: { label: value.arrivalCity, value: value.arrivalCity },
+                            onChange: (e) => {
+                                if (typeof window !== 'undefined') {
+                                    const geocoder = new google.maps.Geocoder();
+
+                                    geocoder.geocode({ 'placeId': e?.value?.place_id }, (results, status) => {
+                                        if (status === google.maps.GeocoderStatus.OK) {
+                                            const location = results?.[0]?.geometry?.location?.toJSON();
+
+                                            setValue(prev => ({
+                                                ...prev,
+                                                arrivalLat: location?.lat as number,
+                                                arrivalLng: location?.lng as number,
+                                                arrivalCity: e?.value?.description,
+                                            }));
+                                        }
+                                    });
+                                }
+
+                                setArrivalPlaceId(e?.value?.place_id);
+                            },
+                            classNames: {
+                                control: () => 'md:border-0'
+                            }
+                        }}
+                        apiKey="AIzaSyBOjiEhtSB9GwO0UJGqzlDkJvqm2iufO6U"
+                    />
+                </div>
+
+                <div className='flex flex-col relative h-full'>
+                    <label className='text-lg md:absolute top-2 ml-2 text-slate-600'>Departure</label>
+                    <input
+                        placeholder="DEPARTURE DATE"
+                        type='date'
+                        min={dayjs(newDate(new Date())).format('YYYY-MM-DD')}
+                        className='bg-transparent md:h-full p-3 md:p-0 border-y-2 md:border-y-0 border-l-2 md:border-l-0 border-x-2 md:px-10'
+                        value={dayjs(value.departureDate).format('YYYY-MM-DD')}
+                        onChange={(e) => {
+                            setValue(prev => ({ ...prev, departureDate: dayjs(e.target.value) }));
+                        }}
+                    />
+                </div>
+
+                <div className='flex flex-col relative h-full'>
+                    <label className='text-lg md:absolute top-2 ml-2 text-slate-600'>Return</label>
+                    <input
+                        placeholder="RETURN DATE"
+                        type='date'
+                        className='bg-transparent md:h-full p-3 md:p-0 border-y-2 md:border-y-0 border-l-2 md:border-l-0 border-x-2 md:px-10'
+                        min={dayjs(value.departureDate).add(1, 'day').format('YYYY-MM-DD')}
+                        value={dayjs(value.returnDate).format('YYYY-MM-DD')}
+                        onChange={(e) => setValue(prev => ({ ...prev, returnDate: dayjs(e.target.value) }))}
+                    />
+                </div>
+
+                <button
+                    type='button'
+                    className='px-10 rounded-md h-full text-nowrap border-2 md:border-none py-4 md:py-0'
+                    onClick={() => setPassengersModal(true)}
+                >
+                    <p>{value.passengers.adults} {value.passengers.adults > 1 ? 'Adults' : 'Adult'}, {value.passengers.children > 0 && `${value.passengers.children} `}{value.passengers.children > 0 && (value.passengers.children > 1 ? 'Children' : 'Child')}</p>
+                </button>
+
+                <Link href={{
+                    pathname: '/Flights',
+                    query: {
+                        from: value.departureCity,
+                        to: value.arrivalCity,
+                        fromDate: dayjs(value.departureDate).valueOf(),
+                        toDate: dayjs(value.returnDate).valueOf(),
+                        adults: value.passengers.adults,
+                        children: value.passengers.children
+                    }
+                }} passHref legacyBehavior className='h-full'>
+                    <Button className={'bg-blue-500 text-white text-nowrap md:h-full rounded-xl md:rounded-l-none py-5'} size='large'>
+                        Find Flights</Button>
+                </Link>
+            </div>
+
         </div>
     )
 }
